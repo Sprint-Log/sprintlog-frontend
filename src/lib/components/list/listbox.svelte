@@ -1,7 +1,7 @@
-<div class="w-full p-8">
+<div class="w-full px-4">
 	<div class="flex items-center justify-between mb-4">
-		<h5 class="text-xl font-bold leading-none">Latest Customers</h5>
-		<a href="#" class="text-sm font-medium"> View all </a>
+		<h5 class="text-xl font-bold leading-none"><slot name="title" /></h5>
+		<slot name="action" />
 	</div>
 	<slot />
 </div>

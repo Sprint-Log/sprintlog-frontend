@@ -1,6 +1,6 @@
 <script lang="ts">
 	// The ordering of these imports is critical to your app working properly
-	import '@skeletonlabs/skeleton/themes/theme-hamlindigo.css';
+	import '@skeletonlabs/skeleton/themes/theme-vintage.css';
 	// If you have source.organizeImports set to true in VSCode, then it will auto change this ordering
 	import '@skeletonlabs/skeleton/styles/all.css';
 	// Most of your app wide CSS should be put in this file
@@ -15,8 +15,9 @@
 	import { writable } from 'svelte/store';
 	import { page } from '$app/stores';
 	// export const activeRail = writable<number>(0);
-	export const activeRail = writable<string>('/');
+	export const activeRail = writable<string>();
 	// const storeValue: Writable<number> = writable(0);
+	import { LightSwitch } from '@skeletonlabs/skeleton';
 </script>
 
 <!-- App Shell -->
@@ -28,6 +29,7 @@
 				<strong class="text-xl uppercase">Scrumlog</strong>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
+				<LightSwitch />
 				<a href="https://collab.hexcode.tech" target="_blank" rel="noreferrer"> Collab </a>
 				<a href="https://file.hexcode.tech" target="_blank" rel="noreferrer"> Drive </a>
 				<a href="https://auth.hexcode.tech" target="_blank" rel="noreferrer"> Login </a>
