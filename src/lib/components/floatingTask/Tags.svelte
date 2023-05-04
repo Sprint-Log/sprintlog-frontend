@@ -1,0 +1,87 @@
+<script lang="ts">
+	let selTag: string = '';
+	let visible: boolean = false;
+	type TagObject = {
+		[key: string]: string;
+	};
+	const tagLbls: TagObject = {
+		'💡': 'ideas',
+		'⚠️': 'issues',
+		'🔨': 'maintenance',
+		'💰': 'finances',
+		'🚀': 'innovation',
+		'🐞': 'bugs',
+		'🎁': 'features',
+		'🔒': 'security',
+		'🚩': 'attention',
+		'📡': 'backend',
+		'💾': 'database',
+		'🖥️': 'desktop',
+		'📱': 'mobile',
+		'🌍': 'internationalization',
+		'🎨': 'design',
+		'📈': 'analytics',
+		'🤖': 'automation'
+	};
+	// const tagLbls: TagObject = {
+	// 	'📝': 'notes',
+	// 	'💡': 'ideas',
+	// 	'⌛': 'time-sensitive',
+	// 	'📅': 'date-specific',
+	// 	'📌': 'high-priority',
+	// 	'✅': 'completed',
+	// 	'⚠️': 'issues',
+	// 	'🔨': 'maintenance',
+	// 	'💰': 'finances',
+	// 	'💬': 'communication',
+	// 	'🚀': 'innovation',
+	// 	'🔍': 'research',
+	// 	'🐞': 'bugs',
+	// 	'🎁': 'features',
+	// 	'🔒': 'security',
+	// 	'🚩': 'attention',
+	// 	'🌐': 'frontend',
+	// 	'📡': 'backend',
+	// 	'💾': 'database',
+	// 	'🖥️': 'desktop',
+	// 	'📱': 'mobile',
+	// 	'🌍': 'internationalization',
+	// 	'🚀': 'performance',
+	// 	'🎨': 'design',
+	// 	'📈': 'analytics',
+	// 	'🤖': 'automation'
+	// };
+
+	function setTag(newTag: string) {
+		selTag = newTag;
+	}
+	function setVisible() {
+		visible = !visible;
+	}
+</script>
+
+<span class="invisible md:visible">Tags:</span>
+
+<span
+	class="chip {visible ? 'variant-filled-tertiary' : 'variant-soft'}"
+	on:click={() => {
+		setVisible();
+	}}
+	on:keypress
+	>Add📌
+</span>
+
+{#each Object.entries(tagLbls) as [tag, label]}
+	<span
+		class="chip {selTag === tag ? 'variant-filled-success' : 'variant-soft'} 
+        {visible ? '' : 'invisible'}"
+		on:click={() => {
+			setTag(tag);
+		}}
+		on:keypress
+	>
+		{#if selTag === tag}<span>{tagLbls[tag]}</span>{/if}
+
+		<span>{tag}</span>
+	</span>
+{/each}

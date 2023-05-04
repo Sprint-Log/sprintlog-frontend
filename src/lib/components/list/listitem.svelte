@@ -16,7 +16,8 @@
 	import { YAxis } from '@steeze-ui/carbon-icons';
 	import { Box } from '@steeze-ui/carbon-icons';
 	import { Upgrade } from '@steeze-ui/carbon-icons';
-    import { DrillDown } from '@steeze-ui/carbon-icons';
+	import { Calendar } from '@steeze-ui/carbon-icons';
+	import { DrillDown } from '@steeze-ui/carbon-icons';
 </script>
 
 <li class="my-1">
@@ -34,13 +35,14 @@
 			<p>
 				🚀 @v3ss0n <a href="">[ITQ-S1-1232]</a>
 				<a href="">(DUE:05-05-2023)</a> <a href="">(CRE:05-05-2023)</a>
-				<a href="">(UPD:05-05-2023)</a>
+				<a href="">(UPD:05-05-2023)</a> <a href="">(Sprint:1)</a>
 			</p>
 		</div>
 		<div class="inline-flex lg:items-center gap-2">
 			<Icon src={OverflowMenuVertical} size="24px" />
 			<Icon src={Upgrade} size="24px" />
 			<Icon src={UserAdmin} size="24px" />
+			<Icon src={Calendar} size="24px" />
 			<Icon src={CheckmarkOutline} size="24px" />
 		</div>
 	</div>
