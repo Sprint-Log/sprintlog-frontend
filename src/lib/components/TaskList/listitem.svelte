@@ -27,13 +27,13 @@
 			<Icon src={ArrowDown} size="24px" />
 		</div>
 		<div class="flex-1 min-w-0">
-			<Accordion padding="px-1 py-0" regionCaret="">
+			<Accordion padding="px-1 py-0">
 				<AccordionItem>
 					<!-- <svelte:fragment slot="lead"><Icon src={DrillDown} size="12px" /></svelte:fragment> -->
 					<svelte:fragment slot="summary">
-						<p class="font-mono">
-							<span class="text-sm">🟡✅ 🟩🟩🟩 </span>
-							<span class="text-sm">
+						<p>
+							<span class="text">🟡✅🟩🟩🟩 </span>
+							<span class="font-mono">
 								Point of contact and links need to be fixed in summary and detail views Point of
 								contact and links need to be fixed in summary and detail views Point of contact and
 								links need to be fixed in summary and detail views.

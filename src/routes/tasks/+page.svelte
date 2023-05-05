@@ -14,7 +14,7 @@
 <!-- </div> -->
 
 <!-- Scrollable container -->
-<div class="grid grid-rows-[auto,1fr] max-h-[100vh]">
+<div class="grid grid-rows-[auto,1fr]">
 	<ListBox>
 		<span slot="title">Sprint Items</span>
 		<a href="#" class="text-sm font-medium" slot="action"> View all </a>

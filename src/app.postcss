@@ -1,2 +1,48 @@
-/*place global styles here */
 html, body { @apply h-full overflow-hidden; }
+@font-face {
+  font-family: "OpenMojiColor";
+  src: url("/fonts/OpenMoji.woff2") format("woff2");
+  font-style: Color;
+}
+@font-face {
+  font-family: "NotoColorEmoji";
+  src: url("/fonts/NotoColorEmoji.ttf") format("truetype");
+  font-style: Color;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/IBMPlexMono-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/IBMPlexMono-Medium.ttf") format('truetype');
+}
+
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/IBMPlexSans-Regular.ttf") format('truetype');
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/IBMPlexSans-Bold.ttf") format('truetype');
+}
+
+:root {
+	--theme-font-family-base: 'IBM Plex Sans', 'IBM Plex Serif', NotoColorEmoji, 'Noto Color Emoji';
+  --theme-font-family-mono: 'IBM Plex Mono', 'IBM Plex Sans', 'IBM Plex Serif', NotoColorEmoji, 'Noto Color Emoji';
+  --theme-font-family-sans: 'IBM Plex Sans', 'IBM Plex Serif', NotoColorEmoji, 'Noto Color Emoji';
+  --theme-font-family-serif: 'IBM Plex Serif', NotoColorEmoji, 'Noto Color Emoji';
+  --theme-font-color-dark: var(--color-primary-200);
+}
