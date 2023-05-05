@@ -6,7 +6,7 @@
 	}
 </script>
 
-<span class="invisible md:visible">Progress:</span>
+<span class="hidden md:visible">Progress:</span>
 {#each progresses as p}
 	<span
 		class="chip {progress === p ? 'variant-filled-surface' : 'variant-soft'}"

@@ -34,7 +34,6 @@
 	// 	'🔨': 'maintenance',
 	// 	'💰': 'finances',
 	// 	'💬': 'communication',
-	// 	'🚀': 'innovation',
 	// 	'🔍': 'research',
 	// 	'🐞': 'bugs',
 	// 	'🎁': 'features',
@@ -60,21 +59,10 @@
 	}
 </script>
 
-<span class="invisible md:visible">Tags:</span>
-
-<span
-	class="chip {visible ? 'variant-filled-tertiary' : 'variant-soft'}"
-	on:click={() => {
-		setVisible();
-	}}
-	on:keypress
-	>Add📌
-</span>
 
 {#each Object.entries(tagLbls) as [tag, label]}
 	<span
-		class="chip {selTag === tag ? 'variant-filled-success' : 'variant-soft'} 
-        {visible ? '' : 'invisible'}"
+		class="chip {selTag === tag ? 'variant-filled-success' : 'variant-soft'}"
 		on:click={() => {
 			setTag(tag);
 		}}

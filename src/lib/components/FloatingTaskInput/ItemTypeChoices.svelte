@@ -1,15 +1,15 @@
 <script lang="ts">
-	let item = 'Backlog';
+	export let itemTyp = 'Backlog';
 	let itemTypes = ['Backlog', 'Task'];
 	function selectType(selection: string) {
-		item = selection;
+		itemTyp = selection;
 	}
 </script>
 
-<span class="invisible md:visible">Type:</span>
+<span class="hidden md:visible">Type:</span>
 {#each itemTypes as typ}
 	<span
-		class="chip {item === typ ? 'variant-filled-warning' : 'variant-soft'}"
+		class="chip {itemTyp === typ ? 'variant-filled-warning' : 'variant-soft'}"
 		on:click={() => {
 			selectType(typ);
 		}}

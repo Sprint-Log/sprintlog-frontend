@@ -1,12 +1,20 @@
 <script lang="ts">
 	let priority = '🟢';
 	let priorities = ['🔴', '🟡', '🟢'];
+	type PriorityObject = {
+		[key: string]: string;
+	};
+	let priorityLbls: PriorityObject = {
+		'🔴': 'Urgent',
+		'🟡': 'Important',
+		'🟢': 'Normal'
+	};
 	function selectColor(newColor: string) {
 		priority = newColor;
 	}
 </script>
 
-<span class="invisible md:visible">Priority:</span>
+<span class="hidden md:visible">Priority:</span>
 {#each priorities as c}
 	<span
 		class="chip {priority === c ? 'variant-filled-warning' : 'variant-soft'}"
@@ -15,6 +23,7 @@
 		}}
 		on:keypress
 	>
-		<span>{c}</span>
+		{c}
+		{priorityLbls[c]}
 	</span>
 {/each}

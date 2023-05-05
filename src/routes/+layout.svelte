@@ -16,9 +16,18 @@
 	import { page } from '$app/stores';
 	// export const activeRail = writable<number>(0);
 	export const activeRail = writable<string>();
+	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
+
 	// const storeValue: Writable<number> = writable(0);
 	import { LightSwitch } from '@skeletonlabs/skeleton';
+	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
+	import { storePopup } from '@skeletonlabs/skeleton';
+	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
+	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
+
+	const queryClient = new QueryClient();
 </script>
+
 
 <!-- App Shell -->
 <AppShell>
@@ -77,5 +86,7 @@
 		</AppRail>
 	</svelte:fragment>
 	<!-- Page Route Content -->
-	<slot />
+	<QueryClientProvider client={queryClient}>
+		<slot />
+	</QueryClientProvider>
 </AppShell>

@@ -17,7 +17,7 @@
 	}
 </script>
 
-<span class="invisible md:visible">Status:</span>
+<span class="hidden md:visible">Status:</span>
 {#each statuses as stat}
 	<span
 		class="chip {status === stat ? 'variant-filled-success' : 'variant-soft'}"
