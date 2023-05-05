@@ -77,7 +77,7 @@
 	<Priority />
 	<div class="arrow variant-filled-secondary" />
 </div>
-<div class="card variant-glass-primary p-4" data-popup="optionalPopup">
+<div class="card variant-glass-primary p-4" data-popup="tagsPopup">
 	<!-- Append the arrow element -->
 	<Tags />
 	<div class="arrow variant-filled-secondary" />
