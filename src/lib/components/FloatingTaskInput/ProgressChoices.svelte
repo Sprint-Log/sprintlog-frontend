@@ -1,5 +1,5 @@
 <script lang="ts">
-	let progress = '🟨🟨🟨';
+	export let progress = '🟨🟨🟨';
 	let progresses = ['🟨🟨🟨', '🟩🟨🟨', '🟩🟩🟨', '🟩🟩🟩'];
 	function setProgress(newColor: string) {
 		progress = newColor;

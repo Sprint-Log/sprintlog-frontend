@@ -53,13 +53,7 @@
 	import { popup } from '@skeletonlabs/skeleton';
 
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
-	let tagsPopupSettings: PopupSettings = {
-		// Set the event as: click | hover | hover-click | focus | focus-click
-		event: 'click',
-		// Provide a matching 'data-popup' value.
-		target: 'tagsPopup',
-		placement: 'top'
-	};
+	export let tagsPopupSettings: PopupSettings;
 </script>
 
 <span>Tags:</span>

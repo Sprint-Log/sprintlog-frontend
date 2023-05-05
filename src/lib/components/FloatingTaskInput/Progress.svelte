@@ -2,7 +2,7 @@
 	import { popup } from '@skeletonlabs/skeleton';
 
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
-	let prgPopupSettings: PopupSettings = {
+	export let prgPopupSettings: PopupSettings = {
 		// Set the event as: click | hover | hover-click | focus | focus-click
 		event: 'click',
 		// Provide a matching 'data-popup' value.

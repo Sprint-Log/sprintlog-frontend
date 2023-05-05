@@ -1,5 +1,5 @@
 <script lang="ts">
-	let selTag: string = '';
+	export let selTag: string = '';
 	let visible: boolean = false;
 	type TagObject = {
 		[key: string]: string;
@@ -58,7 +58,6 @@
 		visible = !visible;
 	}
 </script>
-
 
 {#each Object.entries(tagLbls) as [tag, label]}
 	<span

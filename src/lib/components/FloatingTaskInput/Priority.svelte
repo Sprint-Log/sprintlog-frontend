@@ -11,13 +11,7 @@
 	};
 
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
-	let priPopupSettings: PopupSettings = {
-		// Set the event as: click | hover | hover-click | focus | focus-click
-		event: 'click',
-		// Provide a matching 'data-popup' value.
-		target: 'priPopup',
-		placement: 'top'
-	};
+	export let priPopupSettings: PopupSettings;
 </script>
 
 <span>Priority:</span>

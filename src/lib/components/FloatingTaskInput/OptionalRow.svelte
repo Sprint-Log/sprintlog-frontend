@@ -14,11 +14,3 @@
 	import ItemTypeChoices from './ItemTypeChoices.svelte';
 </script>
 
-<div class=" rounded-container-token">
-	Type: <ItemTypeChoices />
-	<Progress />
-	<Statuses />
-	<Priority />
-	<Tags />
-	<!-- <EditAll /> -->
-</div>

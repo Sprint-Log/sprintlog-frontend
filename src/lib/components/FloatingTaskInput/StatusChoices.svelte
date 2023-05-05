@@ -1,5 +1,5 @@
 <script lang="ts">
-	let status: string = '🔅';
+	export let status: string = '🔅';
 	let statuses: string[] = ['🔅', '🚧', '✔️', '✅', '🚫'];
 	type StatusObject = {
 		[key: string]: string;

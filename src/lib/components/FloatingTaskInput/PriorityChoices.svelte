@@ -1,5 +1,5 @@
 <script lang="ts">
-	let priority = '🟢';
+	export let priority = '🟢';
 	let priorities = ['🔴', '🟡', '🟢'];
 	type PriorityObject = {
 		[key: string]: string;
