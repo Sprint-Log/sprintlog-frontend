@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { Checkbox } from '@steeze-ui/carbon-icons';
 	import { Icon } from '@steeze-ui/svelte-icon';
 	import { CheckmarkOutline } from '@steeze-ui/carbon-icons';
@@ -18,6 +18,8 @@
 	import { Upgrade } from '@steeze-ui/carbon-icons';
 	import { Calendar } from '@steeze-ui/carbon-icons';
 	import { DrillDown } from '@steeze-ui/carbon-icons';
+	import type { Backlog } from '$lib/types/backlog';
+	export let backlog: Backlog;
 </script>
 
 <li class="py-1">
@@ -29,34 +31,30 @@
 		<div class="flex-1 min-w-0">
 			<Accordion padding="px-1 py-0">
 				<AccordionItem>
-					<!-- <svelte:fragment slot="lead"><Icon src={DrillDown} size="12px" /></svelte:fragment> -->
 					<svelte:fragment slot="summary">
 						<p>
-							<span class="text">🟡✅🟩🟩🟩 </span>
+							<span class="text">{backlog.status} {backlog.progress} {backlog.priority} </span>
+							<span class="font-mono">{backlog.title}</span>
 							<span class="font-mono">
-								Point of contact and links need to be fixed in summary and detail views Point of
-								contact and links need to be fixed in summary and detail views Point of contact and
-								links need to be fixed in summary and detail views.
-							</span>
-							<span class="text-sm font-semibold">
-								🚀 @v3ss0n <a href="">[ITQ-S1-1232]</a>
-								<a href="">(DUE:05-05-2023)</a> <a href="">(CRE:05-05-2023)</a>
-								<a href="">(UPD:05-05-2023)</a> <a href="">(Sprint:1)</a>
+								For: {backlog.assignee}
+								<a href={`[${backlog.id}]`}
+									>[{backlog.project.slug}-S{backlog.sprint}-{backlog.id}]</a
+								>
+								<a href="">(EST:{backlog.estimated_time})</a>
+								<a href="">(DUE:{backlog.due_date})</a>
+								{backlog.category}
 							</span>
 						</p>
 					</svelte:fragment>
 					<svelte:fragment slot="content">
-						Point of contact and links need to be fixed in summary and detail views Point of contact
-						and links need to be fixed in summary and detail views Point of contact and links need
-						to be fixed in summary and detail views.Point of contact and links need to be fixed in
-						summary and detail views Point of contact and links need to be fixed in summary and
-						detail views Point of contact and links need to be fixed in summary and detail
-						views.Point of contact and links need to be fixed in summary and detail views Point of
-						contact and links need to be fixed in summary and detail views Point of contact and
-						links need to be fixed in summary and detail views.Point of contact and links need to be
-						fixed in summary and detail views Point of contact and links need to be fixed in summary
-						and detail views Point of contact and links need to be fixed in summary and detail
-						views.
+						{backlog.description}
+						<a href="">(EST:{backlog.estimated_time})</a>
+						<a href="">(DUE:{backlog.due_date})</a>
+						<a href="">(BEG:{backlog.start_date})</a>
+						<a href="">(CRE:{backlog.created})</a>
+						<a href="">(UPD:{backlog.updated})</a>
+						<a href="">(Sprint:{backlog.sprint})</a>
+						<a href="">(Sprint:{backlog.project.name})</a>
 					</svelte:fragment>
 				</AccordionItem>
 				<!-- ... -->
@@ -71,4 +69,4 @@
 		</div>
 	</div>
 </li>
-<hr />
+<br />
