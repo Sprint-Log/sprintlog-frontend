@@ -1,91 +1,77 @@
 <script lang="ts">
-	import OptionalPopup from './OptionalPopup.svelte';
-	import OptionalRow from './OptionalRow.svelte';
 	import Sprints from './Sprints.svelte';
-	import Progress from './Progress.svelte';
-	import Priority from './Priority.svelte';
-	import Statuses from './Status.svelte';
-	import ItemType from './ItemTypeChoices.svelte';
-	import Tags from './Tags.svelte';
 	import Projects from './Projects.svelte';
 	import Team from './Team.svelte';
-	let topic = '';
-	let description = '';
+	import {
+		StatusEnum,
+		PriorityEnum,
+		TagEnum,
+		ProgressEnum,
+		type Backlog,
+		type BacklogCreate
+	} from '$lib/types/scrumlog';
+	import { popup } from '@skeletonlabs/skeleton';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
+
 	import ItemTypeChoices from './ItemTypeChoices.svelte';
 	import StatusChoices from './StatusChoices.svelte';
 	import TagsChoices from './TagsChoices.svelte';
 	import PriorityChoices from './PriorityChoices.svelte';
 	import ProgressChoices from './ProgressChoices.svelte';
-	let progressSettings: PopupSettings = {
+	import { FetchUpload } from '@steeze-ui/carbon-icons';
+	import { Icon } from '@steeze-ui/svelte-icon';
+	import { createBacklog, getBacklogByPrjSlug } from '$lib/api/scrumlog';
+	import ItemType from './ItemType.svelte';
+	let topic = '';
+	let description = '';
+	export let statusSettings: PopupSettings = { event: 'click', target: 'statPopup' };
+	export let priPopupSettings: PopupSettings = { event: 'click', target: 'priPopup' };
+	export let tagsPopupSettings: PopupSettings = { event: 'click', target: 'tagsPopup' };
+	export let progressSettings: PopupSettings = {
 		event: 'click',
 		target: 'prgPopup',
 		placement: 'top'
 	};
-	let statusPopupSettings: PopupSettings = {
-		event: 'click',
-		target: 'statPopup',
-		placement: 'top'
-	};
-	let priPopupSettings: PopupSettings = {
-		event: 'click',
-		target: 'priPopup',
-		placement: 'top'
-	};
-	let tagsPopupSettings: PopupSettings = {
-		event: 'click',
-		target: 'tagsPopup',
-		placement: 'top'
-	};
-
-	let progress = '🟨🟨🟨';
-	import { popup } from '@skeletonlabs/skeleton';
-
-	let status: string = '🔅';
-	type StatusObject = {
-		[key: string]: string;
-	};
-
-	let statusLbls: StatusObject = {
-		'🔅': 'New',
-		'🚧': 'InProgress',
-		'✔️': 'CheckedIn',
-		'✅': 'Completed',
-		'🚫': 'Cancelled'
-	};
-
-	let priority = '🟢';
-	type PriorityObject = {
-		[key: string]: string;
-	};
-	let priorityLbls: PriorityObject = {
-		'🔴': 'Urgent',
-		'🟡': 'Important',
-		'🟢': 'Normal'
-	};
-	let selTag: string = '🎁';
-	type TagObject = {
-		[key: string]: string;
-	};
-	const tagLbls: TagObject = {
-		'💡': 'ideas',
-		'⚠️': 'issues',
-		'🔨': 'maintenance',
-		'💰': 'finances',
-		'🚀': 'innovation',
-		'🐞': 'bugs',
-		'🎁': 'features',
-		'🔒': 'security',
-		'🚩': 'attention',
-		'📡': 'backend',
-		'💾': 'database',
-		'🖥️': 'desktop',
-		'📱': 'mobile',
-		'🌍': 'internationalization',
-		'🎨': 'design',
-		'📈': 'analytics',
-		'🤖': 'automation'
-	};
+	export let project_id: string;
+	export let progress: ProgressEnum = ProgressEnum.empty;
+	export let status: StatusEnum = StatusEnum.new;
+	export let priority: PriorityEnum = PriorityEnum.med;
+	export let selTag: TagEnum = TagEnum.features;
+	export let itemTyp: string = 'backlog';
+	export let sprint: string = '1';
+	let assignee_id: string;
+	async function submitItem() {
+		console.log(
+			progress,
+			topic,
+			project_id,
+			description,
+			status,
+			priority,
+			selTag,
+			itemTyp,
+			sprint,
+			assignee_id
+		);
+		const backlog: BacklogCreate = {
+			title: topic,
+			description: description,
+			progress: progress,
+			sprint_number: parseInt(sprint),
+			priority: priority,
+			status: status,
+			type: itemTyp,
+			category: selTag,
+			est_days: 3,
+			beg_date: new Date().toISOString().substring(0, 10),
+			end_date: new Date().toISOString().substring(0, 10),
+			due_date: new Date().toISOString().substring(0, 10),
+			assignee_id: assignee_id,
+			owner_id: '',
+			project_id: project_id
+		};
+		createBacklog(backlog);
+	}
 </script>
 
 <div class="px-4 py-1">
@@ -100,9 +86,8 @@
 			placeholder="Write a message..."
 			rows="1"
 		/>
-		<Sprints />
-		<Projects />
-		<Team />
+		<Sprints bind:sprint />
+		<Team bind:assignee_id />
 	</div>
 </div>
 <div class="px-4 py-1">
@@ -119,27 +104,32 @@
 </div>
 
 <div class="px-4 py-1">
-	<div class=" rounded-container-token">
-		Type: <ItemTypeChoices />
+	<div class="flex justify-start items-center space-x-1">
+		Type: <ItemTypeChoices bind:itemTyp />
 
 		<span>Progress:</span>
 		<span class="chip variant-soft" use:popup={progressSettings}>
 			<span>{progress}</span>
 		</span>
-		<span>Status:</span>
 
-		<span class="chip" use:popup={statusPopupSettings}>
-			{status}{statusLbls[status]}
+		<span>Status:</span>
+		<span class="chip" use:popup={statusSettings}>
+			{status}
 		</span>
+
 		<span>Priority:</span>
 		<span class="chip variant-warning" use:popup={priPopupSettings}>
 			{priority}
-			{priorityLbls[priority]}
 		</span>
 
 		<span>Tags:</span>
-
-		<span class="chip" use:popup={tagsPopupSettings}>{selTag}{tagLbls[selTag]}</span>
+		<span class="chip" use:popup={tagsPopupSettings}>
+			{selTag}
+		</span>
+		<button class="btn btn-sm variant-ghost-secondary" on:click={submitItem}>
+			<span><Icon src={FetchUpload} size="18" /></span>
+			<span>Submit</span>
+		</button>
 	</div>
 </div>
 

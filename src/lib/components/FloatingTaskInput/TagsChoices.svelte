@@ -1,57 +1,10 @@
 <script lang="ts">
-	export let selTag: string = '';
-	let visible: boolean = false;
-	type TagObject = {
-		[key: string]: string;
-	};
-	const tagLbls: TagObject = {
-		'💡': 'ideas',
-		'⚠️': 'issues',
-		'🔨': 'maintenance',
-		'💰': 'finances',
-		'🚀': 'innovation',
-		'🐞': 'bugs',
-		'🎁': 'features',
-		'🔒': 'security',
-		'🚩': 'attention',
-		'📡': 'backend',
-		'💾': 'database',
-		'🖥️': 'desktop',
-		'📱': 'mobile',
-		'🌍': 'internationalization',
-		'🎨': 'design',
-		'📈': 'analytics',
-		'🤖': 'automation'
-	};
-	// const tagLbls: TagObject = {
-	// 	'📝': 'notes',
-	// 	'💡': 'ideas',
-	// 	'⌛': 'time-sensitive',
-	// 	'📅': 'date-specific',
-	// 	'📌': 'high-priority',
-	// 	'✅': 'completed',
-	// 	'⚠️': 'issues',
-	// 	'🔨': 'maintenance',
-	// 	'💰': 'finances',
-	// 	'💬': 'communication',
-	// 	'🔍': 'research',
-	// 	'🐞': 'bugs',
-	// 	'🎁': 'features',
-	// 	'🔒': 'security',
-	// 	'🚩': 'attention',
-	// 	'🌐': 'frontend',
-	// 	'📡': 'backend',
-	// 	'💾': 'database',
-	// 	'🖥️': 'desktop',
-	// 	'📱': 'mobile',
-	// 	'🌍': 'internationalization',
-	// 	'🚀': 'performance',
-	// 	'🎨': 'design',
-	// 	'📈': 'analytics',
-	// 	'🤖': 'automation'
-	// };
+	import { TagEnum } from '$lib/types/scrumlog';
 
-	function setTag(newTag: string) {
+	export let selTag: TagEnum = TagEnum.ideas;
+	let visible: boolean = false;
+
+	function setTag(newTag: TagEnum) {
 		selTag = newTag;
 	}
 	function setVisible() {
@@ -59,7 +12,7 @@
 	}
 </script>
 
-{#each Object.entries(tagLbls) as [tag, label]}
+{#each Object.values(TagEnum) as tag}
 	<span
 		class="chip {selTag === tag ? 'variant-filled-success' : 'variant-soft'}"
 		on:click={() => {
@@ -67,8 +20,6 @@
 		}}
 		on:keypress
 	>
-		{#if selTag === tag}<span>{tagLbls[tag]}</span>{/if}
-
-		<span>{tag}</span>
+		{tag}
 	</span>
 {/each}

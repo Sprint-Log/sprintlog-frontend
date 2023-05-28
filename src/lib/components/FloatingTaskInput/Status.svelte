@@ -1,29 +1,18 @@
 <script lang="ts">
+	import { StatusEnum } from '$lib/types/scrumlog';
 	import { popup } from '@skeletonlabs/skeleton';
-
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
+	export let status: StatusEnum = StatusEnum.new;
 	export let statusSettings: PopupSettings;
-	let status: string = '🔅';
-	let statuses: string[] = ['🔅', '🚧', '✔️', '✅', '🚫'];
-	type StatusObject = {
-		[key: string]: string;
-	};
 
-	let statusLbls: StatusObject = {
-		'🔅': 'New',
-		'🚧': 'InProgress',
-		'✔️': 'CheckedIn',
-		'✅': 'Completed',
-		'🚫': 'Cancelled'
-	};
-
-	function setStatus(newColor: string) {
-		status = newColor;
+	function setStatus(newStatus: StatusEnum) {
+		status = newStatus;
 	}
 </script>
 
 <span>Status:</span>
 
-<span class="chip" use:popup={statusSettings}>
-	{status}{statusLbls[status]}
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<span class="chip" use:popup={statusSettings} on:click={() => setStatus(status)}>
+	{status}
 </span>

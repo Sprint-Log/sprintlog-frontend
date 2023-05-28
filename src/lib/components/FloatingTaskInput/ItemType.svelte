@@ -2,7 +2,7 @@
 	import { popup } from '@skeletonlabs/skeleton';
 	import { createEventDispatcher } from 'svelte';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
-	export let itemTyp = 'Backlog';
+	export let itemTyp = 'backlog';
 	let typSettings: PopupSettings;
 </script>
 

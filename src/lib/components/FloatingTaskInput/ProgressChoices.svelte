@@ -1,20 +1,22 @@
 <script lang="ts">
-	export let progress = '🟨🟨🟨';
-	let progresses = ['🟨🟨🟨', '🟩🟨🟨', '🟩🟩🟨', '🟩🟩🟩'];
-	function setProgress(newColor: string) {
-		progress = newColor;
+	import { ProgressEnum } from '$lib/types/scrumlog';
+
+	export let progress: ProgressEnum = ProgressEnum.empty;
+
+	function setProgress(newProgress: ProgressEnum) {
+		progress = newProgress;
 	}
 </script>
 
 <span class="hidden md:visible">Progress:</span>
-{#each progresses as p}
+{#each Object.values(ProgressEnum) as prog}
 	<span
-		class="chip {progress === p ? 'variant-filled-surface' : 'variant-soft'}"
+		class="chip {progress === prog ? 'variant-filled-surface' : 'variant-soft'}"
 		on:click={() => {
-			setProgress(p);
+			setProgress(prog);
 		}}
 		on:keypress
 	>
-		<span>{p}</span>
+		{prog}
 	</span>
 {/each}

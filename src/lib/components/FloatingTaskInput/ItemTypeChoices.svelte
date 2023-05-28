@@ -1,6 +1,6 @@
 <script lang="ts">
-	export let itemTyp = 'Backlog';
-	let itemTypes = ['Backlog', 'Task'];
+	export let itemTyp = 'backlog';
+	let itemTypes = ['backlog', 'task'];
 	function selectType(selection: string) {
 		itemTyp = selection;
 	}

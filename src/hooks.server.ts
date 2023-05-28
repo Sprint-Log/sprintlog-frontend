@@ -1,9 +1,35 @@
 import type { Handle } from '@sveltejs/kit'
+import { getCurrentUser } from '$lib/api/auth'
 
-export const handle = (async ({ event, resolve }) => {
+const handle: Handle = async ({ event, resolve }) => {
+  const authCookie = event.cookies.get('token')
 
-  const response = await resolve(event)
-  response.headers.set('x-custom-header', 'potato')
-  console.log("hooked")
-  return response
-}) satisfies Handle
+  if (authCookie) {
+    // Remove Bearer prefix
+    const jwtUser = authCookie.split(' ')[1]
+
+    try {
+      if (typeof jwtUser !== 'string') {
+        throw new Error('Something went wrong')
+      }
+
+      const user = await getCurrentUser(authCookie)
+      if (!user) {
+        throw new Error('User not found')
+      }
+
+      const sessionUser = {
+        id: user.id,
+        email: user.email
+      }
+
+      event.locals.user = sessionUser
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  return await resolve(event)
+}
+
+export { handle }

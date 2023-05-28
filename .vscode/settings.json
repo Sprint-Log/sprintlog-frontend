@@ -97,5 +97,7 @@
         "width"
     ],
     "autoHide.autoHideSideBar": true,
-    "autoHide.autoHidePanel": false
+    "autoHide.autoHidePanel": false,
+    "dotenv.enableAutocloaking": false,
+    "autoHide.autoHideRightSideBar": false
 }

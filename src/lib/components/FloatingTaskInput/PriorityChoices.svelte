@@ -1,29 +1,22 @@
 <script lang="ts">
-	export let priority = '🟢';
-	let priorities = ['🔴', '🟡', '🟢'];
-	type PriorityObject = {
-		[key: string]: string;
-	};
-	let priorityLbls: PriorityObject = {
-		'🔴': 'Urgent',
-		'🟡': 'Important',
-		'🟢': 'Normal'
-	};
-	function selectColor(newColor: string) {
-		priority = newColor;
+	import { PriorityEnum } from '$lib/types/scrumlog';
+
+	export let priority: PriorityEnum = PriorityEnum.med;
+
+	function setPriority(newPriority: PriorityEnum) {
+		priority = newPriority;
 	}
 </script>
 
 <span class="hidden md:visible">Priority:</span>
-{#each priorities as c}
+{#each Object.values(PriorityEnum) as pri}
 	<span
-		class="chip {priority === c ? 'variant-filled-warning' : 'variant-soft'}"
+		class="chip {priority === pri ? 'variant-filled-success' : 'variant-soft'}"
 		on:click={() => {
-			selectColor(c);
+			setPriority(pri);
 		}}
 		on:keypress
 	>
-		{c}
-		{priorityLbls[c]}
+		{pri}
 	</span>
 {/each}

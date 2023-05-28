@@ -1,33 +1,22 @@
 <script lang="ts">
-	export let status: string = '🔅';
-	let statuses: string[] = ['🔅', '🚧', '✔️', '✅', '🚫'];
-	type StatusObject = {
-		[key: string]: string;
-	};
-	let statusLbls: StatusObject = {
-		'🔅': 'New',
-		'🚧': 'InProgress',
-		'✔️': 'CheckedIn',
-		'✅': 'Completed',
-		'🚫': 'Cancelled'
-	};
+  import { StatusEnum } from '$lib/types/scrumlog';
 
-	function setStatus(newColor: string) {
-		status = newColor;
-	}
+  export let status: StatusEnum = StatusEnum.new;
+
+  function setStatus(newStatus: StatusEnum) {
+    status = newStatus;
+  }
 </script>
 
 <span class="hidden md:visible">Status:</span>
-{#each statuses as stat}
-	<span
-		class="chip {status === stat ? 'variant-filled-success' : 'variant-soft'}"
-		on:click={() => {
-			setStatus(stat);
-		}}
-		on:keypress
-	>
-		{#if status === stat}<span>{statusLbls[stat]}</span>{/if}
-
-		<span>{stat}</span>
-	</span>
+{#each Object.values(StatusEnum) as stat}
+  <span
+    class="chip {status === stat ? 'variant-filled-success' : 'variant-soft'}"
+    on:click={() => {
+      setStatus(stat);
+    }}
+    on:keypress
+  >
+    <span>{stat}</span>
+  </span>
 {/each}

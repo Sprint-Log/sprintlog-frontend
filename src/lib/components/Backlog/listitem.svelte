@@ -18,7 +18,7 @@
 	import { Upgrade } from '@steeze-ui/carbon-icons';
 	import { Calendar } from '@steeze-ui/carbon-icons';
 	import { DrillDown } from '@steeze-ui/carbon-icons';
-	import type { Backlog } from '$lib/types/backlog';
+	import type { Backlog } from '$lib/types/scrumlog';
 	export let backlog: Backlog;
 </script>
 
@@ -29,36 +29,25 @@
 			<Icon src={ArrowDown} size="24px" />
 		</div>
 		<div class="flex-1 min-w-0">
-			<Accordion padding="px-1 py-0">
-				<AccordionItem>
-					<svelte:fragment slot="summary">
-						<p>
-							<span class="text">{backlog.status} {backlog.progress} {backlog.priority} </span>
-							<span class="font-mono">{backlog.title}</span>
-							<span class="font-mono">
-								For: {backlog.assignee}
-								<a href={`[${backlog.id}]`}
-									>[{backlog.project.slug}-S{backlog.sprint}-{backlog.id}]</a
-								>
-								<a href="">(EST:{backlog.estimated_time})</a>
-								<a href="">(DUE:{backlog.due_date})</a>
-								{backlog.category}
-							</span>
-						</p>
-					</svelte:fragment>
-					<svelte:fragment slot="content">
-						{backlog.description}
-						<a href="">(EST:{backlog.estimated_time})</a>
-						<a href="">(DUE:{backlog.due_date})</a>
-						<a href="">(BEG:{backlog.start_date})</a>
-						<a href="">(CRE:{backlog.created})</a>
-						<a href="">(UPD:{backlog.updated})</a>
-						<a href="">(Sprint:{backlog.sprint})</a>
-						<a href="">(Sprint:{backlog.project.name})</a>
-					</svelte:fragment>
-				</AccordionItem>
-				<!-- ... -->
-			</Accordion>
+			<p>
+				<span class="text"> {backlog.status} {backlog.priority} {backlog.progress} </span>
+				<span class="font-mono">{backlog.title}</span>
+				<span class="font-mono">
+					For: {backlog.assignee_id}
+					<a href={`/backlogs/details/${backlog.id}`}>[{backlog.slug}]</a>
+					{backlog.category}
+				</span>
+			</p>
+			<p>
+				{backlog.description}
+				<span class="text-xs border-red-700">DUE:{backlog.due_date}</span>
+				<span class="text-xs">EST:{backlog.est_days}</span>
+				<span class="text-xs">BEG:{backlog.beg_date}</span>
+				<span class="text-xs">CRE:{backlog.created}</span>
+				<span class="text-xs">UPD:{backlog.updated}</span>
+				<span class="text-xs">Sprint:{backlog.sprint_number}</span>
+				<span class="text-xs">Project:{backlog.project_id}</span>
+			</p>
 		</div>
 		<div class="inline-flex lg:items-top gap-x-1.5">
 			<Icon src={OverflowMenuVertical} size="24px" />

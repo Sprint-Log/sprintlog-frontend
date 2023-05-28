@@ -1,21 +1,21 @@
 <script lang="ts">
+	import { PriorityEnum } from '$lib/types/scrumlog';
 	import { popup } from '@skeletonlabs/skeleton';
-	let priority = '🟢';
-	type PriorityObject = {
-		[key: string]: string;
-	};
-	let priorityLbls: PriorityObject = {
-		'🔴': 'Urgent',
-		'🟡': 'Important',
-		'🟢': 'Normal'
-	};
-
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
+	export let priority: PriorityEnum = PriorityEnum.med;
 	export let priPopupSettings: PopupSettings;
+
+	function setPriority(newPriority: PriorityEnum) {
+		priority = newPriority;
+	}
 </script>
 
 <span>Priority:</span>
-<span class="chip variant-warning" use:popup={priPopupSettings}>
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<span
+	class="chip variant-warning"
+	use:popup={priPopupSettings}
+	on:click={() => setPriority(priority)}
+>
 	{priority}
-	{priorityLbls[priority]}
 </span>
