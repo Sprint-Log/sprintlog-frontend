@@ -50,7 +50,7 @@
 </script>
 
 <!-- Scrollable container -->
-<div class="flex flex-col justify-between overflow-y-scroll h-[calc(100vh-4.8em)]">
+<div class="grid h-full grid-rows-[auto_1fr_auto]">
 	<div>
 		<ol class="breadcrumb">
 			<li class="crumb"><a class="anchor" href="/backlogs/">backlogs</a></li>
@@ -60,14 +60,14 @@
 			<li>{$page.params.slug}</li>
 		</ol>
 	</div>
-	{#if $tasks.isLoading}
-		Loading...
-	{/if}
-	{#if $tasks.error}
-		An error has occurred:
-		{$tasks.error.message}
-	{/if}
-	<div class="">
+	<div class="overflow-y-scroll">
+		{#if $tasks.isLoading}
+			Loading...
+		{/if}
+		{#if $tasks.error}
+			An error has occurred:
+			{$tasks.error.message}
+		{/if}
 		{#if $tasks.isSuccess}
 			<ListBox>
 				<span slot="title">Sprint Items</span>
@@ -76,7 +76,7 @@
 					<a href="#?" class="text-sm font-medium"> {currentPageTask} </a>
 					<a href="#?" class="text-sm font-medium"> Next </a>
 				</span>
-				<div class="h-[calc(58vh-4.8em)] overflow-y-scroll">
+				<div>
 					<List>
 						{#each $tasks.data as backlog}
 							<Listitem {backlog} />
@@ -85,15 +85,16 @@
 				</div>
 			</ListBox>
 		{/if}
+		{#if $backlogs.isLoading}
+			Loading...
+		{/if}
+		{#if $backlogs.error}
+			An error has occurred:
+			{$backlogs.error.message}
+		{/if}
 	</div>
-	{#if $backlogs.isLoading}
-		Loading...
-	{/if}
-	{#if $backlogs.error}
-		An error has occurred:
-		{$backlogs.error.message}
-	{/if}
-	<div
+
+	<footer
 		class="sticky bottom-0 grid grid-rows-[auto_auto_auto] variant-ringed variant-glass-surface pt-2 mx-1 rounded-[10px]"
 	>
 		{#if $backlogs.isSuccess}
@@ -116,5 +117,5 @@
 			{/if}
 		{/if}
 		<FloatingTask {project_id} />
-	</div>
+	</footer>
 </div>
