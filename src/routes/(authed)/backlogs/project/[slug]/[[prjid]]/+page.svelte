@@ -24,7 +24,8 @@
 	import { createQuery } from '@tanstack/svelte-query';
 	import { getBacklogByPrjSlug, getProjects, getTaskByPrjSlug } from '$lib/api/scrumlog';
 
-	let limit = 3;
+	let limitBacklog = 3;
+	let limitTask = 20;
 	let currentPageTask = 1;
 	let currentPageBacklog = 1;
 	let order = 'desc';
@@ -32,15 +33,16 @@
 	let intervalMs = 5000;
 
 	$: backlogs = createQuery<Backlog[], Error>({
-		queryKey: ['refetch-backlogs', $page.params.slug, currentPageBacklog, limit, order],
-		queryFn: async () => getBacklogByPrjSlug($page.params.slug, currentPageBacklog, limit, order),
+		queryKey: ['refetch-backlogs', $page.params.slug, currentPageBacklog, limitBacklog, order],
+		queryFn: async () =>
+			getBacklogByPrjSlug($page.params.slug, currentPageBacklog, limitBacklog, order),
 		refetchOnMount: 'always',
 		refetchOnWindowFocus: true,
 		refetchInterval: intervalMs
 	});
 	$: tasks = createQuery<Backlog[], Error>({
-		queryKey: ['refetch-tasks', $page.params.slug, currentPageTask, limit, order],
-		queryFn: async () => getTaskByPrjSlug($page.params.slug, currentPageTask, limit, order),
+		queryKey: ['refetch-tasks', $page.params.slug, currentPageTask, limitTask, order],
+		queryFn: async () => getTaskByPrjSlug($page.params.slug, currentPageTask, limitTask, order),
 		refetchOnMount: 'always',
 		refetchOnWindowFocus: true,
 		refetchInterval: intervalMs
@@ -48,15 +50,7 @@
 </script>
 
 <!-- Scrollable container -->
-{#if $tasks.isLoading}
-	Loading...
-{/if}
-{#if $tasks.error}
-	An error has occurred:
-	{$tasks.error.message}
-{/if}
-
-<div class="flex flex-col h-[calc(100vh-4.8em)] justify-between">
+<div class="flex flex-col justify-between overflow-y-scroll h-[calc(100vh-4.8em)]">
 	<div>
 		<ol class="breadcrumb">
 			<li class="crumb"><a class="anchor" href="/backlogs/">backlogs</a></li>
@@ -65,6 +59,15 @@
 			<li class="crumb-separator" aria-hidden>&rsaquo;</li>
 			<li>{$page.params.slug}</li>
 		</ol>
+	</div>
+	{#if $tasks.isLoading}
+		Loading...
+	{/if}
+	{#if $tasks.error}
+		An error has occurred:
+		{$tasks.error.message}
+	{/if}
+	<div class="">
 		{#if $tasks.isSuccess}
 			<ListBox>
 				<span slot="title">Sprint Items</span>
@@ -73,7 +76,7 @@
 					<a href="#?" class="text-sm font-medium"> {currentPageTask} </a>
 					<a href="#?" class="text-sm font-medium"> Next </a>
 				</span>
-				<div class=" overflow-y-scroll">
+				<div class="h-[calc(58vh-4.8em)] overflow-y-scroll">
 					<List>
 						{#each $tasks.data as backlog}
 							<Listitem {backlog} />
@@ -83,16 +86,16 @@
 			</ListBox>
 		{/if}
 	</div>
+	{#if $backlogs.isLoading}
+		Loading...
+	{/if}
+	{#if $backlogs.error}
+		An error has occurred:
+		{$backlogs.error.message}
+	{/if}
 	<div
 		class="sticky bottom-0 grid grid-rows-[auto_auto_auto] variant-ringed variant-glass-surface pt-2 mx-1 rounded-[10px]"
 	>
-		{#if $backlogs.isLoading}
-			Loading...
-		{/if}
-		{#if $backlogs.error}
-			An error has occurred:
-			{$backlogs.error.message}
-		{/if}
 		{#if $backlogs.isSuccess}
 			{#if $backlogs.data.length > 0}
 				<ListBox>

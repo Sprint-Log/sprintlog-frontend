@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Sprints from './Sprints.svelte';
 	import Projects from './Projects.svelte';
+	import { useQueryClient, createQuery, createMutation } from '@tanstack/svelte-query';
 	import Team from './Team.svelte';
 	import {
 		StatusEnum,
@@ -40,38 +41,35 @@
 	export let itemTyp: string = 'backlog';
 	export let sprint: string = '1';
 	let assignee_id: string;
-	async function submitItem() {
-		console.log(
-			progress,
-			topic,
-			project_id,
-			description,
-			status,
-			priority,
-			selTag,
-			itemTyp,
-			sprint,
-			assignee_id
-		);
-		const backlog: BacklogCreate = {
-			title: topic,
-			description: description,
-			progress: progress,
-			sprint_number: parseInt(sprint),
-			priority: priority,
-			status: status,
-			type: itemTyp,
-			category: selTag,
-			est_days: 3,
-			beg_date: new Date().toISOString().substring(0, 10),
-			end_date: new Date().toISOString().substring(0, 10),
-			due_date: new Date().toISOString().substring(0, 10),
-			assignee_id: assignee_id,
-			owner_id: '',
-			project_id: project_id
-		};
-		createBacklog(backlog);
-	}
+	let client = useQueryClient();
+	const addMutation = createMutation(
+		async function () {
+			const backlog: BacklogCreate = {
+				title: topic,
+				description: description,
+				progress: progress,
+				sprint_number: parseInt(sprint),
+				priority: priority,
+				status: status,
+				type: itemTyp,
+				category: selTag,
+				est_days: 3,
+				beg_date: new Date().toISOString().substring(0, 10),
+				end_date: new Date().toISOString().substring(0, 10),
+				due_date: new Date().toISOString().substring(0, 10),
+				assignee_id: assignee_id,
+				owner_id: '',
+				project_id: project_id
+			};
+			return createBacklog(backlog);
+		},
+		{
+			onSuccess: function () {
+				client.invalidateQueries(['refetch-backlogs']);
+				client.invalidateQueries(['refetch-tasks']);
+			}
+		}
+	);
 </script>
 
 <div class="px-4 py-1">
@@ -126,7 +124,12 @@
 		<span class="chip" use:popup={tagsPopupSettings}>
 			{selTag}
 		</span>
-		<button class="btn btn-sm variant-ghost-secondary" on:click={submitItem}>
+		<button
+			class="btn btn-sm variant-ghost-secondary"
+			on:click={(e) => {
+				$addMutation.mutate();
+			}}
+		>
 			<span><Icon src={FetchUpload} size="18" /></span>
 			<span>Submit</span>
 		</button>
