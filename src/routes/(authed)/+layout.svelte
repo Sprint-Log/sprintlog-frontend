@@ -7,17 +7,17 @@
 	import '@skeletonlabs/skeleton/styles/all.css';
 	// Most of your app wide CSS should be put in this file
 	import '../../app.postcss';
-	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar, AppRailAnchor } from '@skeletonlabs/skeleton';
 	import { AppRail, AppRailTile } from '@skeletonlabs/skeleton';
 	import { Icon } from '@steeze-ui/svelte-icon';
-	import { Category } from '@steeze-ui/carbon-icons';
+	import { Category, Login } from '@steeze-ui/carbon-icons';
 	import { Roadmap } from '@steeze-ui/carbon-icons';
 	import { Dashboard } from '@steeze-ui/carbon-icons';
 	import { Report } from '@steeze-ui/carbon-icons';
 	import { writable } from 'svelte/store';
 	import { page } from '$app/stores';
 	// export const activeRail = writable<number>(0);
-	export const activeRail = writable<string>();
+	let activeRail = writable<string>();
 	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
 	import type { LayoutData } from '../$types';
 	import { browser } from '$app/environment';
@@ -28,6 +28,8 @@
 	import { storePopup } from '@skeletonlabs/skeleton';
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
+	import { Skull } from 'lucide-svelte';
+	const regionLead = 'flex justify-center items-center';
 
 	export let data: LayoutData;
 	const queryClient = new QueryClient({
@@ -66,43 +68,43 @@
 			</AppBar>
 		</svelte:fragment>
 		<svelte:fragment slot="sidebarLeft">
-			<AppRail selected={activeRail} gap="gap-y-4">
-				<AppRailTile
-					value="/"
-					label="Dashboard"
-					tag="a"
-					href="/"
-					class={'/' === $page.url.pathname ? '!bg-primary-500' : ''}
-				>
-					<Icon src={Dashboard} size="24px" />
-				</AppRailTile>
-				<AppRailTile
-					label="Projects"
-					value="/projects"
-					tag="a"
+			<AppRail>
+				<AppRailAnchor {regionLead} href="/">
+					<svelte:fragment slot="lead">
+						<Icon src={Dashboard} size="24px" />
+					</svelte:fragment>
+				</AppRailAnchor>
+				<!-- --- -->
+				<AppRailAnchor
+					{regionLead}
+					bind:group={activeRail}
 					href="/projects"
-					class={'/projects' === $page.url.pathname ? '!bg-primary-500' : ''}
+					name="tile-1"
+					value={0}
 				>
-					<Icon src={Roadmap} size="24px" />
-				</AppRailTile>
-				<AppRailTile
-					label="Backlogs"
-					value="/backlogs"
-					tag="a"
+					<svelte:fragment slot="lead"><Icon src={Roadmap} size="24px" /></svelte:fragment>
+					<span>Projects</span>
+				</AppRailAnchor>
+				<AppRailAnchor
+					{regionLead}
+					bind:group={activeRail}
 					href="/backlogs"
-					class={'/backlogs' === $page.url.pathname ? '!bg-primary-500' : ''}
+					name="tile-2"
+					value={1}
 				>
-					<Icon src={Category} size="24px" />
-				</AppRailTile>
-				<AppRailTile
-					value="/reports"
-					label="Reports"
-					tag="a"
-					href="/reports"
-					class={'/reports' === $page.url.pathname ? '!bg-primary-500' : ''}
-				>
-					<Icon src={Report} size="24px" />
-				</AppRailTile>
+					<svelte:fragment slot="lead"><Icon src={Category} size="24px" /></svelte:fragment>
+					<span>Backlogs</span>
+				</AppRailAnchor>
+				<AppRailAnchor {regionLead} bind:group={activeRail} href="/reports" name="tile-3" value={2}>
+					<svelte:fragment slot="lead"><Icon src={Report} size="24px" /></svelte:fragment>
+					<span>Reports</span>
+				</AppRailAnchor>
+				<!-- --- -->
+				<svelte:fragment slot="trail">
+					<AppRailAnchor {regionLead} href="/" target="_blank" title="Account">
+						<svelte:fragment slot="lead"><Icon src={Login} size="24px" /></svelte:fragment>
+					</AppRailAnchor>
+				</svelte:fragment>
 			</AppRail>
 		</svelte:fragment>
 		<!-- Page Route Content -->
