@@ -1,4 +1,4 @@
-import type { Project, Backlog, User, BacklogCreate } from '$lib/types/scrumlog'
+import type { Project, Backlog, User, BacklogCreate, BacklogPagination } from '$lib/types/scrumlog'
 import { PUBLIC_API_URL } from '$env/static/public'
 async function authFetch(path: string, settings?: RequestInit) {
   settings = settings || {}
@@ -35,37 +35,28 @@ export const createProject = async (project: Project): Promise<Project> => {
   const data = (await response.json()) as Project
   return data
 }
-export const getBacklogByPrjSlug = async (prjSlug: string, currentPage = 1, pageSize = 5, sortOrder = "desc"): Promise<Backlog[]> => {
+export const getBacklogByPrjSlug = async (prjSlug: string, currentPage = 1, pageSize = 5, sortOrder = "desc"): Promise<BacklogPagination> => {
   const params = new URLSearchParams([
-    ["searchField", "project_slug"],
-    ["searchString", prjSlug],
-    ["searchField", "type"],
-    ["searchString", "backlog"],
     ["currentPage", currentPage.toString()],
-    ["pageSize", pageSize.toString()],
-    ["sortOrder", sortOrder]
+    ["pageSize", pageSize.toString()], ["sortOrder", sortOrder]
 
   ])
 
-  const response = await authFetch(`api/backlogs?${params.toString()}`)
-  const data = (await response.json()) as Backlog[]
+  const response = await authFetch(`api/backlogs/project/${prjSlug}_backlog?${params.toString()}`)
+  const data = (await response.json())
   return data
 }
-export const getTaskByPrjSlug = async (prjSlug: string, currentPage = 1, pageSize = 5, sortOrder = "desc"): Promise<Backlog[]> => {
+export const getTaskByPrjSlug = async (prjSlug: string, currentPage = 1, pageSize = 5, sortOrder = "desc"): Promise<BacklogPagination> => {
 
   const params = new URLSearchParams([
-    ["searchField", "project_slug"],
-    ["searchString", prjSlug],
-    ["searchField", "type"],
-    ["searchString", "task"],
     ["currentPage", currentPage.toString()],
     ["pageSize", pageSize.toString()],
     ["sortOrder", sortOrder]
 
   ])
 
-  const response = await authFetch(`api/backlogs?${params.toString()}`)
-  const data = (await response.json()) as Backlog[]
+  const response = await authFetch(`api/backlogs/project/${prjSlug}_task?${params.toString()}`)
+  const data = (await response.json())
   return data
 }
 export const createBacklog = async (backlog: BacklogCreate): Promise<Backlog> => {
@@ -78,13 +69,13 @@ export const updateBacklog = async (backlog: Backlog): Promise<Backlog> => {
   const data = (await response.json()) as Backlog
   return data
 }
-export const increaseBacklogProgress = async (backlogID: string): Promise<Backlog> => {
-  const response = await authFetch(`api/backlogs/progress/up/${backlogID}`, { method: "PUT" })
+export const progressUpBacklog = async (backlogSlug: string): Promise<Backlog> => {
+  const response = await authFetch(`api/backlogs/progress/up/slug/${backlogSlug}`, { headers: { 'Content-Type': 'application/json' }, method: "PUT" })
   const data = (await response.json()) as Backlog
   return data
 }
-export const decreaseBacklogProgress = async (backlogID: string): Promise<Backlog> => {
-  const response = await authFetch(`api/backlogs/progress/down/${backlogID}`, { method: "PUT" })
+export const progressDownBacklog = async (backlogSlug: string): Promise<Backlog> => {
+  const response = await authFetch(`api/backlogs/progress/down/slug/${backlogSlug}`, { headers: { 'Content-Type': 'application/json' }, method: "PUT" })
   const data = (await response.json()) as Backlog
   return data
 }

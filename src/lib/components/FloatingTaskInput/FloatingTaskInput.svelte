@@ -33,14 +33,16 @@
 		target: 'prgPopup',
 		placement: 'top'
 	};
-	export let project_id: string;
+	export let project_slug: string;
 	export let progress: ProgressEnum = ProgressEnum.empty;
 	export let status: StatusEnum = StatusEnum.new;
 	export let priority: PriorityEnum = PriorityEnum.med;
 	export let selTag: TagEnum = TagEnum.features;
 	export let itemTyp: string = 'backlog';
 	export let sprint: string = '1';
+	export let owner_id: string;
 	let assignee_id: string;
+	let labels: string[] = [];
 	let client = useQueryClient();
 	const addMutation = createMutation(
 		async function () {
@@ -51,6 +53,7 @@
 				sprint_number: parseInt(sprint),
 				priority: priority,
 				status: status,
+				labels: labels,
 				type: itemTyp,
 				category: selTag,
 				est_days: 3,
@@ -58,8 +61,8 @@
 				end_date: new Date().toISOString().substring(0, 10),
 				due_date: new Date().toISOString().substring(0, 10),
 				assignee_id: assignee_id,
-				owner_id: '',
-				project_id: project_id
+				owner_id: owner_id,
+				project_slug: project_slug
 			};
 			return createBacklog(backlog);
 		},
