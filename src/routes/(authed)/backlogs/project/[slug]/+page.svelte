@@ -123,40 +123,36 @@
 </script>
 
 <!-- Scrollable container -->
-
-<div class="grid h-full grid-rows-[1fr_auto]">
-	<ListBox>
-		<span slot="title">Sprint Items</span>
-		<span slot="action">
-			<Paginator
-				bind:settings={taskPager}
-				showFirstLastButtons={false}
-				showPreviousNextButtons={true}
-				on:page={onTaskPageChange}
-				on:amount={onTaskAmountChange}
-			/>
-		</span>
-		<div>
+<div class="h-full grid grid-rows-[1fr_auto]">
+	<section>
+		<ListBox>
+			<span slot="title">Sprint Items</span>
+			<span slot="action">
+				<Paginator
+					bind:settings={taskPager}
+					showFirstLastButtons={false}
+					showPreviousNextButtons={true}
+					on:page={onTaskPageChange}
+					on:amount={onTaskAmountChange}
+				/>
+			</span>
 			<List>
 				{#if $tasks.isSuccess}
 					{#each $tasks.data.items as task}
-						<div class="h-full overflow-y-scroll">
-							<Listitem backlog={task}>
-								<Icon src={OverflowMenuVertical} size="18px" />
-								<Icon src={DownToBottom} size="18px" />
-								<Icon src={UserAdmin} size="18px" />
-								<Icon src={Calendar} size="18px" />
-								<Icon src={CheckmarkOutline} size="18px" />
-							</Listitem>
-						</div>
+						<Listitem backlog={task}>
+							<Icon src={OverflowMenuVertical} size="18px" />
+							<Icon src={DownToBottom} size="18px" />
+							<Icon src={UserAdmin} size="18px" />
+							<Icon src={Calendar} size="18px" />
+							<Icon src={CheckmarkOutline} size="18px" />
+						</Listitem>
 					{/each}
 				{/if}
 			</List>
-		</div>
-	</ListBox>
-
+		</ListBox>
+	</section>
 	<footer
-		class="sticky bottom-0 grid grid-rows-[1hr_1hr] variant-ringed variant-glass-surface pt-2 mx-1 rounded-[10px]"
+		class=" grid grid-rows-[auto_1fr] variant-ringed variant-glass-surface pt-2 mx-1 rounded-[10px]"
 	>
 		<ListBox>
 			<span slot="title">Backlog Items</span>
@@ -169,7 +165,7 @@
 					on:amount={onBacklogAmountChange}
 				/>
 			</span>
-			<div class=" overflow-y-scroll max-h-[400px]">
+			<div class=" overflow-y-scroll">
 				<List>
 					{#if $backlogs.isSuccess}
 						{#if $backlogs.data.items.length > 0}

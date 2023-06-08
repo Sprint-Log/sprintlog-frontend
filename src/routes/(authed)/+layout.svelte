@@ -43,7 +43,7 @@
 
 <QueryClientProvider client={queryClient}>
 	<!-- App Shell -->
-	<AppShell slotPageContent="h-full">
+	<AppShell>
 		<svelte:fragment slot="header">
 			<!-- App Bar -->
 			<AppBar>
