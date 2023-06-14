@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { StatusEnum } from '$lib/types/scrumlog';
+	import { StatusEnum } from '$lib/types/sprintlog';
 	import { popup } from '@skeletonlabs/skeleton';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
 	export let status: StatusEnum = StatusEnum.new;

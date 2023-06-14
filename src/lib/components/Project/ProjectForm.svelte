@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ProjectCreate } from '$lib/types/scrumlog';
+	import type { ProjectCreate } from '$lib/types/sprintlog';
 	export let project: ProjectCreate;
 	export let onSubmit: Function;
 

@@ -22,7 +22,7 @@
 		ProgressEnum,
 		StatusEnum,
 		TagEnum
-	} from '$lib/types/scrumlog';
+	} from '$lib/types/sprintlog';
 	export const load = ({ params }) => {
 		return {
 			slug: params.slug
@@ -30,7 +30,7 @@
 	};
 	// Import the Project type
 	import { createQuery } from '@tanstack/svelte-query';
-	import { getBacklogByPrjSlug, getProjects, getTaskByPrjSlug } from '$lib/api/scrumlog';
+	import { getBacklogByPrjSlug, getProjects, getTaskByPrjSlug } from '$lib/api/sprintlog';
 	import { Icon } from '@steeze-ui/svelte-icon';
 	import {
 		CheckmarkOutline,

@@ -54,7 +54,7 @@
 			>
 				<div class="app-bar-row-main grid items-center grid-cols-[auto_1fr_auto] gap-4">
 					<div class="app-bar-slot-lead flex-none flex justify-between items-center">
-						<strong class="text-xl uppercase">Scrumlog</strong>
+						<strong class="text-xl uppercase">Sprintlog</strong>
 					</div>
 					<div class="app-bar-slot-default flex-auto" />
 					<div class="app-bar-slot-trail flex-none flex items-center space-x-4">

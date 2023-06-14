@@ -10,7 +10,7 @@
 		ProgressEnum,
 		type Backlog,
 		type BacklogCreate
-	} from '$lib/types/scrumlog';
+	} from '$lib/types/sprintlog';
 	import { popup } from '@skeletonlabs/skeleton';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
 
@@ -21,7 +21,7 @@
 	import ProgressChoices from './ProgressChoices.svelte';
 	import { FetchUpload } from '@steeze-ui/carbon-icons';
 	import { Icon } from '@steeze-ui/svelte-icon';
-	import { createBacklog, getBacklogByPrjSlug } from '$lib/api/scrumlog';
+	import { createBacklog, getBacklogByPrjSlug } from '$lib/api/sprintlog';
 	import ItemType from './ItemType.svelte';
 	let topic = '';
 	let description = '';

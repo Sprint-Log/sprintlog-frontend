@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ProgressEnum } from '$lib/types/scrumlog';
+	import { ProgressEnum } from '$lib/types/sprintlog';
 
 	export let progress: ProgressEnum = ProgressEnum.empty;
 

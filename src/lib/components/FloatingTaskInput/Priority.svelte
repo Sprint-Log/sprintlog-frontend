@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { PriorityEnum } from '$lib/types/scrumlog';
+	import { PriorityEnum } from '$lib/types/sprintlog';
 	import { popup } from '@skeletonlabs/skeleton';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
 	export let priority: PriorityEnum = PriorityEnum.med;
