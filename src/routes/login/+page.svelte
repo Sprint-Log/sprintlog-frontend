@@ -25,7 +25,7 @@
 				</div>
 
 				<div class="submit-container">
-					<button type="submit">Login</button>
+					<button type="submit" class="btn btn-sm">Login</button>
 				</div>
 
 				{#if form?.error}

@@ -4,10 +4,7 @@
 	export let project: Project;
 </script>
 
-<a
-	class="card bg-initial card-hover overflow-hidden"
-	href={`/backlogs/project/${project.slug}/${project.id}`}
->
+<a class="card bg-initial card-hover overflow-hidden" href={`/backlogs/project/${project.slug}`}>
 	<header class="px-2 py-4">
 		<h3>{project.name}</h3>
 	</header>

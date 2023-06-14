@@ -5,18 +5,19 @@ export enum PriorityEnum {
 }
 
 export enum ProgressEnum {
-  empty = "🟨🟨🟨",
-  a_third = "🟩🟨🟨",
-  two_third = "🟩🟩🟨",
+  empty = "⬜⬜⬜",
+  a_third = "🟩⬜⬜",
+  two_third = "🟩🟩⬜",
   full = "🟩🟩🟩"
+
 }
 
 export enum StatusEnum {
-  new = "🔅",
-  started = "🚧",
-  checked_in = "✔️",
+  new = "☀️",
+  started = "🛠️",
+  checked_in = "📩",
   completed = "✅",
-  cancelled = "🚫"
+  cancelled = "🚫",
 }
 
 export enum TagEnum {
@@ -42,13 +43,14 @@ export type Backlog = {
   id: string
   title: string
   description: string | null
-  slug: string | null
+  slug: string
   progress: ProgressEnum
   sprint_number: number
   priority: PriorityEnum
   status: StatusEnum
   type: string
   category: TagEnum
+  labels?: string[]
   est_days: number
   beg_date: Date
   end_date: Date
@@ -56,9 +58,11 @@ export type Backlog = {
   created: Date
   updated: Date
   // Relationships
-  assignee_id: string | null
-  owner_id: string
-  project_id: string
+  assignee_id?: string
+  assignee_name?: string
+  owner_id?: string
+  owner_name?: string
+  project_slug: string
 }
 export type BacklogCreate = {
   title: string
@@ -68,15 +72,23 @@ export type BacklogCreate = {
   priority: PriorityEnum
   status: StatusEnum
   type: string
+  labels?: string[]
   category: TagEnum
   est_days: number
-  beg_date: string
-  end_date: string
-  due_date: string
+  beg_date?: string
+  end_date?: string
+  due_date?: string
   // Relationships
-  assignee_id: string | null
-  owner_id: string
-  project_id: string
+  assignee_id?: string
+  owner_id?: string
+  project_slug: string
+}
+
+export type BacklogPagination = {
+  total: number
+  limit: number
+  offset: number
+  items: Backlog[]
 }
 
 export type Project = {
@@ -86,6 +98,21 @@ export type Project = {
   description: string
   start_date: Date
   end_date: Date
+  sprint_weeks?: number | null
+  sprint_amount?: number | null
+  sprint_checkup_day?: number | null
+  repo_urls?: string[] | null
+}
+export type ProjectCreate = {
+  slug: string
+  name: string
+  description?: string
+  start_date?: Date
+  end_date?: Date
+  sprint_weeks?: number | null
+  sprint_amount?: number | null
+  sprint_checkup_day?: number | null
+  repo_urls?: string[] | null
 }
 
 export interface OAuth2Login {
