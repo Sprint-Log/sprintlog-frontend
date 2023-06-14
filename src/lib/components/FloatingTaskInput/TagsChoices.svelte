@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { TagEnum } from '$lib/types/scrumlog';
+	import { TagEnum } from '$lib/types/sprintlog';
 
 	export let selTag: TagEnum = TagEnum.ideas;
 	let visible: boolean = false;

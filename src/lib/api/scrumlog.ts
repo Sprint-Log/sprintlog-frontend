@@ -1,4 +1,4 @@
-import type { Project, Backlog, User, BacklogCreate, BacklogPagination } from '$lib/types/scrumlog'
+import type { Project, Backlog, User, BacklogCreate, BacklogPagination } from '$lib/types/sprintlog'
 import { PUBLIC_API_URL } from '$env/static/public'
 async function authFetch(path: string, settings?: RequestInit) {
   settings = settings || {}

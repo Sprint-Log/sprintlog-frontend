@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Project } from '$lib/types/scrumlog';
+	import type { Project } from '$lib/types/sprintlog';
 
 	export let project: Project;
 </script>

@@ -18,8 +18,8 @@
 	import { Upgrade } from '@steeze-ui/carbon-icons';
 	import { Calendar } from '@steeze-ui/carbon-icons';
 	import { DrillDown } from '@steeze-ui/carbon-icons';
-	import type { Backlog } from '$lib/types/scrumlog';
-	import { progressDownBacklog, progressUpBacklog } from '$lib/api/scrumlog';
+	import type { Backlog } from '$lib/types/sprintlog';
+	import { progressDownBacklog, progressUpBacklog } from '$lib/api/sprintlog';
 	export let backlog: Backlog;
 	import { useQueryClient, createQuery, createMutation } from '@tanstack/svelte-query';
 

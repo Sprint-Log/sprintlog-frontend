@@ -2,10 +2,10 @@
 	import { Avatar, CodeBlock } from '@skeletonlabs/skeleton';
 	let currentVariant = 'bg-initial';
 	// Import the Project type
-	import type { Project, ProjectCreate } from '$lib/types/scrumlog';
+	import type { Project, ProjectCreate } from '$lib/types/sprintlog';
 	import ProjectCard from '$lib/components/Project/ProjectCard.svelte';
 	import { createQuery } from '@tanstack/svelte-query';
-	import { getProjects, createProject } from '$lib/api/scrumlog';
+	import { getProjects, createProject } from '$lib/api/sprintlog';
 	import ProjectForm from '$lib/components/Project/ProjectForm.svelte';
 
 	let limit = 5;

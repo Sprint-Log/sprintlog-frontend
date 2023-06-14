@@ -1,5 +1,5 @@
 import { PUBLIC_API_URL } from '$env/static/public'
-import type { OAuth2Login, User } from '$lib/types/scrumlog'
+import type { OAuth2Login, User } from '$lib/types/sprintlog'
 const createUser = async (email: string, password: string) => {
   // Check if user exists
   fetch(`${PUBLIC_API_URL}/api/users`, {

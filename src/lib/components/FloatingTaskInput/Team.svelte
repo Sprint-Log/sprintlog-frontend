@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createQuery } from '@tanstack/svelte-query';
-	import type { User } from '$lib/types/scrumlog';
-	import { getUsers } from '$lib/api/scrumlog';
+	import type { User } from '$lib/types/sprintlog';
+	import { getUsers } from '$lib/api/sprintlog';
 	export let assignee_id: string;
 	$: assignees = createQuery<User[], Error>({
 		queryKey: ['refetch-assignee'],

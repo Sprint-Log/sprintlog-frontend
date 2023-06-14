@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { PriorityEnum } from '$lib/types/scrumlog';
+	import { PriorityEnum } from '$lib/types/sprintlog';
 
 	export let priority: PriorityEnum = PriorityEnum.med;
 
