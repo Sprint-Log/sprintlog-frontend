@@ -55,17 +55,14 @@
 	$: tasks = createQuery<BacklogPagination, Error>({
 		queryKey: ['refetch-tasks', currentPageTask, amountTask, order],
 		queryFn: async () => {
-			return await getTaskByPrjSlug(
-				$page.params.slug,
-				currentPageTask,
-				amountTask,
-				order
-			).then((res) => {
-				taskTotal = res.total;
-				// currentPageTask = res.offset;
-				console.log(taskTotal);
-				return res;
-			});
+			return await getTaskByPrjSlug($page.params.slug, currentPageTask, amountTask, order).then(
+				(res) => {
+					taskTotal = res.total;
+					// currentPageTask = res.offset;
+					console.log(taskTotal);
+					return res;
+				}
+			);
 		},
 		refetchOnMount: 'always',
 		refetchOnWindowFocus: true,
