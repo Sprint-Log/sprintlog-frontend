@@ -58,8 +58,6 @@
 				category: selTag,
 				est_days: 3,
 				beg_date: new Date().toISOString().substring(0, 10),
-				end_date: new Date().toISOString().substring(0, 10),
-				due_date: new Date().toISOString().substring(0, 10),
 				assignee_id: assignee_id,
 				owner_id: owner_id,
 				project_slug: project_slug
@@ -74,35 +72,6 @@
 		}
 	);
 </script>
-
-<div class="px-4 py-1">
-	<div
-		class="input-group input-group-divider grid-cols-[1fr_auto_auto_auto] rounded-container-token"
-	>
-		<textarea
-			bind:value={topic}
-			class="resize-none bg-transparent border-0 ring-0"
-			name="prompt"
-			id="prompt"
-			placeholder="Write a message..."
-			rows="1"
-		/>
-		<Sprints bind:sprint />
-		<Team bind:assignee_id />
-	</div>
-</div>
-<div class="px-4 py-1">
-	<div class="input-group input-group-divider rounded-container-token">
-		<textarea
-			bind:value={description}
-			class="resize-none bg-transparent border-0 ring-0"
-			name="prompt"
-			id="prompt"
-			placeholder="Write a message..."
-			rows="4"
-		/>
-	</div>
-</div>
 
 <div class="px-4 py-1">
 	<div class="flex justify-start items-center space-x-1">
@@ -136,6 +105,34 @@
 			<span><Icon src={FetchUpload} size="18" /></span>
 			<span>Submit</span>
 		</button>
+	</div>
+</div>
+<div class="px-4 py-1">
+	<div
+		class="input-group input-group-divider grid-cols-[1fr_auto_auto_auto] rounded-container-token"
+	>
+		<textarea
+			bind:value={topic}
+			class="resize-none bg-transparent border-0 ring-0"
+			name="prompt"
+			id="prompt"
+			placeholder="Write a message..."
+			rows="1"
+		/>
+		<Sprints bind:sprint />
+		<Team bind:assignee_id />
+	</div>
+</div>
+<div class="px-4 py-1">
+	<div class="input-group input-group-divider rounded-container-token">
+		<textarea
+			bind:value={description}
+			class="resize-none bg-transparent border-0 ring-0"
+			name="prompt"
+			id="prompt"
+			placeholder="Write a message..."
+			rows="4"
+		/>
 	</div>
 </div>
 

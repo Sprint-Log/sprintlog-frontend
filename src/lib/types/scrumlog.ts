@@ -5,10 +5,11 @@ export enum PriorityEnum {
 }
 
 export enum ProgressEnum {
-  empty = "🟨🟨🟨",
-  a_third = "🟩🟨🟨",
-  two_third = "🟩🟩🟨",
+  empty = "⬜⬜⬜",
+  a_third = "🟩⬜⬜",
+  two_third = "🟩🟩⬜",
   full = "🟩🟩🟩"
+
 }
 
 export enum StatusEnum {
@@ -74,9 +75,9 @@ export type BacklogCreate = {
   labels?: string[]
   category: TagEnum
   est_days: number
-  beg_date: string
-  end_date: string
-  due_date: string
+  beg_date?: string
+  end_date?: string
+  due_date?: string
   // Relationships
   assignee_id?: string
   owner_id?: string
@@ -97,6 +98,21 @@ export type Project = {
   description: string
   start_date: Date
   end_date: Date
+  sprint_weeks?: number | null
+  sprint_amount?: number | null
+  sprint_checkup_day?: number | null
+  repo_urls?: string[] | null
+}
+export type ProjectCreate = {
+  slug: string
+  name: string
+  description?: string
+  start_date?: Date
+  end_date?: Date
+  sprint_weeks?: number | null
+  sprint_amount?: number | null
+  sprint_checkup_day?: number | null
+  repo_urls?: string[] | null
 }
 
 export interface OAuth2Login {

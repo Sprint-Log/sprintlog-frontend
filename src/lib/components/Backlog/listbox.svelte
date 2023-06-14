@@ -3,6 +3,4 @@
 	<slot name="action" />
 </header>
 
-<section class="pt-2 px-2 w-full overflow-y-scroll">
-	<slot />
-</section>
+<slot />

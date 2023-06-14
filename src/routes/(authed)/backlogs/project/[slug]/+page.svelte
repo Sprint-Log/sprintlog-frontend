@@ -43,44 +43,26 @@
 	} from '@steeze-ui/carbon-icons';
 	import { Paginator } from '@skeletonlabs/skeleton';
 
-	$: backlogTotal = 5;
 	$: taskTotal = 20;
 	$: currentPageTask = 0;
-	$: currentPageBacklog = 0;
 	$: amountTask = 10;
+	$: backlogTotal = 5;
+	$: currentPageBacklog = 0;
 	$: amountBacklog = 5;
 	let order = 'desc';
 	let intervalMs = 5000;
 
-	$: backlogs = createQuery<BacklogPagination, Error>({
-		queryKey: ['refetch-backlogs', currentPageBacklog, amountBacklog, order],
-		queryFn: async () => {
-			return await getBacklogByPrjSlug(
-				$page.params.slug,
-				currentPageBacklog === 0 ? 1 : currentPageBacklog,
-				amountBacklog,
-				order
-			).then((res) => {
-				backlogTotal = res.total;
-				console.log(backlogTotal);
-				return res;
-			});
-		},
-		refetchOnMount: 'always',
-		refetchOnWindowFocus: true,
-		refetchInterval: intervalMs,
-		cacheTime: 0
-	});
 	$: tasks = createQuery<BacklogPagination, Error>({
 		queryKey: ['refetch-tasks', currentPageTask, amountTask, order],
 		queryFn: async () => {
 			return await getTaskByPrjSlug(
 				$page.params.slug,
-				currentPageTask === 0 ? 1 : currentPageTask,
+				currentPageTask,
 				amountTask,
 				order
 			).then((res) => {
 				taskTotal = res.total;
+				// currentPageTask = res.offset;
 				console.log(taskTotal);
 				return res;
 			});
@@ -90,27 +72,38 @@
 		refetchInterval: intervalMs,
 		cacheTime: 0
 	});
+	$: backlogs = createQuery<BacklogPagination, Error>({
+		queryKey: ['refetch-backlogs', currentPageBacklog, amountBacklog, order],
+		queryFn: async () => {
+			return await getBacklogByPrjSlug(
+				$page.params.slug,
+				currentPageBacklog,
+				amountBacklog,
+				order
+			).then((res) => {
+				backlogTotal = res.total;
+				console.log(backlogTotal);
+				// currentPageBacklog = res.offset;
+				return res;
+			});
+		},
+		refetchOnMount: 'always',
+		refetchOnWindowFocus: true,
+		refetchInterval: intervalMs,
+		cacheTime: 0
+	});
+	$: taskPager = {
+		offset: currentPageTask,
+		limit: amountTask,
+		size: taskTotal,
+		amounts: [10, 20, 50]
+	};
 	$: backlogPager = {
 		offset: currentPageBacklog,
 		limit: 5,
 		size: backlogTotal,
-		amounts: [5, 10, 20, 50]
+		amounts: [5]
 	};
-	$: taskPager = {
-		offset: currentPageTask,
-		limit: 5,
-		size: taskTotal,
-		amounts: [5, 10, 20, 50]
-	};
-	function onBacklogPageChange(e: CustomEvent): void {
-		console.log('event:page', e.detail);
-		currentPageBacklog = parseInt(e.detail);
-	}
-
-	function onBacklogAmountChange(e: CustomEvent): void {
-		console.log('event:amount', e.detail);
-		amountBacklog = parseInt(e.detail);
-	}
 	function onTaskPageChange(e: CustomEvent): void {
 		console.log('event:page', e.detail);
 		currentPageTask = parseInt(e.detail);
@@ -120,11 +113,20 @@
 		console.log('event:amount', e.detail);
 		amountTask = parseInt(e.detail);
 	}
+	function onBacklogPageChange(e: CustomEvent): void {
+		console.log('event:page', e.detail);
+		currentPageBacklog = parseInt(e.detail);
+	}
+
+	function onBacklogAmountChange(e: CustomEvent): void {
+		console.log('event:amount', e.detail);
+		amountBacklog = parseInt(e.detail);
+	}
 </script>
 
 <!-- Scrollable container -->
-<div class="h-full grid grid-rows-[1fr_auto]">
-	<section>
+<main id="page-content" class="flex-auto h-full grid grid-rows-[1fr_auto_auto]">
+	<section class="grid grid-rows-[auto_1fr] overflow-y-scroll pt-2 mx-1 rounded-[10px]">
 		<ListBox>
 			<span slot="title">Sprint Items</span>
 			<span slot="action">
@@ -136,7 +138,7 @@
 					on:amount={onTaskAmountChange}
 				/>
 			</span>
-			<List>
+			<section class="pt-2 px-2 w-full overflow-y-scroll">
 				{#if $tasks.isSuccess}
 					{#each $tasks.data.items as task}
 						<Listitem backlog={task}>
@@ -148,12 +150,10 @@
 						</Listitem>
 					{/each}
 				{/if}
-			</List>
+			</section>
 		</ListBox>
 	</section>
-	<footer
-		class=" grid grid-rows-[auto_1fr] variant-ringed variant-glass-surface pt-2 mx-1 rounded-[10px]"
-	>
+	<section class=" grid grid-rows-[auto_1fr] pt-2 mx-1 rounded-[10px]">
 		<ListBox>
 			<span slot="title">Backlog Items</span>
 			<span slot="action">
@@ -165,7 +165,7 @@
 					on:amount={onBacklogAmountChange}
 				/>
 			</span>
-			<div class=" overflow-y-scroll">
+			<div class="overflow-y-scroll">
 				<List>
 					{#if $backlogs.isSuccess}
 						{#if $backlogs.data.items.length > 0}
@@ -183,6 +183,8 @@
 				</List>
 			</div>
 		</ListBox>
+	</section>
+	<footer class="sticky bottom-0 variant-ringed variant-glass-surface py-2">
 		<FloatingTask {project_slug} {owner_id} />
 	</footer>
-</div>
+</main>

@@ -6,12 +6,13 @@ async function authFetch(path: string, settings?: RequestInit) {
   return await fetch(`${PUBLIC_API_URL}/${path}`, settings)
 
 }
-export const getProjects = async (currentPage = 1, pageSize = 20, sortOrder = "desc"): Promise<Project[]> => {
+export const getProjects = async (currentPage = 1, pageSize = 20, sortOrder = "asc"): Promise<Project[]> => {
   const response = await authFetch(`api/projects?currentPage=${currentPage}&pageSize=${pageSize}&sortOrder=${sortOrder}`)
   const data = (await response.json()) as Project[]
   return data
 }
-export const getProjectsBySLug = async (slug: string, currentPage = 1, pageSize = 1, sortOrder = "desc"): Promise<Project> => {
+export const getProjectsBySLug = async (slug: string, currentPage = 1, pageSize = 1, sortOrder = "asc"): Promise<Project> => {
+  currentPage = currentPage + 1
   const params = new URLSearchParams([
     ["searchField", "slug"],
     ["searchString", slug],
@@ -25,17 +26,25 @@ export const getProjectsBySLug = async (slug: string, currentPage = 1, pageSize 
   const data = (await response.json()) as Project
   return data
 }
-export const getUsers = async (currentPage = 1, pageSize = 20, sortOrder = "desc"): Promise<User[]> => {
+export const getUsers = async (currentPage = 1, pageSize = 20, sortOrder = "asc"): Promise<User[]> => {
+  currentPage = currentPage + 1
   const response = await authFetch(`api/users?currentPage=${currentPage}&pageSize=${pageSize}&sortOrder=${sortOrder}`)
   const data = (await response.json()).items as User[]
   return data
 }
 export const createProject = async (project: Project): Promise<Project> => {
-  const response = await authFetch(`api/projects/`, { method: 'POST', body: JSON.stringify(project) })
+  const response = await authFetch(`api/projects/`, {
+    method: 'POST', body: JSON.stringify(project), headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+  })
   const data = (await response.json()) as Project
   return data
 }
-export const getBacklogByPrjSlug = async (prjSlug: string, currentPage = 1, pageSize = 5, sortOrder = "desc"): Promise<BacklogPagination> => {
+export const getBacklogByPrjSlug = async (prjSlug: string, currentPage = 1, pageSize = 5, sortOrder = "asc"): Promise<BacklogPagination> => {
+  currentPage = currentPage + 1
+
   const params = new URLSearchParams([
     ["currentPage", currentPage.toString()],
     ["pageSize", pageSize.toString()], ["sortOrder", sortOrder]
@@ -46,7 +55,8 @@ export const getBacklogByPrjSlug = async (prjSlug: string, currentPage = 1, page
   const data = (await response.json())
   return data
 }
-export const getTaskByPrjSlug = async (prjSlug: string, currentPage = 1, pageSize = 5, sortOrder = "desc"): Promise<BacklogPagination> => {
+export const getTaskByPrjSlug = async (prjSlug: string, currentPage = 1, pageSize = 5, sortOrder = "asc"): Promise<BacklogPagination> => {
+  currentPage = currentPage + 1
 
   const params = new URLSearchParams([
     ["currentPage", currentPage.toString()],

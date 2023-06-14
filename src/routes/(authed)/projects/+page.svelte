@@ -2,17 +2,21 @@
 	import { Avatar, CodeBlock } from '@skeletonlabs/skeleton';
 	let currentVariant = 'bg-initial';
 	// Import the Project type
-	import type { Project } from '$lib/types/scrumlog';
+	import type { Project, ProjectCreate } from '$lib/types/scrumlog';
 	import ProjectCard from '$lib/components/Project/ProjectCard.svelte';
 	import { createQuery } from '@tanstack/svelte-query';
-	import { getProjects } from '$lib/api/scrumlog';
+	import { getProjects, createProject } from '$lib/api/scrumlog';
+	import ProjectForm from '$lib/components/Project/ProjectForm.svelte';
 
 	let limit = 5;
 	let page = 1;
 	let order = 'desc';
 
 	let intervalMs = 5000;
-
+	let prj: ProjectCreate = {
+		name: '',
+		slug: ''
+	};
 	$: projects = createQuery<Project[], Error>({
 		queryKey: ['refetch', page, limit, order],
 		queryFn: async () => getProjects(page, limit, order),
@@ -33,4 +37,5 @@
 			<ProjectCard {project} />
 		{/each}
 	{/if}
+	<ProjectForm onSubmit={createProject} project={prj} />
 </section>
