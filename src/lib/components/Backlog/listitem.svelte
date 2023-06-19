@@ -78,8 +78,8 @@
 			<span class="text-xs border-red-700">DUE:{backlog.due_date}</span>
 			<span class="text-xs">EST:{backlog.est_days}</span>
 			<span class="text-xs">BEG:{backlog.beg_date}</span>
-			<span class="text-xs">CRE:{backlog.created}</span>
-			<span class="text-xs">UPD:{backlog.updated}</span>
+			<span class="text-xs">CRE:{backlog.created_at}</span>
+			<span class="text-xs">UPD:{backlog.updated_at}</span>
 			<span class="text-xs">Sprint:{backlog.sprint_number}</span>
 			<span class="text-xs">Project:{backlog.project_slug}</span>
 		</p>

@@ -59,8 +59,8 @@ export type Backlog = {
   beg_date: Date
   end_date: Date
   due_date: Date
-  created: Date
-  updated: Date
+  created_at: Date
+  updated_at: Date
   // Relationships
   assignee_id?: string
   assignee_name?: string
@@ -140,8 +140,8 @@ export interface User {
   isSuperuser: boolean
   isActive: boolean
   isVerified: boolean
-  created: string
-  updated: string
+  created_at: string
+  updated_at: string
   teams?: UserTeam[]
 }
 
