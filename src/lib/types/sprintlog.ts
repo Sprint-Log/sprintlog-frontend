@@ -39,6 +39,10 @@ export enum TagEnum {
   analytics = "📈",
   automation = "🤖"
 }
+export type Token = {
+  rooms: string
+  token: string
+}
 export type Backlog = {
   id: string
   title: string
