@@ -10,7 +10,7 @@
 	import { AppShell, AppBar, AppRailAnchor } from '@skeletonlabs/skeleton';
 	import { AppRail, AppRailTile } from '@skeletonlabs/skeleton';
 	import { Icon } from '@steeze-ui/svelte-icon';
-	import { Category, Login } from '@steeze-ui/carbon-icons';
+	import { Category, Login, Logout } from '@steeze-ui/carbon-icons';
 	import { Roadmap } from '@steeze-ui/carbon-icons';
 	import { Dashboard } from '@steeze-ui/carbon-icons';
 	import { Report } from '@steeze-ui/carbon-icons';
@@ -44,37 +44,6 @@
 <QueryClientProvider client={queryClient}>
 	<!-- App Shell -->
 	<div id="appShell" class="w-full h-full flex flex-col overflow-hidden" data-testid="app-shell">
-		<header id="shell-header" class="flex-none z-10">
-			<div
-				class="app-bar flex flex-col bg-surface-100-800-token space-y-4 p-4"
-				data-testid="app-bar"
-				role="toolbar"
-				aria-label=""
-				aria-labelledby=""
-			>
-				<div class="app-bar-row-main grid items-center grid-cols-[auto_1fr_auto] gap-4">
-					<div class="app-bar-slot-lead flex-none flex justify-between items-center">
-						<strong class="text-xl uppercase">Sprintlog</strong>
-					</div>
-					<div class="app-bar-slot-default flex-auto" />
-					<div class="app-bar-slot-trail flex-none flex items-center space-x-4">
-						<LightSwitch />
-						<a href="https://collab.hexcode.tech" target="_blank" rel="noreferrer"> Collab </a>
-						<a href="https://file.hexcode.tech" target="_blank" rel="noreferrer"> Drive </a>
-						<a href="https://auth.hexcode.tech" target="_blank" rel="noreferrer"> Login </a>
-						{#if data.user}
-							<a href="/">{data.user.email}</a>
-							<form method="POST" action="/?/logout">
-								<button type="submit" name="logout" value="true">Logout</button>
-							</form>
-						{:else}
-							<a href="/signup">Sign Up</a>
-							<a href="/login">Log In</a>
-						{/if}
-					</div>
-				</div>
-			</div>
-		</header>
 		<div class="flex-auto w-full h-full flex overflow-hidden">
 			<div class="flex-auto w-full h-full flex overflow-hidden">
 				<aside id="sidebar-left" class="flex-none overflow-x-hidden overflow-y-auto w-auto">
@@ -98,16 +67,6 @@
 						<AppRailAnchor
 							{regionLead}
 							bind:group={activeRail}
-							href="/backlogs"
-							name="tile-2"
-							value={1}
-						>
-							<svelte:fragment slot="lead"><Icon src={Category} size="24px" /></svelte:fragment>
-							<span>Backlogs</span>
-						</AppRailAnchor>
-						<AppRailAnchor
-							{regionLead}
-							bind:group={activeRail}
 							href="/reports"
 							name="tile-3"
 							value={2}
@@ -117,9 +76,15 @@
 						</AppRailAnchor>
 						<!-- --- -->
 						<svelte:fragment slot="trail">
-							<AppRailAnchor {regionLead} href="/" target="_blank" title="Account">
-								<svelte:fragment slot="lead"><Icon src={Login} size="24px" /></svelte:fragment>
-							</AppRailAnchor>
+							{#if data.user}
+								<AppRailAnchor {regionLead} href="/login" target="_blank" title="Account">
+									<svelte:fragment slot="lead"><Icon src={Logout} size="24px" /></svelte:fragment>
+								</AppRailAnchor>
+							{:else}
+								<AppRailAnchor {regionLead} href="/login" target="_blank" title="Account">
+									<svelte:fragment slot="lead"><Icon src={Login} size="24px" /></svelte:fragment>
+								</AppRailAnchor>
+							{/if}
 						</svelte:fragment>
 					</AppRail>
 				</aside>

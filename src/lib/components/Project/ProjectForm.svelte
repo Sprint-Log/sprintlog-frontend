@@ -41,9 +41,9 @@
 
 <form
 	on:submit={handleSubmit}
-	class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 overflow-scroll"
+	class="card bg-surface-500 shadow-md rounded px-2 pt-1 pb-1 overflow-scroll"
 >
-	<div class="mb-4">
+	<div class="mb-1">
 		<label class="block text-gray-700 font-bold mb-2" for="name"> Name </label>
 		<input
 			class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -54,7 +54,7 @@
 			required
 		/>
 	</div>
-	<div class="mb-4">
+	<div class="mb-1">
 		<label class="block text-gray-700 font-bold mb-2" for="name"> Slug </label>
 		<input
 			class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -65,7 +65,7 @@
 			required
 		/>
 	</div>
-	<div class="mb-4">
+	<div class="mb-1">
 		<label class="block text-gray-700 font-bold mb-2" for="description"> Description </label>
 		<textarea
 			class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -74,7 +74,7 @@
 			bind:value={description}
 		/>
 	</div>
-	<div class="mb-4">
+	<div class="mb-1">
 		<label class="block text-gray-700 font-bold mb-2" for="startDate"> Start Date </label>
 		<input
 			class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -83,7 +83,7 @@
 			bind:value={startDate}
 		/>
 	</div>
-	<div class="mb-4">
+	<div class="mb-1">
 		<label class="block text-gray-700 font-bold mb-2" for="endDate"> End Date </label>
 		<input
 			class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -92,7 +92,7 @@
 			bind:value={endDate}
 		/>
 	</div>
-	<div class="mb-4">
+	<div class="mb-1">
 		<label class="block text-gray-700 font-bold mb-2" for="sprintWeeks"> Sprint Weeks </label>
 		<input
 			class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -104,7 +104,7 @@
 			bind:value={sprintWeeks}
 		/>
 	</div>
-	<div class="mb-4">
+	<div class="mb-1">
 		<label class="block text-gray-700 font-bold mb-2" for="sprintAmount"> Sprint Amount </label>
 		<input
 			class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -116,7 +116,7 @@
 			bind:value={sprintAmount}
 		/>
 	</div>
-	<div class="mb-4">
+	<div class="mb-1">
 		<label class="block text-gray-700 font-bold mb-2" for="sprintCheckupDay">
 			Sprint Checkup Day
 		</label>
@@ -130,7 +130,7 @@
 			bind:value={sprintCheckupDay}
 		/>
 	</div>
-	<div class="mb-4">
+	<div class="mb-1">
 		<label class="block text-gray-700 font-bold mb-2" for="repoUrls"> Repository URLs </label>
 		{#each repoUrls as url, index}
 			<div class="flex items-center mb-2">

@@ -24,7 +24,7 @@
 	});
 </script>
 
-<section class="p-4 grid grid-rows gap-3">
+<section class="p-4 grid grid-cols-4 h-1/4 gap-3">
 	{#if $projects.isLoading}
 		Loading...
 	{/if}
