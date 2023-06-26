@@ -12,7 +12,7 @@
 	let page = 1;
 	let order = 'desc';
 
-	let intervalMs = 5000;
+	let intervalMs = 15000;
 	let prj: ProjectCreate = {
 		name: '',
 		slug: ''

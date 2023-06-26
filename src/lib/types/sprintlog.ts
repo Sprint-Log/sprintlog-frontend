@@ -207,3 +207,7 @@ export interface SystemHealth {
   cacheStatus: "online" | "offline"
   workerStatus: "online" | "offline"
 }
+export interface ProjectItems {
+  text: string
+  href?: string
+}

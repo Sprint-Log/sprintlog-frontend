@@ -73,41 +73,7 @@
 	);
 </script>
 
-<div class="px-4 py-1">
-	<div class="flex justify-start items-center space-x-1">
-		Type: <ItemTypeChoices bind:itemTyp />
-
-		<span>Progress:</span>
-		<span class="chip variant-soft" use:popup={progressSettings}>
-			<span>{progress}</span>
-		</span>
-
-		<span>Status:</span>
-		<span class="chip" use:popup={statusSettings}>
-			{status}
-		</span>
-
-		<span>Priority:</span>
-		<span class="chip variant-warning" use:popup={priPopupSettings}>
-			{priority}
-		</span>
-
-		<span>Tags:</span>
-		<span class="chip" use:popup={tagsPopupSettings}>
-			{selTag}
-		</span>
-		<button
-			class="btn btn-sm variant-ghost-secondary"
-			on:click={(e) => {
-				$addMutation.mutate();
-			}}
-		>
-			<span><Icon src={FetchUpload} size="18" /></span>
-			<span>Submit</span>
-		</button>
-	</div>
-</div>
-<div class="px-4 py-1">
+<div class="py-1">
 	<div
 		class="input-group input-group-divider grid-cols-[1fr_auto_auto_auto] rounded-container-token"
 	>
@@ -119,11 +85,9 @@
 			placeholder="Write a message..."
 			rows="1"
 		/>
-		<Sprints bind:sprint />
-		<Team bind:assignee_id />
 	</div>
 </div>
-<div class="px-4 py-1">
+<div class="py-1">
 	<div class="input-group input-group-divider rounded-container-token">
 		<textarea
 			bind:value={description}
@@ -155,4 +119,40 @@
 	<!-- Append the arrow element -->
 	<PriorityChoices bind:priority />
 	<div class="arrow variant-filled-secondary" />
+</div>
+<div class="py-1">
+	<div class="flex justify-start items-center space-x-1">
+		Type: <ItemTypeChoices bind:itemTyp />
+
+		<span>Progress:</span>
+		<span class="chip variant-soft" use:popup={progressSettings}>
+			<span>{progress}</span>
+		</span>
+
+		<span>Status:</span>
+		<span class="chip" use:popup={statusSettings}>
+			{status}
+		</span>
+
+		<span>Priority:</span>
+		<span class="chip variant-warning" use:popup={priPopupSettings}>
+			{priority}
+		</span>
+
+		<span>Tags:</span>
+		<span class="chip" use:popup={tagsPopupSettings}>
+			{selTag}
+		</span>
+		<Sprints bind:sprint />
+		<Team bind:assignee_id />
+		<button
+			class="btn btn-sm variant-ghost-secondary"
+			on:click={(e) => {
+				$addMutation.mutate();
+			}}
+		>
+			<span><Icon src={FetchUpload} size="18" /></span>
+			<span>Submit</span>
+		</button>
+	</div>
 </div>
