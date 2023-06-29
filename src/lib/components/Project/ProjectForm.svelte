@@ -1,47 +1,41 @@
 <script lang="ts">
+	import { createProject } from '$lib/api/sprintlog';
 	import type { ProjectCreate } from '$lib/types/sprintlog';
-	export let project: ProjectCreate;
-	export let onSubmit: Function;
-
-	let name = project.name;
-	let slug = project.slug;
-	let description = project.description;
-	let sprintWeeks = project.sprint_weeks ?? 2;
-	let sprintAmount = project.sprint_amount ?? 2;
-	let sprintCheckupDay = project.sprint_checkup_day ?? 3;
-	let repoUrls = project.repo_urls ? project.repo_urls.slice() : [''];
-	let startDate = project.start_date ? new Date(project.start_date) : new Date();
-	let endDate = project.end_date ? new Date(project.end_date) : new Date();
-	const addRepoUrl = (url: string) => {
-		repoUrls.push(url);
+	let project: ProjectCreate = {
+		slug: 'my-project',
+		name: 'My Project',
+		pin: false,
+		description: 'This is my project',
+		documents: [],
+		labels: [],
+		start_date: new Date(),
+		end_date: new Date(),
+		sprint_weeks: 2,
+		sprint_amount: 5,
+		sprint_checkup_day: 7,
+		repo_urls: ['https://github.com/my-project']
 	};
+	import { useQueryClient, createQuery, createMutation } from '@tanstack/svelte-query';
+	const client = useQueryClient();
 
-	const removeRepoUrl = (index: number) => {
-		repoUrls.splice(index, 1);
-	};
-
-	const handleSubmit = (event: SubmitEvent) => {
-		event.preventDefault();
-		const formData = {
-			...project,
-			name,
-			description,
-			slug,
-			labels: [],
-			documents: [],
-			sprint_weeks: sprintWeeks,
-			sprint_amount: sprintAmount,
-			sprint_checkup_day: sprintCheckupDay,
-			repo_urls: repoUrls.filter((url) => url.trim() !== '')
-		};
-
-		onSubmit(formData);
-	};
+	const projectMutation = createMutation(
+		async function () {
+			return createProject(project);
+		},
+		{
+			onSuccess: function () {
+				client.invalidateQueries(['refetch-project']);
+			}
+		}
+	);
 </script>
 
 <form
-	on:submit={handleSubmit}
-	class="card bg-surface-500 shadow-md rounded px-2 pt-1 pb-1 overflow-scroll"
+	on:submit={(e) => {
+		e.preventDefault();
+		$projectMutation.mutate();
+	}}
+	class="card bg-surface-500 shadow-md rounded px-2 pt-1 pb-1 overflow-scroll flex flex-col space-y-4"
 >
 	<div class="mb-1">
 		<label class="block text-gray-700 font-bold mb-2" for="name"> Name </label>
@@ -50,7 +44,7 @@
 			id="name"
 			type="text"
 			placeholder="Enter name"
-			bind:value={name}
+			bind:value={project.name}
 			required
 		/>
 	</div>
@@ -61,7 +55,7 @@
 			id="name"
 			type="text"
 			placeholder="Enter name"
-			bind:value={slug}
+			bind:value={project.slug}
 			required
 		/>
 	</div>
@@ -71,7 +65,7 @@
 			class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 			id="description"
 			placeholder="Enter description"
-			bind:value={description}
+			bind:value={project.description}
 		/>
 	</div>
 	<div class="mb-1">
@@ -80,7 +74,7 @@
 			class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 			id="startDate"
 			type="date"
-			bind:value={startDate}
+			bind:value={project.start_date}
 		/>
 	</div>
 	<div class="mb-1">
@@ -89,7 +83,7 @@
 			class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 			id="endDate"
 			type="date"
-			bind:value={endDate}
+			bind:value={project.end_date}
 		/>
 	</div>
 	<div class="mb-1">
@@ -101,7 +95,7 @@
 			min="1"
 			max="4"
 			placeholder="Enter sprint weeks"
-			bind:value={sprintWeeks}
+			bind:value={project.sprint_weeks}
 		/>
 	</div>
 	<div class="mb-1">
@@ -113,7 +107,7 @@
 			min="1"
 			max="12"
 			placeholder="Enter sprint amount"
-			bind:value={sprintAmount}
+			bind:value={project.sprint_amount}
 		/>
 	</div>
 	<div class="mb-1">
@@ -127,46 +121,38 @@
 			min="1"
 			max="7"
 			placeholder="Enter sprint checkup day"
-			bind:value={sprintCheckupDay}
+			bind:value={project.sprint_checkup_day}
 		/>
 	</div>
 	<div class="mb-1">
 		<label class="block text-gray-700 font-bold mb-2" for="repoUrls"> Repository URLs </label>
-		{#each repoUrls as url, index}
+		{#each project.repo_urls as url, index}
 			<div class="flex items-center mb-2">
 				<input
 					class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 					type="text"
 					placeholder="Enter repository URL"
-					bind:value={repoUrls[index]}
+					bind:value={project.repo_urls[index]}
 					required
 				/>
-				{#if index === repoUrls.length - 1}
+				{#if index === project.repo_urls.length - 1}
 					<button
 						class="ml-2 rounded-full text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:shadow-outline"
 						type="button"
 						on:click={() => {
-							addRepoUrl(url);
+							project.repo_urls.push(url);
 						}}
 					>
-						<svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-							<path
-								d="M10 18a8 8 0 110-16 8 8 0 010 16zm1-9h3a1 1 0 010 2h-3v3a1 1 0 01-2 0v-3H6a1 1 0 010-2h3V6a1 1 0 012 0v3z"
-							/>
-						</svg>
+						+
 					</button>
 				{/if}
-				{#if repoUrls.length > 1}
+				{#if project.repo_urls.length > 1}
 					<button
 						class="ml-2 rounded-full text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:shadow-outline"
 						type="button"
-						on:click={() => removeRepoUrl(index)}
+						on:click={() => project.repo_urls.splice(index)}
 					>
-						<svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-							<path
-								d="M10 18a8 8 0 110-16 8 8 0 010 16zm-3.59-8.59a1 1 0 011.41 0L10 11.42l2.59-2.59a1 1 0 011.41 1.41L11.42 13l2.59 2.59a1 1 0 01-1.41 1.41L10 14.42l-2.59 2.59a1 1 0 01-1.41-1.41L8.58 13 5.99 10.41a1 1 0 010-1.42z"
-							/>
-						</svg>
+						-
 					</button>
 				{/if}
 			</div>

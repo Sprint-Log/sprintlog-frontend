@@ -96,27 +96,38 @@ export type BacklogPagination = {
 }
 
 export type Project = {
-  id: string,
+  id: string
   slug: string
   name: string
   description: string
+  pin: boolean
+  labels?: string[]
+  documents?: string[]
   start_date: Date
   end_date: Date
-  sprint_weeks?: number | null
-  sprint_amount?: number | null
-  sprint_checkup_day?: number | null
-  repo_urls?: string[] | null
+  sprint_weeks: number | null
+  sprint_amount: number | null
+  sprint_checkup_day: number | null
+  repo_urls: string[]
+  plugin_meta: Record<string, any>
+  owner_id: string | null
+  created_at: Date,
+  updated_at: Date
 }
 export type ProjectCreate = {
   slug: string
   name: string
-  description?: string
-  start_date?: Date
-  end_date?: Date
-  sprint_weeks?: number | null
-  sprint_amount?: number | null
-  sprint_checkup_day?: number | null
-  repo_urls?: string[] | null
+  description: string
+  pin: boolean
+  labels?: string[]
+  documents?: string[]
+  start_date: Date
+  end_date: Date
+  sprint_weeks: number | null
+  sprint_amount: number | null
+  sprint_checkup_day: number | null
+  repo_urls: string[]
+  owner_id?: string | null
 }
 
 export interface OAuth2Login {

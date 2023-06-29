@@ -6,10 +6,9 @@
 	}
 </script>
 
-<span class="hidden md:visible">Type:</span>
 {#each itemTypes as typ}
 	<span
-		class="chip {itemTyp === typ ? 'variant-filled-warning' : 'variant-soft'}"
+		class="chip  {itemTyp === typ ? 'variant-filled-warning' : 'variant-soft'}"
 		on:click={() => {
 			selectType(typ);
 		}}

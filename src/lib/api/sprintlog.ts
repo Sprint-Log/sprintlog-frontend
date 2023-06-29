@@ -1,4 +1,4 @@
-import type { Project, Backlog, User, BacklogCreate, BacklogPagination, Token } from '$lib/types/sprintlog'
+import type { Project, Backlog, User, BacklogCreate, BacklogPagination, Token, ProjectCreate } from '$lib/types/sprintlog'
 import { PUBLIC_API_URL } from '$env/static/public'
 export async function authFetch(path: string, settings?: RequestInit): Promise<Response> {
   settings = settings || {}
@@ -37,7 +37,7 @@ export const getUsers = async (currentPage = 1, pageSize = 20, sortOrder = "asc"
   const data = (await response.json()).items as User[]
   return data
 }
-export const createProject = async (project: Project): Promise<Project> => {
+export const createProject = async (project: ProjectCreate): Promise<Project> => {
   const response = await authFetch(`api/projects/`, {
     method: 'POST', body: JSON.stringify(project), headers: {
       'Accept': 'application/json',

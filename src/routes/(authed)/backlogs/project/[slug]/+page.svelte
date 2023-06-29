@@ -43,7 +43,7 @@
 	} from '@steeze-ui/carbon-icons';
 	const prjItems: ProjectItems[] = [
 		{ text: 'Home', href: '#' },
-		{ text: 'Projects', href: '#' },
+		{ text: 'Projects', href: '/projects' },
 		{ text: project_slug }
 	];
 	import { Paginator } from '@skeletonlabs/skeleton';
@@ -128,32 +128,32 @@
 </script>
 
 <!-- Scrollable container -->
-<main id="page-content" class="flex flex-col w-full h-full overflow-scroll">
+<main id="page-content" class="flex flex-col w-full h-full overflow-auto">
 	<section
 		class="sticky top-0 variant-ringed rounded variant-glass-surface px-2 py-1 mx-1 space-x-4"
 	>
 		<Breadcrumb items={prjItems} />
 	</section>
 	<ListBox>
-		<svelte:fragment slot="title">Sprint Tasks</svelte:fragment>
-
-		{#if $tasks.isSuccess}
-			{#each $tasks.data.items as task}
-				<Listitem backlog={task}>
-					<Icon src={OverflowMenuVertical} size="18px" />
-					<Icon src={DownToBottom} size="18px" />
-					<Icon src={UserAdmin} size="18px" />
-					<Icon src={Calendar} size="18px" />
-					<Icon src={CheckmarkOutline} size="18px" />
-				</Listitem>
-			{/each}
-		{/if}
+		<svelte:fragment slot="title">Sprint</svelte:fragment>
+		<div class="grid grid-rows h-[70%] overflow-scroll">
+			{#if $tasks.isSuccess}
+				{#each $tasks.data.items as task}
+					<Listitem backlog={task}>
+						<Icon src={OverflowMenuVertical} size="18px" />
+						<Icon src={DownToBottom} size="18px" />
+						<Icon src={UserAdmin} size="18px" />
+						<Icon src={Calendar} size="18px" />
+						<Icon src={CheckmarkOutline} size="18px" />
+					</Listitem>
+				{/each}
+			{/if}
+		</div>
 	</ListBox>
 	<ListBox>
 		<svelte:fragment slot="title">Backlog</svelte:fragment>
-
-		{#if $backlogs.isSuccess}
-			{#if $backlogs.data.items.length > 0}
+		<div class="grid grid-rows overflow-scroll mb-auto">
+			{#if $backlogs.isSuccess}
 				{#each $backlogs.data.items as backlog}
 					<Listitem {backlog}>
 						<Icon src={OverflowMenuVertical} size="18px" />
@@ -164,9 +164,10 @@
 					</Listitem>
 				{/each}
 			{/if}
-		{/if}
+		</div>
 	</ListBox>
-	<section class="sticky bottom-0 variant-ringed rounded variant-glass-surface p-2 mx-1">
+	<footer class="sticky bottom-0 variant-ringed rounded variant-glass-surface p-2 mx-1">
 		<FloatingTask {project_slug} {owner_id} />
-	</section>
+	</footer>
 </main>
+<aside />

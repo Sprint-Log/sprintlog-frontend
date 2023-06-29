@@ -48,7 +48,7 @@
 	);
 </script>
 
-<div class="flex items-top space-x-3 space-y-2 pt-1 hover:variant-soft py-1 my-1">
+<div class="flex items-top space-x-3 space-y-2 pt-1 hover:variant-soft">
 	<div class="flex flex-col flex-shrink-0">
 		<button
 			on:click={() => $progressUpMutation.mutate()}
@@ -63,17 +63,17 @@
 	</div>
 	<div class="flex-1 min-w-0">
 		<p>
-			<span class="text"> {backlog.status} {backlog.priority} {backlog.progress} </span>
-			<span class="font-mono">[{backlog.slug}]</span>
-			<span class="font-mono font-medium">{backlog.title}</span>
-			<span class="font-mono">
-				@<b>{backlog.assignee_name}</b>
-			</span>
-			<span>
+			<span class="text font-mono">
+				{backlog.status}
+				{backlog.priority}
+				{backlog.progress}
 				{backlog.category}
+				<span class="font-mono">@</span><b>{backlog.assignee_name}</b>
 			</span>
+			<span class="font-mono font-extrabold">{backlog.title}</span>
 		</p>
 		<p>
+			<span class="font-mono">[{backlog.slug}]</span>
 			<span class="text-xs label">DUE:{backlog.due_date}</span>
 			<span class="text-xs label">EST:{backlog.est_days}</span>
 			<span class="text-xs label">BEG:{backlog.beg_date}</span>
