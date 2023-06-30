@@ -4,27 +4,29 @@
 	// Import the Project type
 	import type { Project, ProjectCreate } from '$lib/types/sprintlog';
 	import ProjectCard from '$lib/components/Project/ProjectCard.svelte';
-	import { createQuery } from '@tanstack/svelte-query';
-	import { getProjects, createProject } from '$lib/api/sprintlog';
+	import { useQueryClient, createQuery,  } from '@tanstack/svelte-query';
+	import { getProjects,  } from '$lib/api/sprintlog';
 	import ProjectForm from '$lib/components/Project/ProjectForm.svelte';
 
 	let limit = 5;
 	let page = 1;
 	let order = 'desc';
 
-	let intervalMs = 5000;
-	let prj: ProjectCreate = {
-		name: '',
-		slug: ''
-	};
+	let intervalMs = 15000;
+
+	let client = useQueryClient();
+
 	$: projects = createQuery<Project[], Error>({
-		queryKey: ['refetch', page, limit, order],
+		queryKey: ['refetchProject', page, limit, order],
 		queryFn: async () => getProjects(page, limit, order),
-		refetchInterval: intervalMs
+		refetchInterval: intervalMs,
+		refetchOnMount: 'always',
+		refetchOnWindowFocus: true,
+		cacheTime: 0
 	});
 </script>
 
-<section class="p-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+<section class="p-4 grid grid-cols-3 max-h-[300px] gap-3">
 	{#if $projects.isLoading}
 		Loading...
 	{/if}
@@ -37,5 +39,5 @@
 			<ProjectCard {project} />
 		{/each}
 	{/if}
-	<ProjectForm onSubmit={createProject} project={prj} />
+	<ProjectForm />
 </section>

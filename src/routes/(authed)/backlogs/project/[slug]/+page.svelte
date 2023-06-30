@@ -7,7 +7,7 @@
 	import type { PageData } from './$types';
 
 	export let data: PageData;
-
+	import type { ProjectItems } from '$lib/types/sprintlog';
 	const { user } = data;
 	let owner_id: string;
 	if (user != null) {
@@ -41,16 +41,22 @@
 		DownToBottom,
 		UpToTop
 	} from '@steeze-ui/carbon-icons';
+	const prjItems: ProjectItems[] = [
+		{ text: 'Home', href: '#' },
+		{ text: 'Projects', href: '/projects' },
+		{ text: project_slug }
+	];
 	import { Paginator } from '@skeletonlabs/skeleton';
+	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
 
 	$: taskTotal = 20;
 	$: currentPageTask = 0;
-	$: amountTask = 10;
+	$: amountTask = 20;
 	$: backlogTotal = 5;
 	$: currentPageBacklog = 0;
 	$: amountBacklog = 5;
 	let order = 'desc';
-	let intervalMs = 5000;
+	let intervalMs = 15000;
 
 	$: tasks = createQuery<BacklogPagination, Error>({
 		queryKey: ['refetch-tasks', currentPageTask, amountTask, order],
@@ -122,66 +128,46 @@
 </script>
 
 <!-- Scrollable container -->
-<main id="page-content" class="flex-auto h-full grid grid-rows-[1fr_auto_auto]">
-	<section class="grid grid-rows-[auto_1fr] overflow-y-scroll pt-2 mx-1 rounded-[10px]">
-		<ListBox>
-			<span slot="title">Sprint Items</span>
-			<span slot="action">
-				<Paginator
-					bind:settings={taskPager}
-					showFirstLastButtons={false}
-					showPreviousNextButtons={true}
-					on:page={onTaskPageChange}
-					on:amount={onTaskAmountChange}
-				/>
-			</span>
-			<section class="pt-2 px-2 w-full overflow-y-scroll">
-				{#if $tasks.isSuccess}
-					{#each $tasks.data.items as task}
-						<Listitem backlog={task}>
-							<Icon src={OverflowMenuVertical} size="18px" />
-							<Icon src={DownToBottom} size="18px" />
-							<Icon src={UserAdmin} size="18px" />
-							<Icon src={Calendar} size="18px" />
-							<Icon src={CheckmarkOutline} size="18px" />
-						</Listitem>
-					{/each}
-				{/if}
-			</section>
-		</ListBox>
+<main id="page-content" class="flex flex-col w-full h-full overflow-auto">
+	<section
+		class="sticky top-0 variant-ringed rounded variant-glass-surface px-2 py-1 mx-1 space-x-4"
+	>
+		<Breadcrumb items={prjItems} />
 	</section>
-	<section class=" grid grid-rows-[auto_1fr] pt-2 mx-1 rounded-[10px]">
-		<ListBox>
-			<span slot="title">Backlog Items</span>
-			<span slot="action">
-				<Paginator
-					bind:settings={backlogPager}
-					showFirstLastButtons={false}
-					showPreviousNextButtons={true}
-					on:page={onBacklogPageChange}
-					on:amount={onBacklogAmountChange}
-				/>
-			</span>
-			<div class="overflow-y-scroll">
-				<List>
-					{#if $backlogs.isSuccess}
-						{#if $backlogs.data.items.length > 0}
-							{#each $backlogs.data.items as backlog}
-								<Listitem {backlog}>
-									<Icon src={OverflowMenuVertical} size="18px" />
-									<Icon src={UpToTop} size="18px" />
-									<Icon src={UserAdmin} size="18px" />
-									<Icon src={Calendar} size="18px" />
-									<Icon src={CheckmarkOutline} size="18px" />
-								</Listitem>
-							{/each}
-						{/if}
-					{/if}
-				</List>
-			</div>
-		</ListBox>
-	</section>
-	<footer class="sticky bottom-0 variant-ringed variant-glass-surface py-2">
+	<ListBox>
+		<svelte:fragment slot="title">Sprint</svelte:fragment>
+		<div class="grid grid-rows h-[70%] overflow-scroll">
+			{#if $tasks.isSuccess}
+				{#each $tasks.data.items as task}
+					<Listitem backlog={task}>
+						<Icon src={OverflowMenuVertical} size="18px" />
+						<Icon src={DownToBottom} size="18px" />
+						<Icon src={UserAdmin} size="18px" />
+						<Icon src={Calendar} size="18px" />
+						<Icon src={CheckmarkOutline} size="18px" />
+					</Listitem>
+				{/each}
+			{/if}
+		</div>
+	</ListBox>
+	<ListBox>
+		<svelte:fragment slot="title">Backlog</svelte:fragment>
+		<div class="grid grid-rows overflow-scroll mb-auto">
+			{#if $backlogs.isSuccess}
+				{#each $backlogs.data.items as backlog}
+					<Listitem {backlog}>
+						<Icon src={OverflowMenuVertical} size="18px" />
+						<Icon src={UpToTop} size="18px" />
+						<Icon src={UserAdmin} size="18px" />
+						<Icon src={Calendar} size="18px" />
+						<Icon src={CheckmarkOutline} size="18px" />
+					</Listitem>
+				{/each}
+			{/if}
+		</div>
+	</ListBox>
+	<footer class="sticky bottom-0 variant-ringed rounded variant-glass-surface p-2 mx-1">
 		<FloatingTask {project_slug} {owner_id} />
 	</footer>
 </main>
+<aside />

@@ -48,7 +48,7 @@
 	);
 </script>
 
-<div class="flex items-top space-x-3 space-y-2 pt-1 hover:variant-soft py-1 my-1">
+<div class="flex items-top space-x-3 space-y-2 pt-1 hover:variant-soft">
 	<div class="flex flex-col flex-shrink-0">
 		<button
 			on:click={() => $progressUpMutation.mutate()}
@@ -63,25 +63,22 @@
 	</div>
 	<div class="flex-1 min-w-0">
 		<p>
-			<span class="text"> {backlog.status} {backlog.priority} {backlog.progress} </span>
-			<span class="font-mono">{backlog.title}</span>
-			<span class="font-mono">
-				- Assigned To : {backlog.assignee_name}
-			</span>
-			<span>
-				[{backlog.slug}]
+			<span class="text font-mono">
+				{backlog.status}
+				{backlog.priority}
+				{backlog.progress}
 				{backlog.category}
+				<span class="font-mono">@</span><b>{backlog.assignee_name}</b>
 			</span>
+			<span class="font-mono font-extrabold">{backlog.title}</span>
 		</p>
 		<p>
-			{backlog.description}
-			<span class="text-xs border-red-700">DUE:{backlog.due_date}</span>
-			<span class="text-xs">EST:{backlog.est_days}</span>
-			<span class="text-xs">BEG:{backlog.beg_date}</span>
-			<span class="text-xs">CRE:{backlog.created}</span>
-			<span class="text-xs">UPD:{backlog.updated}</span>
-			<span class="text-xs">Sprint:{backlog.sprint_number}</span>
-			<span class="text-xs">Project:{backlog.project_slug}</span>
+			<span class="font-mono">[{backlog.slug}]</span>
+			<span class="text-xs label">DUE:{backlog.due_date}</span>
+			<span class="text-xs label">EST:{backlog.est_days}</span>
+			<span class="text-xs label">BEG:{backlog.beg_date}</span>
+			<span class="text-xs label">CRE:{backlog.created_at}</span>
+			<span class="text-xs label">UPD:{backlog.updated_at}</span>
 		</p>
 	</div>
 	<div class="inline-flex lg:items-top gap-x-1.5">

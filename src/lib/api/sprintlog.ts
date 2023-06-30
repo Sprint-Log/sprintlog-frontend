@@ -1,6 +1,6 @@
-import type { Project, Backlog, User, BacklogCreate, BacklogPagination } from '$lib/types/sprintlog'
+import type { Project, Backlog, User, BacklogCreate, BacklogPagination, Token, ProjectCreate } from '$lib/types/sprintlog'
 import { PUBLIC_API_URL } from '$env/static/public'
-async function authFetch(path: string, settings?: RequestInit) {
+export async function authFetch(path: string, settings?: RequestInit): Promise<Response> {
   settings = settings || {}
   settings.credentials = 'include'
   return await fetch(`${PUBLIC_API_URL}/${path}`, settings)
@@ -9,6 +9,11 @@ async function authFetch(path: string, settings?: RequestInit) {
 export const getProjects = async (currentPage = 1, pageSize = 20, sortOrder = "asc"): Promise<Project[]> => {
   const response = await authFetch(`api/projects?currentPage=${currentPage}&pageSize=${pageSize}&sortOrder=${sortOrder}`)
   const data = (await response.json()) as Project[]
+  return data
+}
+export const getLiveToken = async (roomId: string): Promise<Token> => {
+  const response = await authFetch(`api/live/rooms/${roomId}`)
+  const data = (await response.json()) as Token
   return data
 }
 export const getProjectsBySLug = async (slug: string, currentPage = 1, pageSize = 1, sortOrder = "asc"): Promise<Project> => {
@@ -32,7 +37,7 @@ export const getUsers = async (currentPage = 1, pageSize = 20, sortOrder = "asc"
   const data = (await response.json()).items as User[]
   return data
 }
-export const createProject = async (project: Project): Promise<Project> => {
+export const createProject = async (project: ProjectCreate): Promise<Project> => {
   const response = await authFetch(`api/projects/`, {
     method: 'POST', body: JSON.stringify(project), headers: {
       'Accept': 'application/json',

@@ -19,7 +19,7 @@
 	import TagsChoices from './TagsChoices.svelte';
 	import PriorityChoices from './PriorityChoices.svelte';
 	import ProgressChoices from './ProgressChoices.svelte';
-	import { FetchUpload } from '@steeze-ui/carbon-icons';
+	import { Add, FetchUpload } from '@steeze-ui/carbon-icons';
 	import { Icon } from '@steeze-ui/svelte-icon';
 	import { createBacklog, getBacklogByPrjSlug } from '$lib/api/sprintlog';
 	import ItemType from './ItemType.svelte';
@@ -44,6 +44,8 @@
 	let assignee_id: string;
 	let labels: string[] = [];
 	let client = useQueryClient();
+	let isFocused: boolean = true;
+
 	const addMutation = createMutation(
 		async function () {
 			const backlog: BacklogCreate = {
@@ -73,7 +75,89 @@
 	);
 </script>
 
-<div class="px-4 py-1">
+<div
+	class="input-group gap-0 grid grid-cols-[repeat(8,auto)_1fr_repeat(2,auto)] rounded-container-token"
+>
+	<div class="chip relative">
+		<span class="badge-icon absolute -top-0 -right-0 z-10">2</span>
+		⚡
+	</div>
+	<ItemTypeChoices bind:itemTyp />
+	<span class="chip" use:popup={progressSettings}>
+		<span>{progress}</span>
+	</span>
+
+	<span class="chip" use:popup={statusSettings}>
+		{status}
+	</span>
+
+	<span class="chip variant-warning" use:popup={priPopupSettings}>
+		{priority}
+	</span>
+
+	<span class="chip" use:popup={tagsPopupSettings}>
+		{selTag}
+	</span>
+	<div class="chip icon relative font-bold">@ {assignee_id}</div>
+
+	<textarea
+		bind:value={topic}
+		class="input resize-none bg-transparent border-0 ring-0"
+		name="prompt"
+		id="prompt"
+		placeholder="Add Backlog or Task topic..."
+		rows="1"
+	/>
+
+	<button
+		class="btn btn-sm variant-ghost-secondary"
+		on:click={(e) => {
+			$addMutation.mutate();
+		}}
+	>
+		<span><Icon src={FetchUpload} size="18" /></span>
+	</button>
+</div>
+<!-- <div class="py-1">
+	<div class="input-group input-group-divider rounded-container-token">
+		<textarea
+			bind:value={description}
+			class="resize-none bg-transparent border-0 ring-0"
+			name="prompt"
+			id="prompt"
+			placeholder="Add a description..."
+			rows="4"
+		/>
+	</div>
+</div> -->
+
+<div class="card variant-glass-primary p-4" data-popup="prgPopup">
+	<!-- Append the arrow element -->
+	<ProgressChoices bind:progress />
+	<div class="arrow variant-filled-secondary" />
+</div>
+<div class="card variant-glass-primary p-4" data-popup="statPopup">
+	<!-- Append the arrow element -->
+	<StatusChoices bind:status />
+	<div class="arrow variant-filled-secondary" />
+</div>
+<div class="card variant-glass-primary p-4" data-popup="tagsPopup">
+	<!-- Append the arrow element -->
+	<TagsChoices bind:selTag />
+	<div class="arrow variant-filled-secondary" />
+</div>
+<div class="card variant-glass-primary p-4" data-popup="priPopup">
+	<!-- Append the arrow element -->
+	<PriorityChoices bind:priority />
+	<div class="arrow variant-filled-secondary" />
+</div>
+<div class="card variant-glass-primary p-4" data-popup="priPopup">
+	<!-- Append the arrow element -->
+	<PriorityChoices bind:priority />
+	<div class="arrow variant-filled-secondary" />
+</div>
+<!-- 
+<div class="py-1">
 	<div class="flex justify-start items-center space-x-1">
 		Type: <ItemTypeChoices bind:itemTyp />
 
@@ -96,6 +180,8 @@
 		<span class="chip" use:popup={tagsPopupSettings}>
 			{selTag}
 		</span>
+		<Sprints bind:sprint />
+		<Team bind:assignee_id />
 		<button
 			class="btn btn-sm variant-ghost-secondary"
 			on:click={(e) => {
@@ -106,53 +192,4 @@
 			<span>Submit</span>
 		</button>
 	</div>
-</div>
-<div class="px-4 py-1">
-	<div
-		class="input-group input-group-divider grid-cols-[1fr_auto_auto_auto] rounded-container-token"
-	>
-		<textarea
-			bind:value={topic}
-			class="resize-none bg-transparent border-0 ring-0"
-			name="prompt"
-			id="prompt"
-			placeholder="Write a message..."
-			rows="1"
-		/>
-		<Sprints bind:sprint />
-		<Team bind:assignee_id />
-	</div>
-</div>
-<div class="px-4 py-1">
-	<div class="input-group input-group-divider rounded-container-token">
-		<textarea
-			bind:value={description}
-			class="resize-none bg-transparent border-0 ring-0"
-			name="prompt"
-			id="prompt"
-			placeholder="Write a message..."
-			rows="4"
-		/>
-	</div>
-</div>
-
-<div class="card variant-glass-primary p-4" data-popup="prgPopup">
-	<!-- Append the arrow element -->
-	<ProgressChoices bind:progress />
-	<div class="arrow variant-filled-secondary" />
-</div>
-<div class="card variant-glass-primary p-4" data-popup="statPopup">
-	<!-- Append the arrow element -->
-	<StatusChoices bind:status />
-	<div class="arrow variant-filled-secondary" />
-</div>
-<div class="card variant-glass-primary p-4" data-popup="tagsPopup">
-	<!-- Append the arrow element -->
-	<TagsChoices bind:selTag />
-	<div class="arrow variant-filled-secondary" />
-</div>
-<div class="card variant-glass-primary p-4" data-popup="priPopup">
-	<!-- Append the arrow element -->
-	<PriorityChoices bind:priority />
-	<div class="arrow variant-filled-secondary" />
-</div>
+</div> -->
