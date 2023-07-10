@@ -52,9 +52,9 @@
 	$: taskTotal = 20;
 	$: currentPageTask = 0;
 	$: amountTask = 20;
-	$: backlogTotal = 5;
+	$: backlogTotal = 20;
 	$: currentPageBacklog = 0;
-	$: amountBacklog = 5;
+	$: amountBacklog = 20;
 	let order = 'desc';
 	let intervalMs = 15000;
 
@@ -136,7 +136,7 @@
 	</section>
 	<ListBox>
 		<svelte:fragment slot="title">Sprint</svelte:fragment>
-		<div class="grid grid-rows h-[70%] overflow-scroll">
+		<div class="grid grid-rows auto-rows-min  h-[70%] overflow-scroll ">
 			{#if $tasks.isSuccess}
 				{#each $tasks.data.items as task}
 					<Listitem backlog={task}>
@@ -152,7 +152,7 @@
 	</ListBox>
 	<ListBox>
 		<svelte:fragment slot="title">Backlog</svelte:fragment>
-		<div class="grid grid-rows overflow-scroll mb-auto">
+		<div class="grid grid-rows auto-rows-min overflow-scroll mb-auto">
 			{#if $backlogs.isSuccess}
 				{#each $backlogs.data.items as backlog}
 					<Listitem {backlog}>

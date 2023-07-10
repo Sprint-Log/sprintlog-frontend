@@ -48,7 +48,7 @@
 	);
 </script>
 
-<div class="flex items-top space-x-3 space-y-2 pt-1 hover:variant-soft">
+<div class="flex items-top space-x-3 space-y-2 pt-1 hover:variant-ringed">
 	<div class="flex flex-col flex-shrink-0">
 		<button
 			on:click={() => $progressUpMutation.mutate()}
@@ -61,27 +61,29 @@
 			class="btn-icon btn-icon-sm variant-surface"><Icon src={ArrowDown} size="20px" /></button
 		>
 	</div>
-	<div class="flex-1 min-w-0">
-		<p>
-			<span class="text font-mono">
+	<div class="flex-1">
+			<span class="cursor-pointer p-0.5  hover:variant-filled-surface rounded font-mono font-medium">
 				{backlog.status}
+			</span> 
+			<span class="cursor-pointer p-0.5  hover:variant-filled-surface rounded font-mono font-medium">
 				{backlog.priority}
+			</span> 
+			<span class="cursor-pointer p-0.5  hover:variant-filled-surface rounded font-mono font-medium">
 				{backlog.progress}
+			</span> 
+			<span class="cursor-pointer p-0.5  hover:variant-filled-surface rounded font-mono font-medium">
 				{backlog.category}
-				<span class="font-mono">@</span><b>{backlog.assignee_name}</b>
-			</span>
-			<span class="font-mono font-extrabold">{backlog.title}</span>
-		</p>
-		<p>
+			</span> 
+				<span class="chip variant-soft hover:variant-filled-surface rounded font-mono font-medium">@{backlog.assignee_name}</span>
+			<span class="font-mono font-medium">{backlog.title}</span>
+            <span class="text-xs">DUE:{backlog.due_date}</span>
+			<span class="text-xs">EST:{backlog.est_days}</span>
+			<span class="text-xs">BEG:{backlog.beg_date}</span>
+			<span class="text-xs">CRE:{backlog.created_at}</span>
+			<span class="text-xs">UPD:{backlog.updated_at}</span>
 			<span class="font-mono">[{backlog.slug}]</span>
-			<span class="text-xs label">DUE:{backlog.due_date}</span>
-			<span class="text-xs label">EST:{backlog.est_days}</span>
-			<span class="text-xs label">BEG:{backlog.beg_date}</span>
-			<span class="text-xs label">CRE:{backlog.created_at}</span>
-			<span class="text-xs label">UPD:{backlog.updated_at}</span>
-		</p>
-	</div>
-	<div class="inline-flex lg:items-top gap-x-1.5">
-		<slot />
+            <div class="inline-flex gap-x-1.5">
+                <slot />
+            </div>
 	</div>
 </div>

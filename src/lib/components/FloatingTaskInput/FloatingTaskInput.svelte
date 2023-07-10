@@ -76,13 +76,17 @@
 </script>
 
 <div
-	class="input-group gap-0 grid grid-cols-[repeat(8,auto)_1fr_repeat(2,auto)] rounded-container-token"
+	class="input-group gap-0 auto-cols-auto flex rounded-container-token"
 >
 	<div class="chip relative">
 		<span class="badge-icon absolute -top-0 -right-0 z-10">2</span>
 		⚡
 	</div>
-	<ItemTypeChoices bind:itemTyp />
+	<div class="chip relative">
+		<span class="badge-icon absolute -top-0 -right-0 z-10">2</span>
+		⏰
+	</div>
+	<!-- <ItemTypeChoices bind:itemTyp /> -->
 	<span class="chip" use:popup={progressSettings}>
 		<span>{progress}</span>
 	</span>
@@ -118,18 +122,6 @@
 		<span><Icon src={FetchUpload} size="18" /></span>
 	</button>
 </div>
-<!-- <div class="py-1">
-	<div class="input-group input-group-divider rounded-container-token">
-		<textarea
-			bind:value={description}
-			class="resize-none bg-transparent border-0 ring-0"
-			name="prompt"
-			id="prompt"
-			placeholder="Add a description..."
-			rows="4"
-		/>
-	</div>
-</div> -->
 
 <div class="card variant-glass-primary p-4" data-popup="prgPopup">
 	<!-- Append the arrow element -->
