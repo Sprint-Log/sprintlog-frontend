@@ -136,10 +136,10 @@
 	</section>
 	<ListBox>
 		<svelte:fragment slot="title">Sprint</svelte:fragment>
-		<div class="grid grid-rows auto-rows-min  h-[70%] overflow-scroll ">
+		<div class="grid grid-rows auto-rows-min h-[70%] overflow-scroll">
 			{#if $tasks.isSuccess}
 				{#each $tasks.data.items as task}
-					<Listitem backlog={task}>
+					<Listitem item={task}>
 						<Icon src={OverflowMenuVertical} size="18px" />
 						<Icon src={DownToBottom} size="18px" />
 						<Icon src={UserAdmin} size="18px" />
@@ -155,7 +155,7 @@
 		<div class="grid grid-rows auto-rows-min overflow-scroll mb-auto">
 			{#if $backlogs.isSuccess}
 				{#each $backlogs.data.items as backlog}
-					<Listitem {backlog}>
+					<Listitem item={backlog}>
 						<Icon src={OverflowMenuVertical} size="18px" />
 						<Icon src={UpToTop} size="18px" />
 						<Icon src={UserAdmin} size="18px" />

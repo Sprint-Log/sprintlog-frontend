@@ -20,13 +20,13 @@
 	import { DrillDown } from '@steeze-ui/carbon-icons';
 	import type { Backlog } from '$lib/types/sprintlog';
 	import { progressDownBacklog, progressUpBacklog } from '$lib/api/sprintlog';
-	export let backlog: Backlog;
+	export let item: Backlog;
 	import { useQueryClient, createQuery, createMutation } from '@tanstack/svelte-query';
 
 	let client = useQueryClient();
 	const progressUpMutation = createMutation(
 		async function () {
-			return progressUpBacklog(backlog.slug);
+			return progressUpBacklog(item.slug);
 		},
 		{
 			onSuccess: function () {
@@ -37,7 +37,7 @@
 	);
 	const progressDownMutation = createMutation(
 		async function () {
-			return progressDownBacklog(backlog.slug);
+			return progressDownBacklog(item.slug);
 		},
 		{
 			onSuccess: function () {
@@ -48,42 +48,39 @@
 	);
 </script>
 
-<div class="flex items-top space-x-3 space-y-2 pt-1 hover:variant-ringed">
-	<div class="flex flex-col flex-shrink-0">
+<div class="flex space-x-3 space-y-1 pt-1 hover:variant-ringed-primary">
+	<div class="flex flex-row flex-shrink-0 items-top">
 		<button
 			on:click={() => $progressUpMutation.mutate()}
 			type="button"
-			class="btn-icon btn-icon-sm variant-surface"><Icon src={ArrowUp} size="20px" /></button
+			class="btn-icon btn-icon-sm variant-surface items-top"
 		>
+			<Icon src={ArrowUp} size="18px" />
+		</button>
 		<button
 			on:click={() => $progressDownMutation.mutate()}
 			type="button"
-			class="btn-icon btn-icon-sm variant-surface"><Icon src={ArrowDown} size="20px" /></button
+			class="btn-icon btn-icon-sm variant-surface items-top"
 		>
+			<Icon src={ArrowDown} size="18px" />
+		</button>
 	</div>
 	<div class="flex-1">
-			<span class="cursor-pointer p-0.5  hover:variant-filled-surface rounded font-mono font-medium">
-				{backlog.status}
-			</span> 
-			<span class="cursor-pointer p-0.5  hover:variant-filled-surface rounded font-mono font-medium">
-				{backlog.priority}
-			</span> 
-			<span class="cursor-pointer p-0.5  hover:variant-filled-surface rounded font-mono font-medium">
-				{backlog.progress}
-			</span> 
-			<span class="cursor-pointer p-0.5  hover:variant-filled-surface rounded font-mono font-medium">
-				{backlog.category}
-			</span> 
-				<span class="chip variant-soft hover:variant-filled-surface rounded font-mono font-medium">@{backlog.assignee_name}</span>
-			<span class="font-mono font-medium">{backlog.title}</span>
-            <span class="text-xs">DUE:{backlog.due_date}</span>
-			<span class="text-xs">EST:{backlog.est_days}</span>
-			<span class="text-xs">BEG:{backlog.beg_date}</span>
-			<span class="text-xs">CRE:{backlog.created_at}</span>
-			<span class="text-xs">UPD:{backlog.updated_at}</span>
-			<span class="font-mono">[{backlog.slug}]</span>
-            <div class="inline-flex gap-x-1.5">
-                <slot />
-            </div>
+		<span class="variant-ringed-surface py-1 px-1 rounded">{item.status}</span>
+		<span class="variant-ringed-surface py-1 px-1 rounded">{item.category}</span>
+		<span class="variant-ringed-surface py-1 px-1 rounded">{item.priority}</span>
+		<span class="variant-ringed-surface py-1 px-1 rounded">{item.progress}</span>
+		<span class="variant-soft-surface py-1 px-1 rounded font-mono">⏰ {item.due_date}</span>
+		<span class="variant-ghost-surface hover:variant-soft-secondary py-1 px-1 rounded font-mono"
+			>@{item.assignee_name}</span
+		>
+		<span class="hover:variant-soft-primary py-1 px-1 rounded tracking-wide font-mono font-medium"
+			>{item.title}</span
+		>
+		⏱ <span class="variant-soft-surface py-1 px-1 rounded font-mono">{item.beg_date}</span>
+		<span class="uppercase variant-ringed-surface py-1 px-1 rounded font-mono">{item.slug}</span>
 	</div>
+	<span class="inline-flex gap-x-1.5 items-top">
+		<slot />
+	</span>
 </div>

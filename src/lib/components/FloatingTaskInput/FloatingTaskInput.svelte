@@ -40,7 +40,7 @@
 	export let selTag: TagEnum = TagEnum.features;
 	export let itemTyp: string = 'backlog';
 	export let sprint: string = '1';
-	export let owner_id: string;
+	export let owner_id: string;``
 	let assignee_id: string;
 	let labels: string[] = [];
 	let client = useQueryClient();
