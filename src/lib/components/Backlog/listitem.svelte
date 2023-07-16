@@ -24,6 +24,9 @@
 	import { useQueryClient, createQuery, createMutation } from '@tanstack/svelte-query';
 
 	let client = useQueryClient();
+	const handleItemClick = function (event: any, status: any) {
+		client.invalidateQueries(['refetch-backlogs']);
+	};
 	const progressUpMutation = createMutation(
 		async function () {
 			return progressUpBacklog(item.slug);
@@ -66,19 +69,88 @@
 		</button>
 	</div>
 	<div class="flex-1">
-		<span class="variant-ringed-surface py-1 px-1 rounded">{item.status}</span>
-		<span class="variant-ringed-surface py-1 px-1 rounded">{item.category}</span>
-		<span class="variant-ringed-surface py-1 px-1 rounded">{item.priority}</span>
-		<span class="variant-ringed-surface py-1 px-1 rounded">{item.progress}</span>
-		<span class="variant-soft-surface py-1 px-1 rounded font-mono">⏰ {item.due_date}</span>
-		<span class="variant-ghost-surface hover:variant-soft-secondary py-1 px-1 rounded font-mono"
-			>@{item.assignee_name}</span
+		<span
+			class="variant-ringed-surface hover:variant-soft-secondary py-1 px-1 rounded cursor-pointer"
+			on:click={(event) => handleItemClick(event, item.status)}
+			on:keydown={(event) => {
+				if (event.key === 'Enter') handleItemClick(event, item.status);
+			}}
 		>
-		<span class="hover:variant-soft-primary py-1 px-1 rounded tracking-wide font-mono font-medium"
-			>{item.title}</span
+			{item.status}
+		</span>
+		<span
+			class="variant-ringed-surface hover:variant-soft-secondary py-1 px-1 rounded cursor-pointer"
+			on:click={(event) => handleItemClick(event, item.category)}
+			on:keydown={(event) => {
+				if (event.key === 'Enter') handleItemClick(event, item.category);
+			}}
 		>
-		⏱ <span class="variant-soft-surface py-1 px-1 rounded font-mono">{item.beg_date}</span>
-		<span class="uppercase variant-ringed-surface py-1 px-1 rounded font-mono">{item.slug}</span>
+			{item.category}
+		</span>
+		<span
+			class="variant-ringed-surface hover:variant-soft-secondary py-1 px-1 rounded cursor-pointer"
+			on:click={(event) => handleItemClick(event, item.priority)}
+			on:keydown={(event) => {
+				if (event.key === 'Enter') handleItemClick(event, item.priority);
+			}}
+		>
+			{item.priority}
+		</span>
+		<span
+			class="variant-ringed-surface hover:variant-soft-secondary py-1 px-1 rounded cursor-pointer"
+			on:click={(event) => handleItemClick(event, item.progress)}
+			on:keydown={(event) => {
+				if (event.key === 'Enter') handleItemClick(event, item.progress);
+			}}
+		>
+			{item.progress}
+		</span>
+		<span
+			class="variant-soft-surface py-1 px-1 rounded font-mono cursor-pointer"
+			on:click={(event) => handleItemClick(event, item.due_date)}
+			on:keydown={(event) => {
+				if (event.key === 'Enter') handleItemClick(event, item.due_date);
+			}}
+		>
+			⏰ {item.due_date}
+		</span>
+		<span
+			class="variant-ghost-surface hover:variant-soft-secondary py-1 px-1 rounded font-mono cursor-pointer"
+			on:click={(event) => handleItemClick(event, item.assignee_name)}
+			on:keydown={(event) => {
+				if (event.key === 'Enter') handleItemClick(event, item.assignee_name);
+			}}
+		>
+			@{item.assignee_name}
+		</span>
+		<span
+			class="hover:variant-soft-primary py-1 px-1 rounded tracking-wide font-mono font-medium cursor-pointer"
+			on:click={(event) => handleItemClick(event, item.title)}
+			on:keydown={(event) => {
+				if (event.key === 'Enter') handleItemClick(event, item.title);
+			}}
+		>
+			{item.title}
+		</span>
+		⏱
+		<span
+			class="variant-soft-surface py-1 px-1 rounded font-mono cursor-pointer"
+			on:click={(event) => handleItemClick(event, item.beg_date)}
+			on:keydown={(event) => {
+				if (event.key === 'Enter') handleItemClick(event, item.beg_date);
+			}}
+		>
+			{item.beg_date}
+		</span>
+		<span
+			class="uppercase variant-ringed-surface hover:variant-soft-secondary py-1 px-1 rounded font-mono cursor-pointer"
+			on:click={(event) => handleItemClick(event, item.slug)}
+			on:keydown={(event) => {
+				if (event.key === 'Enter') handleItemClick(event, item.slug);
+			}}
+		>
+			{item.slug}
+		</span>
 	</div>
 	<span class="inline-flex gap-x-1.5 items-top">
 		<slot />
