@@ -22,9 +22,10 @@
 	import { progressDownBacklog, progressUpBacklog } from '$lib/api/sprintlog';
 	export let item: Backlog;
 	import { useQueryClient, createQuery, createMutation } from '@tanstack/svelte-query';
+	import TaskItem from '$lib/components/Backlog/TaskItem.svelte';
 
 	let client = useQueryClient();
-	const handleItemClick = function (event: any, status: any) {
+	const handleItemClick = function (event: any, item: any) {
 		client.invalidateQueries(['refetch-backlogs']);
 	};
 	const progressUpMutation = createMutation(
@@ -51,7 +52,7 @@
 	);
 </script>
 
-<div class="flex space-x-3 space-y-1 pt-1 hover:variant-ringed-primary">
+<div class="flex space-x-3 space-y-1 hover:variant-ringed-primary">
 	<div class="flex flex-row flex-shrink-0 items-top">
 		<button
 			on:click={() => $progressUpMutation.mutate()}
@@ -69,88 +70,61 @@
 		</button>
 	</div>
 	<div class="flex-1">
-		<span
-			class="variant-ringed-surface hover:variant-soft-secondary py-1 px-1 rounded cursor-pointer"
-			on:click={(event) => handleItemClick(event, item.status)}
-			on:keydown={(event) => {
-				if (event.key === 'Enter') handleItemClick(event, item.status);
-			}}
-		>
-			{item.status}
-		</span>
-		<span
-			class="variant-ringed-surface hover:variant-soft-secondary py-1 px-1 rounded cursor-pointer"
-			on:click={(event) => handleItemClick(event, item.category)}
-			on:keydown={(event) => {
-				if (event.key === 'Enter') handleItemClick(event, item.category);
-			}}
-		>
-			{item.category}
-		</span>
-		<span
-			class="variant-ringed-surface hover:variant-soft-secondary py-1 px-1 rounded cursor-pointer"
-			on:click={(event) => handleItemClick(event, item.priority)}
-			on:keydown={(event) => {
-				if (event.key === 'Enter') handleItemClick(event, item.priority);
-			}}
-		>
-			{item.priority}
-		</span>
-		<span
-			class="variant-ringed-surface hover:variant-soft-secondary py-1 px-1 rounded cursor-pointer"
-			on:click={(event) => handleItemClick(event, item.progress)}
-			on:keydown={(event) => {
-				if (event.key === 'Enter') handleItemClick(event, item.progress);
-			}}
-		>
-			{item.progress}
-		</span>
-		<span
-			class="variant-soft-surface py-1 px-1 rounded font-mono cursor-pointer"
-			on:click={(event) => handleItemClick(event, item.due_date)}
-			on:keydown={(event) => {
-				if (event.key === 'Enter') handleItemClick(event, item.due_date);
-			}}
-		>
-			⏰ {item.due_date}
-		</span>
-		<span
-			class="variant-ghost-surface hover:variant-soft-secondary py-1 px-1 rounded font-mono cursor-pointer"
-			on:click={(event) => handleItemClick(event, item.assignee_name)}
-			on:keydown={(event) => {
-				if (event.key === 'Enter') handleItemClick(event, item.assignee_name);
-			}}
-		>
-			@{item.assignee_name}
-		</span>
-		<span
-			class="hover:variant-soft-primary py-1 px-1 rounded tracking-wide font-mono font-medium cursor-pointer"
-			on:click={(event) => handleItemClick(event, item.title)}
-			on:keydown={(event) => {
-				if (event.key === 'Enter') handleItemClick(event, item.title);
-			}}
-		>
-			{item.title}
-		</span>
+		<TaskItem
+			text={item.status}
+			color="variant-ringed-surface hover:variant-soft-secondary"
+			typography="text-sm font-bold"
+			onItemClick={handleItemClick}
+		/>
+		<TaskItem
+			text={item.category}
+			color="variant-ringed-surface hover:variant-soft-secondary"
+			typography="text-sm font-medium"
+			onItemClick={handleItemClick}
+		/>
+		<TaskItem
+			text={item.priority}
+			color="variant-ringed-surface hover:variant-soft-secondary"
+			typography="text-sm font-semibold"
+			onItemClick={handleItemClick}
+		/>
+		<TaskItem
+			text={item.progress}
+			color="variant-ringed-surface hover:variant-soft-secondary"
+			typography="text-sm font-normal"
+			onItemClick={handleItemClick}
+		/>
+		<TaskItem
+			text={`⏰ ${item.due_date}`}
+			color="variant-soft-surface"
+			typography="text-sm font-normal"
+			onItemClick={handleItemClick}
+		/>
+		<TaskItem
+			text={`@${item.assignee_name}`}
+			color="variant-ghost-surface hover:variant-soft-secondary"
+			typography="text-sm font-bold"
+			onItemClick={handleItemClick}
+		/>
+		<TaskItem
+			text={item.title}
+			color="hover:variant-soft-primary"
+			typography="text-sm font-mono font-semibold"
+			onItemClick={handleItemClick}
+		/>
 		⏱
-		<span
-			class="variant-soft-surface py-1 px-1 rounded font-mono cursor-pointer"
-			on:click={(event) => handleItemClick(event, item.beg_date)}
-			on:keydown={(event) => {
-				if (event.key === 'Enter') handleItemClick(event, item.beg_date);
-			}}
-		>
-			{item.beg_date}
-		</span>
-		<span
-			class="uppercase variant-ringed-surface hover:variant-soft-secondary py-1 px-1 rounded font-mono cursor-pointer"
-			on:click={(event) => handleItemClick(event, item.slug)}
-			on:keydown={(event) => {
-				if (event.key === 'Enter') handleItemClick(event, item.slug);
-			}}
-		>
-			[{item.slug}]
-		</span>
+		<TaskItem
+			text={item.beg_date}
+			color="variant-soft-surface"
+			typography="text-sm font-normal"
+			onItemClick={handleItemClick}
+		/>
+		<TaskItem
+			text={`[${item.slug}]`}
+			color="uppercase variant-ringed-surface hover:variant-soft-secondary"
+			typography="text-sm font-bold"
+			onItemClick={handleItemClick}
+		/>
 	</div>
 	<span class="inline-flex gap-x-1.5 items-top">
 		<slot />

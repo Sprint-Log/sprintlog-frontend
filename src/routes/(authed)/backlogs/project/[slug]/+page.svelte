@@ -126,61 +126,9 @@
 		amountBacklog = parseInt(e.detail);
 	}
 
-	function handleOverflowMenuClick() {
-		// Handle the click event for OverflowMenuVertical icon
-		// Open the options menu in the chatroom
-		// Perform actions like editing, deleting, or assigning tasks
-	}
-
-	function handleUpToTopClick() {
-		// Handle the click event for UpToTop icon
-		// Scroll back to the top of the sprint planning page
-	}
-
-	function handleDownToBottomClick() {
-		// Handle the click event for UpToTop icon
-		// Scroll back to the top of the sprint planning page
-	}
-
-	function handleUserAdminClick() {
-		// Handle the click event for UserAdmin icon
-		// Access administrative features for analytics and reporting
-	}
-
-	function handleCalendarClick() {
-		// Handle the click event for the Calendar icon
-		// Perform specific action related to the calendar
-	}
-
-	function handleCheckmarkClick() {
-		// Handle the click event for the CheckmarkOutline icon
-		// Perform specific action related to the checkmark
-	}
-
-	function handleKeyDown(event) {
-		// Handle keydown events for the icons
-		if (event.key === 'Enter') {
-			switch (event.currentTarget.id) {
-				case 'overflowMenu':
-					handleOverflowMenuClick();
-					break;
-				case 'upToTop':
-					handleUpToTopClick();
-					break;
-				case 'userAdmin':
-					handleUserAdminClick();
-					break;
-				case 'calendar':
-					handleCalendarClick();
-					break;
-				case 'checkmark':
-					handleCheckmarkClick();
-					break;
-				default:
-					break;
-			}
-		}
-	}
+	const handleItemClick = function (event: any, item: any) {
+		// client.invalidateQueries(['refetch-backlogs']);
+	};
 </script>
 
 <!-- Scrollable container -->
@@ -196,23 +144,68 @@
 			{#if $tasks.isSuccess}
 				{#each $tasks.data.items as task}
 					<Listitem item={task}>
-						<span id="overflowMenu" on:click={handleOverflowMenuClick} on:keydown={handleKeyDown}>
+						<span
+							id="overflowMenu"
+							class="cursor-pointer"
+							on:click={(event) => {
+								handleItemClick(event, task);
+							}}
+							on:keydown={(event) => {
+								if (event.key === 'Enter') handleItemClick(event, task);
+							}}
+						>
 							<Icon src={OverflowMenuVertical} size="18px" />
 						</span>
 
-						<span id="upToTop" on:click={handleDownToBottomClick} on:keydown={handleKeyDown}>
+						<span
+							id="upToTop"
+							class="cursor-pointer"
+							on:click={(event) => {
+								handleItemClick(event, task);
+							}}
+							on:keydown={(event) => {
+								if (event.key === 'Enter') handleItemClick(event, task);
+							}}
+						>
 							<Icon src={DownToBottom} size="18px" />
 						</span>
 
-						<span id="userAdmin" on:click={handleUserAdminClick} on:keydown={handleKeyDown}>
+						<span
+							id="userAdmin"
+							class="cursor-pointer"
+							on:click={(event) => {
+								handleItemClick(event, task);
+							}}
+							on:keydown={(event) => {
+								if (event.key === 'Enter') handleItemClick(event, task);
+							}}
+						>
 							<Icon src={UserAdmin} size="18px" />
 						</span>
 
-						<span id="calendar" on:click={handleCalendarClick} on:keydown={handleKeyDown}>
+						<span
+							id="calendar"
+							class="cursor-pointer"
+							on:click={(event) => {
+								handleItemClick(event, task);
+							}}
+							on:keydown={(event) => {
+								if (event.key === 'Enter') handleItemClick(event, task);
+							}}
+						>
 							<Icon src={Calendar} size="18px" mark />
 						</span>
 
-						<span id="checkmark" on:click={handleCheckmarkClick} on:keydown={handleKeyDown}>
+						<span
+							id="checkmark"
+							class="cursor-pointer"
+							on:click={(event) => {
+								handleItemClick(event, task);
+							}}
+							on:keydown={(event) => {
+								if (event.key === 'Enter') handleItemClick(event, task);
+							}}
+						>
 							<Icon src={CheckmarkOutline} size="18px" mark />
 						</span>
 					</Listitem>
@@ -226,23 +219,68 @@
 			{#if $backlogs.isSuccess}
 				{#each $backlogs.data.items as backlog}
 					<Listitem item={backlog}>
-						<span id="overflowMenu" on:click={handleOverflowMenuClick} on:keydown={handleKeyDown}>
+						<span
+							id="overflowMenu"
+							class="cursor-pointer"
+							on:click={(event) => {
+								handleItemClick(event, backlog);
+							}}
+							on:keydown={(event) => {
+								if (event.key === 'Enter') handleItemClick(event, backlog);
+							}}
+						>
 							<Icon src={OverflowMenuVertical} size="18px" />
 						</span>
 
-						<span id="upToTop" on:click={handleUpToTopClick} on:keydown={handleKeyDown}>
+						<span
+							id="upToTop"
+							class="cursor-pointer"
+							on:click={(event) => {
+								handleItemClick(event, backlog);
+							}}
+							on:keydown={(event) => {
+								if (event.key === 'Enter') handleItemClick(event, backlog);
+							}}
+						>
 							<Icon src={UpToTop} size="18px" />
 						</span>
 
-						<span id="userAdmin" on:click={handleUserAdminClick} on:keydown={handleKeyDown}>
+						<span
+							id="userAdmin"
+							class="cursor-pointer"
+							on:click={(event) => {
+								handleItemClick(event, backlog);
+							}}
+							on:keydown={(event) => {
+								if (event.key === 'Enter') handleItemClick(event, backlog);
+							}}
+						>
 							<Icon src={UserAdmin} size="18px" />
 						</span>
 
-						<span id="calendar" on:click={handleCalendarClick} on:keydown={handleKeyDown}>
+						<span
+							id="calendar"
+							class="cursor-pointer"
+							on:click={(event) => {
+								handleItemClick(event, backlog);
+							}}
+							on:keydown={(event) => {
+								if (event.key === 'Enter') handleItemClick(event, backlog);
+							}}
+						>
 							<Icon src={Calendar} size="18px" mark />
 						</span>
 
-						<span id="checkmark" on:click={handleCheckmarkClick} on:keydown={handleKeyDown}>
+						<span
+							id="checkmark"
+							class="cursor-pointer"
+							on:click={(event) => {
+								handleItemClick(event, backlog);
+							}}
+							on:keydown={(event) => {
+								if (event.key === 'Enter') handleItemClick(event, backlog);
+							}}
+						>
 							<Icon src={CheckmarkOutline} size="18px" mark />
 						</span>
 					</Listitem>
