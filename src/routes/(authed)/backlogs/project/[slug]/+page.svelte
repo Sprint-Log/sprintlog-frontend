@@ -1,8 +1,8 @@
 <script lang="ts">
 	import FloatingTask from '$lib/components/FloatingTaskInput/FloatingTaskInput.svelte';
-	import List from '$lib/components/Backlog/list.svelte';
-	import ListBox from '$lib/components/Backlog/listbox.svelte';
-	import Listitem from '$lib/components/Backlog/listitem.svelte';
+	import List from '$lib/components/Backlog/List.svelte';
+	import ListBox from '$lib/components/Backlog/ListBox.svelte';
+	import Listitem from '$lib/components/Backlog/ListeItem.svelte';
 	import { page } from '$app/stores';
 	import type { PageData } from './$types';
 
