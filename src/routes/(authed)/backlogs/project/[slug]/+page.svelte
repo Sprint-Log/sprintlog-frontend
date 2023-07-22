@@ -4,6 +4,7 @@
 	import ListBox from '$lib/components/Backlog/ListBox.svelte';
 	import Listitem from '$lib/components/Backlog/ListeItem.svelte';
 	import { page } from '$app/stores';
+	import ClickableIcon from '$lib/components/Backlog/ClickableIcon.svelte';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -144,70 +145,36 @@
 			{#if $tasks.isSuccess}
 				{#each $tasks.data.items as task}
 					<Listitem item={task}>
-						<span
+						<ClickableIcon
 							id="overflowMenu"
-							class="cursor-pointer"
-							on:click={(event) => {
-								handleItemClick(event, task);
-							}}
-							on:keydown={(event) => {
-								if (event.key === 'Enter') handleItemClick(event, task);
-							}}
-						>
-							<Icon src={OverflowMenuVertical} size="18px" />
-						</span>
-
-						<span
+							iconSrc={OverflowMenuVertical}
+							size="18px"
+							onItemClick={handleItemClick}
+						/>
+						<ClickableIcon
 							id="upToTop"
-							class="cursor-pointer"
-							on:click={(event) => {
-								handleItemClick(event, task);
-							}}
-							on:keydown={(event) => {
-								if (event.key === 'Enter') handleItemClick(event, task);
-							}}
-						>
-							<Icon src={DownToBottom} size="18px" />
-						</span>
-
-						<span
+							iconSrc={DownToBottom}
+							size="18px"
+							onItemClick={handleItemClick}
+						/>
+						<ClickableIcon
 							id="userAdmin"
-							class="cursor-pointer"
-							on:click={(event) => {
-								handleItemClick(event, task);
-							}}
-							on:keydown={(event) => {
-								if (event.key === 'Enter') handleItemClick(event, task);
-							}}
-						>
-							<Icon src={UserAdmin} size="18px" />
-						</span>
-
-						<span
+							iconSrc={UserAdmin}
+							size="18px"
+							onItemClick={handleItemClick}
+						/>
+						<ClickableIcon
 							id="calendar"
-							class="cursor-pointer"
-							on:click={(event) => {
-								handleItemClick(event, task);
-							}}
-							on:keydown={(event) => {
-								if (event.key === 'Enter') handleItemClick(event, task);
-							}}
-						>
-							<Icon src={Calendar} size="18px" mark />
-						</span>
-
-						<span
+							iconSrc={Calendar}
+							size="18px"
+							onItemClick={handleItemClick}
+						/>
+						<ClickableIcon
 							id="checkmark"
-							class="cursor-pointer"
-							on:click={(event) => {
-								handleItemClick(event, task);
-							}}
-							on:keydown={(event) => {
-								if (event.key === 'Enter') handleItemClick(event, task);
-							}}
-						>
-							<Icon src={CheckmarkOutline} size="18px" mark />
-						</span>
+							iconSrc={CheckmarkOutline}
+							size="18px"
+							onItemClick={handleItemClick}
+						/>
 					</Listitem>
 				{/each}
 			{/if}
@@ -219,70 +186,36 @@
 			{#if $backlogs.isSuccess}
 				{#each $backlogs.data.items as backlog}
 					<Listitem item={backlog}>
-						<span
+						<ClickableIcon
 							id="overflowMenu"
-							class="cursor-pointer"
-							on:click={(event) => {
-								handleItemClick(event, backlog);
-							}}
-							on:keydown={(event) => {
-								if (event.key === 'Enter') handleItemClick(event, backlog);
-							}}
-						>
-							<Icon src={OverflowMenuVertical} size="18px" />
-						</span>
-
-						<span
+							iconSrc={OverflowMenuVertical}
+							size="18px"
+							onItemClick={handleItemClick}
+						/>
+						<ClickableIcon
 							id="upToTop"
-							class="cursor-pointer"
-							on:click={(event) => {
-								handleItemClick(event, backlog);
-							}}
-							on:keydown={(event) => {
-								if (event.key === 'Enter') handleItemClick(event, backlog);
-							}}
-						>
-							<Icon src={UpToTop} size="18px" />
-						</span>
-
-						<span
+							iconSrc={UpToTop}
+							size="18px"
+							onItemClick={handleItemClick}
+						/>
+						<ClickableIcon
 							id="userAdmin"
-							class="cursor-pointer"
-							on:click={(event) => {
-								handleItemClick(event, backlog);
-							}}
-							on:keydown={(event) => {
-								if (event.key === 'Enter') handleItemClick(event, backlog);
-							}}
-						>
-							<Icon src={UserAdmin} size="18px" />
-						</span>
-
-						<span
+							iconSrc={UserAdmin}
+							size="18px"
+							onItemClick={handleItemClick}
+						/>
+						<ClickableIcon
 							id="calendar"
-							class="cursor-pointer"
-							on:click={(event) => {
-								handleItemClick(event, backlog);
-							}}
-							on:keydown={(event) => {
-								if (event.key === 'Enter') handleItemClick(event, backlog);
-							}}
-						>
-							<Icon src={Calendar} size="18px" mark />
-						</span>
-
-						<span
+							iconSrc={Calendar}
+							size="18px"
+							onItemClick={handleItemClick}
+						/>
+						<ClickableIcon
 							id="checkmark"
-							class="cursor-pointer"
-							on:click={(event) => {
-								handleItemClick(event, backlog);
-							}}
-							on:keydown={(event) => {
-								if (event.key === 'Enter') handleItemClick(event, backlog);
-							}}
-						>
-							<Icon src={CheckmarkOutline} size="18px" mark />
-						</span>
+							iconSrc={CheckmarkOutline}
+							size="18px"
+							onItemClick={handleItemClick}
+						/>
 					</Listitem>
 				{/each}
 			{/if}
