@@ -16,6 +16,7 @@
 
 	import ItemTypeChoices from './ItemTypeChoices.svelte';
 	import StatusChoices from './StatusChoices.svelte';
+	import SprintChoices from './SprintChoices.svelte';
 	import TagsChoices from './TagsChoices.svelte';
 	import PriorityChoices from './PriorityChoices.svelte';
 	import ProgressChoices from './ProgressChoices.svelte';
@@ -23,8 +24,11 @@
 	import { Icon } from '@steeze-ui/svelte-icon';
 	import { createBacklog, getBacklogByPrjSlug } from '$lib/api/sprintlog';
 	import ItemType from './ItemType.svelte';
+	import EffortChoices from './EffortChoices.svelte';
 	let topic = '';
 	let description = '';
+	export let sprintSettings: PopupSettings = { event: 'click', target: 'sprintPopup' };
+	export let effortSettings: PopupSettings = { event: 'click', target: 'effortPopup' };
 	export let statusSettings: PopupSettings = { event: 'click', target: 'statPopup' };
 	export let priPopupSettings: PopupSettings = { event: 'click', target: 'priPopup' };
 	export let tagsPopupSettings: PopupSettings = { event: 'click', target: 'tagsPopup' };
@@ -39,8 +43,10 @@
 	export let priority: PriorityEnum = PriorityEnum.med;
 	export let selTag: TagEnum = TagEnum.features;
 	export let itemTyp: string = 'backlog';
-	export let sprint: string = '1';
-	export let owner_id: string;``
+	export let sprint = 1;
+	export let estDays = 1;
+	export let owner_id: string;
+	``;
 	let assignee_id: string;
 	let labels: string[] = [];
 	let client = useQueryClient();
@@ -52,13 +58,13 @@
 				title: topic,
 				description: description,
 				progress: progress,
-				sprint_number: parseInt(sprint),
+				sprint_number: sprint,
 				priority: priority,
 				status: status,
 				labels: labels,
 				type: itemTyp,
 				category: selTag,
-				est_days: 3,
+				est_days: estDays,
 				beg_date: new Date().toISOString().substring(0, 10),
 				assignee_id: assignee_id,
 				owner_id: owner_id,
@@ -75,15 +81,13 @@
 	);
 </script>
 
-<div
-	class="input-group gap-0 auto-cols-auto flex rounded-container-token"
->
-	<div class="chip relative">
-		<span class="badge-icon absolute -top-0 -right-0 z-10">2</span>
+<div class="input-group gap-0 auto-cols-auto flex rounded-container-token">
+	<div class="chip relative" use:popup={sprintSettings}>
+		<span class="badge-icon absolute -top-0 -right-0 z-10">{sprint}</span>
 		⚡
 	</div>
-	<div class="chip relative">
-		<span class="badge-icon absolute -top-0 -right-0 z-10">2</span>
+	<div class="chip relative" use:popup={effortSettings}>
+		<span class="badge-icon absolute -top-0 -right-0 z-10">{estDays}</span>
 		⏰
 	</div>
 	<!-- <ItemTypeChoices bind:itemTyp /> -->
@@ -123,27 +127,37 @@
 	</button>
 </div>
 
-<div class="card variant-glass-primary p-4" data-popup="prgPopup">
+<div class="card p-4" data-popup="prgPopup">
 	<!-- Append the arrow element -->
 	<ProgressChoices bind:progress />
 	<div class="arrow variant-filled-secondary" />
 </div>
-<div class="card variant-glass-primary p-4" data-popup="statPopup">
+<div class="card p-4" data-popup="statPopup">
 	<!-- Append the arrow element -->
 	<StatusChoices bind:status />
 	<div class="arrow variant-filled-secondary" />
 </div>
-<div class="card variant-glass-primary p-4" data-popup="tagsPopup">
+<div class="card p-4" data-popup="sprintPopup">
+	<!-- Append the arrow element -->
+	<SprintChoices bind:sprint />
+	<div class="arrow variant-filled-secondary" />
+</div>
+<div class="card p-4" data-popup="effortPopup">
+	<!-- Append the arrow element -->
+	<EffortChoices bind:estDays />
+	<div class="arrow variant-filled-secondary" />
+</div>
+<div class="card p-4" data-popup="tagsPopup">
 	<!-- Append the arrow element -->
 	<TagsChoices bind:selTag />
 	<div class="arrow variant-filled-secondary" />
 </div>
-<div class="card variant-glass-primary p-4" data-popup="priPopup">
+<div class="card p-4" data-popup="priPopup">
 	<!-- Append the arrow element -->
 	<PriorityChoices bind:priority />
 	<div class="arrow variant-filled-secondary" />
 </div>
-<div class="card variant-glass-primary p-4" data-popup="priPopup">
+<div class="card p-4" data-popup="priPopup">
 	<!-- Append the arrow element -->
 	<PriorityChoices bind:priority />
 	<div class="arrow variant-filled-secondary" />

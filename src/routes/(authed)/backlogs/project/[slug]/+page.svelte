@@ -32,7 +32,6 @@
 	// Import the Project type
 	import { createQuery } from '@tanstack/svelte-query';
 	import { getBacklogByPrjSlug, getProjects, getTaskByPrjSlug } from '$lib/api/sprintlog';
-	import { Icon } from '@steeze-ui/svelte-icon';
 	import {
 		CheckmarkOutline,
 		OverflowMenuVertical,
