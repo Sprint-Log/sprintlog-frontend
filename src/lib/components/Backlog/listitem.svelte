@@ -149,7 +149,7 @@
 				if (event.key === 'Enter') handleItemClick(event, item.slug);
 			}}
 		>
-			{item.slug}
+			[{item.slug}]
 		</span>
 	</div>
 	<span class="inline-flex gap-x-1.5 items-top">

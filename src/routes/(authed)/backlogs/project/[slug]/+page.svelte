@@ -49,12 +49,12 @@
 	import { Paginator } from '@skeletonlabs/skeleton';
 	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
 
-	$: taskTotal = 20;
+	$: taskTotal = 200;
 	$: currentPageTask = 0;
-	$: amountTask = 20;
-	$: backlogTotal = 20;
+	$: amountTask = 200;
+	$: backlogTotal = 200;
 	$: currentPageBacklog = 0;
-	$: amountBacklog = 20;
+	$: amountBacklog = 200;
 	let order = 'desc';
 	let intervalMs = 15000;
 
@@ -99,7 +99,7 @@
 		offset: currentPageTask,
 		limit: amountTask,
 		size: taskTotal,
-		amounts: [10, 20, 50]
+		amounts: [100, 200, 500]
 	};
 	$: backlogPager = {
 		offset: currentPageBacklog,
@@ -125,6 +125,62 @@
 		console.log('event:amount', e.detail);
 		amountBacklog = parseInt(e.detail);
 	}
+
+	function handleOverflowMenuClick() {
+		// Handle the click event for OverflowMenuVertical icon
+		// Open the options menu in the chatroom
+		// Perform actions like editing, deleting, or assigning tasks
+	}
+
+	function handleUpToTopClick() {
+		// Handle the click event for UpToTop icon
+		// Scroll back to the top of the sprint planning page
+	}
+
+	function handleDownToBottomClick() {
+		// Handle the click event for UpToTop icon
+		// Scroll back to the top of the sprint planning page
+	}
+
+	function handleUserAdminClick() {
+		// Handle the click event for UserAdmin icon
+		// Access administrative features for analytics and reporting
+	}
+
+	function handleCalendarClick() {
+		// Handle the click event for the Calendar icon
+		// Perform specific action related to the calendar
+	}
+
+	function handleCheckmarkClick() {
+		// Handle the click event for the CheckmarkOutline icon
+		// Perform specific action related to the checkmark
+	}
+
+	function handleKeyDown(event) {
+		// Handle keydown events for the icons
+		if (event.key === 'Enter') {
+			switch (event.currentTarget.id) {
+				case 'overflowMenu':
+					handleOverflowMenuClick();
+					break;
+				case 'upToTop':
+					handleUpToTopClick();
+					break;
+				case 'userAdmin':
+					handleUserAdminClick();
+					break;
+				case 'calendar':
+					handleCalendarClick();
+					break;
+				case 'checkmark':
+					handleCheckmarkClick();
+					break;
+				default:
+					break;
+			}
+		}
+	}
 </script>
 
 <!-- Scrollable container -->
@@ -140,11 +196,25 @@
 			{#if $tasks.isSuccess}
 				{#each $tasks.data.items as task}
 					<Listitem item={task}>
-						<Icon src={OverflowMenuVertical} size="18px" />
-						<Icon src={DownToBottom} size="18px" />
-						<Icon src={UserAdmin} size="18px" />
-						<Icon src={Calendar} size="18px" />
-						<Icon src={CheckmarkOutline} size="18px" />
+						<span id="overflowMenu" on:click={handleOverflowMenuClick} on:keydown={handleKeyDown}>
+							<Icon src={OverflowMenuVertical} size="18px" />
+						</span>
+
+						<span id="upToTop" on:click={handleDownToBottomClick} on:keydown={handleKeyDown}>
+							<Icon src={DownToBottom} size="18px" />
+						</span>
+
+						<span id="userAdmin" on:click={handleUserAdminClick} on:keydown={handleKeyDown}>
+							<Icon src={UserAdmin} size="18px" />
+						</span>
+
+						<span id="calendar" on:click={handleCalendarClick} on:keydown={handleKeyDown}>
+							<Icon src={Calendar} size="18px" mark />
+						</span>
+
+						<span id="checkmark" on:click={handleCheckmarkClick} on:keydown={handleKeyDown}>
+							<Icon src={CheckmarkOutline} size="18px" mark />
+						</span>
 					</Listitem>
 				{/each}
 			{/if}
@@ -156,11 +226,25 @@
 			{#if $backlogs.isSuccess}
 				{#each $backlogs.data.items as backlog}
 					<Listitem item={backlog}>
-						<Icon src={OverflowMenuVertical} size="18px" />
-						<Icon src={UpToTop} size="18px" />
-						<Icon src={UserAdmin} size="18px" />
-						<Icon src={Calendar} size="18px" />
-						<Icon src={CheckmarkOutline} size="18px" />
+						<span id="overflowMenu" on:click={handleOverflowMenuClick} on:keydown={handleKeyDown}>
+							<Icon src={OverflowMenuVertical} size="18px" />
+						</span>
+
+						<span id="upToTop" on:click={handleUpToTopClick} on:keydown={handleKeyDown}>
+							<Icon src={UpToTop} size="18px" />
+						</span>
+
+						<span id="userAdmin" on:click={handleUserAdminClick} on:keydown={handleKeyDown}>
+							<Icon src={UserAdmin} size="18px" />
+						</span>
+
+						<span id="calendar" on:click={handleCalendarClick} on:keydown={handleKeyDown}>
+							<Icon src={Calendar} size="18px" mark />
+						</span>
+
+						<span id="checkmark" on:click={handleCheckmarkClick} on:keydown={handleKeyDown}>
+							<Icon src={CheckmarkOutline} size="18px" mark />
+						</span>
 					</Listitem>
 				{/each}
 			{/if}
