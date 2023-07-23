@@ -1,11 +1,11 @@
 <script lang="ts">
 	import FloatingTask from '$lib/components/FloatingTaskInput/FloatingTaskInput.svelte';
-	import List from '$lib/components/Backlog/List.svelte';
-	import ListBox from '$lib/components/Backlog/ListBox.svelte';
-	import Listitem from '$lib/components/Backlog/ListeItem.svelte';
+	import List from '$lib/components/Sprintlog/List.svelte';
+	import ListBox from '$lib/components/Sprintlog/ListBox.svelte';
+	import Listitem from '$lib/components/Sprintlog/ListItem.svelte';
 	import { page } from '$app/stores';
-	import ClickableIcon from '$lib/components/Backlog/ClickableIcon.svelte';
-	import type { PageData } from './$types';
+	import ClickableIcon from '$lib/components/Sprintlog/ClickableIcon.svelte';
+	import type { PageData } from '../../../sprintlogs/project/[slug]/$types';
 
 	export let data: PageData;
 	import type { ProjectItems } from '$lib/types/sprintlog';
@@ -17,8 +17,8 @@
 	let project_slug = $page.params.slug;
 
 	import type {
-		Backlog,
-		BacklogPagination,
+		Sprintlog,
+		SprintlogPagination,
 		PriorityEnum,
 		ProgressEnum,
 		StatusEnum,
@@ -30,8 +30,14 @@
 		};
 	};
 	// Import the Project type
-	import { createQuery } from '@tanstack/svelte-query';
-	import { getBacklogByPrjSlug, getProjects, getTaskByPrjSlug } from '$lib/api/sprintlog';
+	import { createQuery, createMutation, useQueryClient } from '@tanstack/svelte-query';
+	import {
+		getBacklogByPrjSlug,
+		getProjects,
+		getTaskByPrjSlug,
+		switchToBacklog,
+		switchToTask
+	} from '$lib/api/sprintlog';
 	import {
 		CheckmarkOutline,
 		OverflowMenuVertical,
@@ -48,6 +54,8 @@
 	];
 	import { Paginator } from '@skeletonlabs/skeleton';
 	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
+	import TaskActions from '$lib/components/Sprintlog/TaskActions.svelte';
+	import BacklogActions from '$lib/components/Sprintlog/BacklogActions.svelte';
 
 	$: taskTotal = 200;
 	$: currentPageTask = 0;
@@ -57,8 +65,9 @@
 	$: amountBacklog = 200;
 	let order = 'desc';
 	let intervalMs = 15000;
+	let client = useQueryClient();
 
-	$: tasks = createQuery<BacklogPagination, Error>({
+	$: tasks = createQuery<SprintlogPagination, Error>({
 		queryKey: ['refetch-tasks', currentPageTask, amountTask, order],
 		queryFn: async () => {
 			return await getTaskByPrjSlug($page.params.slug, currentPageTask, amountTask, order).then(
@@ -75,7 +84,7 @@
 		refetchInterval: intervalMs,
 		cacheTime: 0
 	});
-	$: backlogs = createQuery<BacklogPagination, Error>({
+	$: backlogs = createQuery<SprintlogPagination, Error>({
 		queryKey: ['refetch-backlogs', currentPageBacklog, amountBacklog, order],
 		queryFn: async () => {
 			return await getBacklogByPrjSlug(
@@ -129,6 +138,9 @@
 	const handleItemClick = function (event: any, item: any) {
 		// client.invalidateQueries(['refetch-backlogs']);
 	};
+	const toBacklog = function (event: any, item: any) {
+		// client.invalidateQueries(['refetch-backlogs']);
+	};
 </script>
 
 <!-- Scrollable container -->
@@ -140,40 +152,11 @@
 	</section>
 	<ListBox>
 		<svelte:fragment slot="title">Sprint</svelte:fragment>
-		<div class="grid grid-rows auto-rows-min h-[70%] overflow-scroll">
+		<div class="pl-4 pt-2 grid grid-rows auto-rows-min h-[70%] overflow-scroll">
 			{#if $tasks.isSuccess}
 				{#each $tasks.data.items as task}
 					<Listitem item={task}>
-						<ClickableIcon
-							id="overflowMenu"
-							iconSrc={OverflowMenuVertical}
-							size="18px"
-							onItemClick={handleItemClick}
-						/>
-						<ClickableIcon
-							id="upToTop"
-							iconSrc={DownToBottom}
-							size="18px"
-							onItemClick={handleItemClick}
-						/>
-						<ClickableIcon
-							id="userAdmin"
-							iconSrc={UserAdmin}
-							size="18px"
-							onItemClick={handleItemClick}
-						/>
-						<ClickableIcon
-							id="calendar"
-							iconSrc={Calendar}
-							size="18px"
-							onItemClick={handleItemClick}
-						/>
-						<ClickableIcon
-							id="checkmark"
-							iconSrc={CheckmarkOutline}
-							size="18px"
-							onItemClick={handleItemClick}
-						/>
+						<TaskActions item={task} />
 					</Listitem>
 				{/each}
 			{/if}
@@ -181,40 +164,11 @@
 	</ListBox>
 	<ListBox>
 		<svelte:fragment slot="title">Backlog</svelte:fragment>
-		<div class="grid grid-rows auto-rows-min overflow-scroll mb-auto">
+		<div class="pl-4 pt-2 grid grid-rows auto-rows-min overflow-scroll mb-auto">
 			{#if $backlogs.isSuccess}
 				{#each $backlogs.data.items as backlog}
 					<Listitem item={backlog}>
-						<ClickableIcon
-							id="overflowMenu"
-							iconSrc={OverflowMenuVertical}
-							size="18px"
-							onItemClick={handleItemClick}
-						/>
-						<ClickableIcon
-							id="upToTop"
-							iconSrc={UpToTop}
-							size="18px"
-							onItemClick={handleItemClick}
-						/>
-						<ClickableIcon
-							id="userAdmin"
-							iconSrc={UserAdmin}
-							size="18px"
-							onItemClick={handleItemClick}
-						/>
-						<ClickableIcon
-							id="calendar"
-							iconSrc={Calendar}
-							size="18px"
-							onItemClick={handleItemClick}
-						/>
-						<ClickableIcon
-							id="checkmark"
-							iconSrc={CheckmarkOutline}
-							size="18px"
-							onItemClick={handleItemClick}
-						/>
+						<BacklogActions item={backlog} />
 					</Listitem>
 				{/each}
 			{/if}

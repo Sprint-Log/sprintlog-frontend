@@ -8,11 +8,12 @@
 		PriorityEnum,
 		TagEnum,
 		ProgressEnum,
-		type Backlog,
-		type BacklogCreate
+		type Sprintlog,
+		type SprintlogCreate as SprintlogCreate
 	} from '$lib/types/sprintlog';
 	import { popup } from '@skeletonlabs/skeleton';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
+	import type { User } from '$lib/types/sprintlog';
 
 	import ItemTypeChoices from './ItemTypeChoices.svelte';
 	import StatusChoices from './StatusChoices.svelte';
@@ -20,16 +21,18 @@
 	import TagsChoices from './TagsChoices.svelte';
 	import PriorityChoices from './PriorityChoices.svelte';
 	import ProgressChoices from './ProgressChoices.svelte';
-	import { Add, FetchUpload } from '@steeze-ui/carbon-icons';
+	import { Add, FetchUpload, SendAlt } from '@steeze-ui/carbon-icons';
 	import { Icon } from '@steeze-ui/svelte-icon';
-	import { createBacklog, getBacklogByPrjSlug } from '$lib/api/sprintlog';
+	import { createSprintlog, getBacklogByPrjSlug } from '$lib/api/sprintlog';
 	import ItemType from './ItemType.svelte';
 	import EffortChoices from './EffortChoices.svelte';
+	import Milkdown from '../Editors/Milkdown.svelte';
 	let topic = '';
 	let description = '';
 	export let sprintSettings: PopupSettings = { event: 'click', target: 'sprintPopup' };
 	export let effortSettings: PopupSettings = { event: 'click', target: 'effortPopup' };
 	export let statusSettings: PopupSettings = { event: 'click', target: 'statPopup' };
+	export let teamMenuSettings: PopupSettings = { event: 'click', target: 'teamPopup' };
 	export let priPopupSettings: PopupSettings = { event: 'click', target: 'priPopup' };
 	export let tagsPopupSettings: PopupSettings = { event: 'click', target: 'tagsPopup' };
 	export let progressSettings: PopupSettings = {
@@ -46,15 +49,16 @@
 	export let sprint = 1;
 	export let estDays = 1;
 	export let owner_id: string;
-	``;
+	let assignee: User;
 	let assignee_id: string;
 	let labels: string[] = [];
 	let client = useQueryClient();
 	let isFocused: boolean = true;
+	let toggleDescription = false;
 
 	const addMutation = createMutation(
 		async function () {
-			const backlog: BacklogCreate = {
+			const sprintlog: SprintlogCreate = {
 				title: topic,
 				description: description,
 				progress: progress,
@@ -66,11 +70,11 @@
 				category: selTag,
 				est_days: estDays,
 				beg_date: new Date().toISOString().substring(0, 10),
-				assignee_id: assignee_id,
+				assignee_id: assignee.id,
 				owner_id: owner_id,
 				project_slug: project_slug
 			};
-			return createBacklog(backlog);
+			return createSprintlog(sprintlog);
 		},
 		{
 			onSuccess: function () {
@@ -106,7 +110,7 @@
 	<span class="chip" use:popup={tagsPopupSettings}>
 		{selTag}
 	</span>
-	<div class="chip icon relative font-bold">@ {assignee_id}</div>
+	<div class="chip icon relative font-bold" use:popup={teamMenuSettings}>@ {assignee?.name}</div>
 
 	<textarea
 		bind:value={topic}
@@ -116,16 +120,18 @@
 		placeholder="Add Backlog or Task topic..."
 		rows="1"
 	/>
-
 	<button
 		class="btn btn-sm variant-ghost-secondary"
 		on:click={(e) => {
 			$addMutation.mutate();
 		}}
 	>
-		<span><Icon src={FetchUpload} size="18" /></span>
+		<span><Icon src={SendAlt} size="18" /></span>
 	</button>
 </div>
+<!-- <div class="input h-20 max-h-30"> -->
+<Milkdown defaultValue={description} />
+<!-- </div> -->
 
 <div class="card p-4" data-popup="prgPopup">
 	<!-- Append the arrow element -->
@@ -160,6 +166,11 @@
 <div class="card p-4" data-popup="priPopup">
 	<!-- Append the arrow element -->
 	<PriorityChoices bind:priority />
+	<div class="arrow variant-filled-secondary" />
+</div>
+<div class="card p-4" data-popup="teamPopup">
+	<!-- Append the arrow element -->
+	<Team bind:assignee />
 	<div class="arrow variant-filled-secondary" />
 </div>
 <!-- 

@@ -1,4 +1,4 @@
-import type { Project, Backlog, User, BacklogCreate, BacklogPagination, Token, ProjectCreate } from '$lib/types/sprintlog'
+import type { Project, Sprintlog, User, SprintlogCreate, SprintlogPagination, Token, ProjectCreate } from '$lib/types/sprintlog'
 import { PUBLIC_API_URL } from '$env/static/public'
 export async function authFetch(path: string, settings?: RequestInit): Promise<Response> {
   settings = settings || {}
@@ -32,7 +32,7 @@ export const getProjectsBySLug = async (slug: string, currentPage = 1, pageSize 
   return data
 }
 export const getUsers = async (currentPage = 1, pageSize = 20, sortOrder = "asc"): Promise<User[]> => {
-  currentPage = currentPage + 1
+  currentPage = 1
   const response = await authFetch(`api/users?currentPage=${currentPage}&pageSize=${pageSize}&sortOrder=${sortOrder}`)
   const data = (await response.json()).items as User[]
   return data
@@ -47,7 +47,7 @@ export const createProject = async (project: ProjectCreate): Promise<Project> =>
   const data = (await response.json()) as Project
   return data
 }
-export const getBacklogByPrjSlug = async (prjSlug: string, currentPage = 1, pageSize = 5, sortOrder = "asc"): Promise<BacklogPagination> => {
+export const getBacklogByPrjSlug = async (prjSlug: string, currentPage = 1, pageSize = 5, sortOrder = "asc"): Promise<SprintlogPagination> => {
   currentPage = currentPage + 1
 
   const params = new URLSearchParams([
@@ -56,11 +56,11 @@ export const getBacklogByPrjSlug = async (prjSlug: string, currentPage = 1, page
 
   ])
 
-  const response = await authFetch(`api/backlogs/project/${prjSlug}_backlog?${params.toString()}`)
+  const response = await authFetch(`api/sprintlogs/project/${prjSlug}_backlog?${params.toString()}`)
   const data = (await response.json())
   return data
 }
-export const getTaskByPrjSlug = async (prjSlug: string, currentPage = 1, pageSize = 5, sortOrder = "asc"): Promise<BacklogPagination> => {
+export const getTaskByPrjSlug = async (prjSlug: string, currentPage = 1, pageSize = 5, sortOrder = "asc"): Promise<SprintlogPagination> => {
   currentPage = currentPage + 1
 
   const params = new URLSearchParams([
@@ -70,28 +70,48 @@ export const getTaskByPrjSlug = async (prjSlug: string, currentPage = 1, pageSiz
 
   ])
 
-  const response = await authFetch(`api/backlogs/project/${prjSlug}_task?${params.toString()}`)
+  const response = await authFetch(`api/sprintlogs/project/${prjSlug}_task?${params.toString()}`)
   const data = (await response.json())
   return data
 }
-export const createBacklog = async (backlog: BacklogCreate): Promise<Backlog> => {
-  const response = await authFetch(`api/backlogs/`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(backlog) })
-  const data = (await response.json()) as Backlog
+export const createSprintlog = async (sprintlog: SprintlogCreate): Promise<Sprintlog> => {
+  const response = await authFetch(`api/sprintlogs/`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(sprintlog) })
+  const data = (await response.json()) as Sprintlog
   return data
 }
-export const updateBacklog = async (backlog: Backlog): Promise<Backlog> => {
-  const response = await authFetch(`api/backlogs/`, { method: "PUT", body: JSON.stringify(backlog) })
-  const data = (await response.json()) as Backlog
+export const updateSprintlog = async (sprintlog: Sprintlog): Promise<Sprintlog> => {
+  const response = await authFetch(`api/sprintlogs/`, { method: "PUT", body: JSON.stringify(sprintlog) })
+  const data = (await response.json()) as Sprintlog
   return data
 }
-export const progressUpBacklog = async (backlogSlug: string): Promise<Backlog> => {
-  const response = await authFetch(`api/backlogs/progress/up/slug/${backlogSlug}`, { headers: { 'Content-Type': 'application/json' }, method: "PUT" })
-  const data = (await response.json()) as Backlog
+export const progressUp = async (sprintlogSlug: string): Promise<Sprintlog> => {
+  const response = await authFetch(`api/sprintlogs/progress/up/${sprintlogSlug}`, { headers: { 'Content-Type': 'application/json' }, method: "PUT" })
+  const data = (await response.json()) as Sprintlog
   return data
 }
-export const progressDownBacklog = async (backlogSlug: string): Promise<Backlog> => {
-  const response = await authFetch(`api/backlogs/progress/down/slug/${backlogSlug}`, { headers: { 'Content-Type': 'application/json' }, method: "PUT" })
-  const data = (await response.json()) as Backlog
+export const progressDown = async (sprintlogSlug: string): Promise<Sprintlog> => {
+  const response = await authFetch(`api/sprintlogs/progress/down/${sprintlogSlug}`, { headers: { 'Content-Type': 'application/json' }, method: "PUT" })
+  const data = (await response.json()) as Sprintlog
+  return data
+}
+export const progressCircle = async (sprintlogSlug: string): Promise<Sprintlog> => {
+  const response = await authFetch(`api/sprintlogs/progress/circle/${sprintlogSlug}`, { headers: { 'Content-Type': 'application/json' }, method: "PUT" })
+  const data = (await response.json()) as Sprintlog
+  return data
+}
+export const priorityCircle = async (sprintlogSlug: string): Promise<Sprintlog> => {
+  const response = await authFetch(`api/sprintlogs/priority/circle/${sprintlogSlug}`, { headers: { 'Content-Type': 'application/json' }, method: "PUT" })
+  const data = (await response.json()) as Sprintlog
+  return data
+}
+export const switchToTask = async (sprintlogSlug: string): Promise<Sprintlog> => {
+  const response = await authFetch(`api/sprintlogs/switch/task/${sprintlogSlug}`, { headers: { 'Content-Type': 'application/json' }, method: "PUT" })
+  const data = (await response.json()) as Sprintlog
+  return data
+}
+export const switchToBacklog = async (sprintlogSlug: string): Promise<Sprintlog> => {
+  const response = await authFetch(`api/sprintlogs/switch/backlog/${sprintlogSlug}`, { headers: { 'Content-Type': 'application/json' }, method: "PUT" })
+  const data = (await response.json()) as Sprintlog
   return data
 }
 

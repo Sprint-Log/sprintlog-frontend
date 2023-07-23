@@ -43,7 +43,7 @@ export type Token = {
   rooms: string
   token: string
 }
-export type Backlog = {
+export type Sprintlog = {
   id: string
   title: string
   description: string | null
@@ -62,13 +62,15 @@ export type Backlog = {
   created_at: Date
   updated_at: Date
   // Relationships
+  assingee?: User
+  owner?: User
   assignee_id?: string
   assignee_name?: string
   owner_id?: string
   owner_name?: string
   project_slug: string
 }
-export type BacklogCreate = {
+export type SprintlogCreate = {
   title: string
   description: string | null
   progress: ProgressEnum
@@ -88,11 +90,11 @@ export type BacklogCreate = {
   project_slug: string
 }
 
-export type BacklogPagination = {
+export type SprintlogPagination = {
   total: number
   limit: number
   offset: number
-  items: Backlog[]
+  items: Sprintlog[]
 }
 
 export type Project = {

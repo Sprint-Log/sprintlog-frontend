@@ -18,11 +18,19 @@
 	import { Upgrade } from '@steeze-ui/carbon-icons';
 	import { Calendar } from '@steeze-ui/carbon-icons';
 	import { DrillDown } from '@steeze-ui/carbon-icons';
-	import type { Backlog } from '$lib/types/sprintlog';
-	import { progressDownBacklog, progressUpBacklog } from '$lib/api/sprintlog';
-	export let item: Backlog;
+	import type { Sprintlog } from '$lib/types/sprintlog';
+	import {
+		progressDown,
+		progressUp,
+		switchToTask,
+		switchToBacklog,
+		progressCircle,
+		priorityCircle
+	} from '$lib/api/sprintlog';
+	export let item: Sprintlog;
 	import { useQueryClient, createQuery, createMutation } from '@tanstack/svelte-query';
-	import TaskItem from '$lib/components/Backlog/TaskItem.svelte';
+	import Field from '$lib/components/Sprintlog/Fields.svelte';
+	import TimeField from './TimeField.svelte';
 
 	let client = useQueryClient();
 	const handleItemClick = function (event: any, item: any) {
@@ -30,7 +38,7 @@
 	};
 	const progressUpMutation = createMutation(
 		async function () {
-			return progressUpBacklog(item.slug);
+			return progressUp(item.slug);
 		},
 		{
 			onSuccess: function () {
@@ -41,7 +49,29 @@
 	);
 	const progressDownMutation = createMutation(
 		async function () {
-			return progressDownBacklog(item.slug);
+			return progressDown(item.slug);
+		},
+		{
+			onSuccess: function () {
+				client.invalidateQueries(['refetch-backlogs']);
+				client.invalidateQueries(['refetch-tasks']);
+			}
+		}
+	);
+	const progressCircleMutation = createMutation(
+		async function () {
+			return progressCircle(item.slug);
+		},
+		{
+			onSuccess: function () {
+				client.invalidateQueries(['refetch-backlogs']);
+				client.invalidateQueries(['refetch-tasks']);
+			}
+		}
+	);
+	const priorityCircleMutation = createMutation(
+		async function () {
+			return priorityCircle(item.slug);
 		},
 		{
 			onSuccess: function () {
@@ -53,7 +83,7 @@
 </script>
 
 <div class="flex space-x-3 space-y-1 hover:variant-ringed-primary">
-	<div class="flex flex-row flex-shrink-0 items-top">
+	<!-- <div class="flex flex-row flex-shrink-0 items-top">
 		<button
 			on:click={() => $progressUpMutation.mutate()}
 			type="button"
@@ -68,62 +98,65 @@
 		>
 			<Icon src={ArrowDown} size="18px" />
 		</button>
-	</div>
+	</div> -->
 	<div class="flex-1">
-		<TaskItem
+		<Field
 			text={item.status}
-			color=" hover:variant-soft-secondary"
+			color=" select-none hover:variant-soft-secondary"
 			typography="text-sm font-bold"
 			onItemClick={handleItemClick}
 		/>
-		<TaskItem
+		<Field
 			text={item.category}
-			color=" hover:variant-soft-secondary"
+			color="select-none hover:variant-soft-secondary"
 			typography="text-sm font-medium"
 			onItemClick={handleItemClick}
 		/>
-		<TaskItem
+		<Field
 			text={item.priority}
-			color=" hover:variant-soft-secondary"
+			color="select-none hover:variant-soft-secondary"
 			typography="text-sm font-semibold"
-			onItemClick={handleItemClick}
+			onItemClick={() => $priorityCircleMutation.mutate()}
 		/>
-		<TaskItem
+		<Field
 			text={item.progress}
-			color=" hover:variant-soft-secondary"
+			color="select-none hover:variant-soft-secondary"
 			typography="text-sm font-normal"
-			onItemClick={handleItemClick}
+			onItemClick={() => $progressCircleMutation.mutate()}
 		/>
-		<TaskItem
-			text={`⏰${item.due_date}`}
-			color=""
-			typography="text-sm font-semibold"
-			onItemClick={handleItemClick}
-		/>
-		<TaskItem
+
+		<Field
 			text={`[${item.slug}]`}
 			color="uppercase  hover:variant-soft-secondary"
 			typography="text-sm font-mono"
 			onItemClick={handleItemClick}
 		/>
-		<TaskItem
+		<Field
 			text={`@${item.assignee_name}`}
 			color=" hover:variant-soft-secondary"
 			typography="text-sm font-mono"
 			onItemClick={handleItemClick}
 		/>
-		<TaskItem
+		<Field
 			text={item.title}
 			color="hover:variant-soft-primary"
 			typography="text-sm font-mono"
 			onItemClick={handleItemClick}
 		/>
-		<!-- <TaskItem
-			text={`⏱ ${item.beg_date}`}
+		<TimeField
+			prefix="⏱️"
+			text={item.beg_date}
 			color=""
 			typography="text-sm font-normal"
 			onItemClick={handleItemClick}
-		/> -->
+		/>
+		<TimeField
+			text={item.due_date}
+			prefix="⏰"
+			color=""
+			typography="text-sm font-semibold"
+			onItemClick={handleItemClick}
+		/>
 	</div>
 	<span class="inline-flex gap-x-1.5 items-top">
 		<slot />

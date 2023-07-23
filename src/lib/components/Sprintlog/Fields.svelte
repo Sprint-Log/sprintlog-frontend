@@ -8,7 +8,7 @@
 </script>
 
 <span
-	class={`py-1 px-1 rounded cursor-pointer ${color} ${typography}`}
+	class={`px-1 rounded cursor-pointer ${color} ${typography}`}
 	on:click={(event) => onItemClick(event, text)}
 	on:keydown={(event) => {
 		if (event.key === 'Enter') onItemClick(event, text);

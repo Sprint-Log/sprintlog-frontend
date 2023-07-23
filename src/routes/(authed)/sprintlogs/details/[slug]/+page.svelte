@@ -8,7 +8,7 @@
 	<h1 class="h1">
 		<span
 			class="bg-gradient-to-br from-red-500 to-yellow-500 bg-clip-text text-transparent box-decoration-clone"
-			>Detail of Backlog Slug</span
+			>Detail of Sprintlog Slug</span
 		>
 	</h1>
 	<h1 class="h1">

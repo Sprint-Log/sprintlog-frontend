@@ -9,7 +9,7 @@
 
 <span
 	{id}
-	class="cursor-pointer"
+	class="cursor-pointer select-none"
 	on:click={(event) => onItemClick(event, id)}
 	on:keydown={(event) => {
 		if (event.key === 'Enter') onItemClick(event, id);

@@ -2,7 +2,7 @@
 	import { createQuery } from '@tanstack/svelte-query';
 	import type { User } from '$lib/types/sprintlog';
 	import { getUsers } from '$lib/api/sprintlog';
-	export let assignee_id: string;
+	export let assignee: User;
 	$: assignees = createQuery<User[], Error>({
 		queryKey: ['refetch-assignee'],
 		queryFn: async () => await getUsers(1, 20, 'desc'),
@@ -11,10 +11,10 @@
 	});
 </script>
 
-<select class="select" bind:value={assignee_id}>
+<select class="select" bind:value={assignee}>
 	{#if $assignees.isSuccess}
 		{#each $assignees.data as assigne}
-			<option value={assigne.id}>{assigne.name}</option>
+			<option value={assigne}>{assigne.name}</option>
 		{/each}
 	{/if}
 </select>
