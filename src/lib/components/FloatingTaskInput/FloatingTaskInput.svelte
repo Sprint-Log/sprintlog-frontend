@@ -106,11 +106,18 @@
 	<span class="chip variant-warning" use:popup={priPopupSettings}>
 		{priority}
 	</span>
+	<span
+		class="chip variant-warning"
+		on:keydown={() => (toggleDescription = !toggleDescription)}
+		on:click={() => (toggleDescription = !toggleDescription)}
+	>
+		<Icon src={Add} size="20" />
+	</span>
 
 	<span class="chip" use:popup={tagsPopupSettings}>
 		{selTag}
 	</span>
-	<div class="chip icon relative font-bold" use:popup={teamMenuSettings}>@ {assignee?.name}</div>
+	<div class="chip relative font-bold" use:popup={teamMenuSettings}>@ {assignee?.name}</div>
 
 	<textarea
 		bind:value={topic}
@@ -126,13 +133,15 @@
 			$addMutation.mutate();
 		}}
 	>
-		<span><Icon src={SendAlt} size="18" /></span>
+		<span><Icon src={SendAlt} size="20" /></span>
 	</button>
 </div>
 <!-- <div class="input h-20 max-h-30"> -->
 <!-- </div> -->
 {#if toggleDescription}
-	<div class="w-full h-10 max-h-30 overflow-scroll">
+	<div
+		class="w-full flex flex-col pt-1 my-1 pb-1 h-[100px] max-h-[200px] variant-filled-surface rounded px-1 overflow-y-auto overflow-x-hidden"
+	>
 		<TipTap {description} />
 	</div>
 {/if}
