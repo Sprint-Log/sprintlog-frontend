@@ -26,7 +26,8 @@
 	import { createSprintlog, getBacklogByPrjSlug } from '$lib/api/sprintlog';
 	import ItemType from './ItemType.svelte';
 	import EffortChoices from './EffortChoices.svelte';
-	import Milkdown from '../Editors/Milkdown.svelte';
+	import Milkdown from '../Editors/TipTap.svelte';
+	import TipTap from '../Editors/TipTap.svelte';
 	let topic = '';
 	let description = '';
 	export let sprintSettings: PopupSettings = { event: 'click', target: 'sprintPopup' };
@@ -49,13 +50,13 @@
 	export let sprint = 1;
 	export let estDays = 1;
 	export let owner_id: string;
+
 	let assignee: User;
 	let assignee_id: string;
 	let labels: string[] = [];
 	let client = useQueryClient();
 	let isFocused: boolean = true;
 	let toggleDescription = false;
-
 	const addMutation = createMutation(
 		async function () {
 			const sprintlog: SprintlogCreate = {
@@ -94,7 +95,6 @@
 		<span class="badge-icon absolute -top-0 -right-0 z-10">{estDays}</span>
 		⏰
 	</div>
-	<!-- <ItemTypeChoices bind:itemTyp /> -->
 	<span class="chip" use:popup={progressSettings}>
 		<span>{progress}</span>
 	</span>
@@ -130,8 +130,14 @@
 	</button>
 </div>
 <!-- <div class="input h-20 max-h-30"> -->
-<Milkdown defaultValue={description} />
 <!-- </div> -->
+{#if toggleDescription}
+	<div class="w-full h-10 max-h-30 overflow-scroll">
+		<TipTap {description} />
+	</div>
+{/if}
+
+<!-- hidden containers for popup -->
 
 <div class="card p-4" data-popup="prgPopup">
 	<!-- Append the arrow element -->
@@ -173,6 +179,7 @@
 	<Team bind:assignee />
 	<div class="arrow variant-filled-secondary" />
 </div>
+
 <!-- 
 <div class="py-1">
 	<div class="flex justify-start items-center space-x-1">

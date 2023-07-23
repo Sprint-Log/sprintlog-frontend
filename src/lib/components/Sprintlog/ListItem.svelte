@@ -158,7 +158,7 @@
 			onItemClick={handleItemClick}
 		/>
 	</div>
-	<span class="inline-flex gap-x-1.5 items-top">
+	<span class="inline-flex gap-x-1.5 items-top opacity-0 hover:opacity-100">
 		<slot />
 	</span>
 </div>

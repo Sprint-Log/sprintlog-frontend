@@ -56,6 +56,7 @@
 	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
 	import TaskActions from '$lib/components/Sprintlog/TaskActions.svelte';
 	import BacklogActions from '$lib/components/Sprintlog/BacklogActions.svelte';
+	import Milkdown from '$lib/components/Editors/TipTap.svelte';
 
 	$: taskTotal = 200;
 	$: currentPageTask = 0;
@@ -168,7 +169,7 @@
 			{#if $backlogs.isSuccess}
 				{#each $backlogs.data.items as backlog}
 					<Listitem item={backlog}>
-						<BacklogActions item={backlog} />
+						<BacklogActions  item={backlog} />
 					</Listitem>
 				{/each}
 			{/if}
