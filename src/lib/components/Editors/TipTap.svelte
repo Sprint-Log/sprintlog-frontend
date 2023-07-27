@@ -3,15 +3,15 @@
 	import { Editor } from '@tiptap/core';
 	import StarterKit from '@tiptap/starter-kit';
 
-	let element: any;
-	let editor: any;
+	let element: Element;
+	let editor: Editor;
 	export let description: string;
 
 	onMount(() => {
 		editor = new Editor({
 			element: element,
 			extensions: [StarterKit],
-			content: description,
+			onUpdate(props) {},
 			onTransaction: () => {
 				// force re-render so `editor.isActive` works as expected
 				editor = editor;

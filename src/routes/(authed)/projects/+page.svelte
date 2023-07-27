@@ -1,12 +1,11 @@
 <script lang="ts">
-	import { Avatar, CodeBlock } from '@skeletonlabs/skeleton';
-	let currentVariant = 'bg-initial';
-	// Import the Project type
 	import type { Project, ProjectCreate } from '$lib/types/sprintlog';
 	import ProjectCard from '$lib/components/Project/ProjectCard.svelte';
-	import { useQueryClient, createQuery,  } from '@tanstack/svelte-query';
-	import { getProjects,  } from '$lib/api/sprintlog';
+	import { useQueryClient, createQuery } from '@tanstack/svelte-query';
+	import { getProjects } from '$lib/api/sprintlog';
 	import ProjectForm from '$lib/components/Project/ProjectForm.svelte';
+	import { Add } from '@steeze-ui/carbon-icons';
+	import { Icon } from '@steeze-ui/svelte-icon';
 
 	let limit = 5;
 	let page = 1;
@@ -26,18 +25,24 @@
 	});
 </script>
 
-<section class="p-4 grid grid-cols-3 max-h-[300px] gap-3">
-	{#if $projects.isLoading}
-		Loading...
-	{/if}
-	{#if $projects.error}
-		An error has occurred:
-		{$projects.error.message}
-	{/if}
-	{#if $projects.isSuccess}
-		{#each $projects.data as project}
-			<ProjectCard {project} />
-		{/each}
-	{/if}
-	<ProjectForm />
+<section class="p-8 flex-grow">
+	<div class="flex items-center mb-8 space-x-4">
+		<h2 class="font-semibold">Projects</h2>
+		<button class="btn-icon hover:variant-soft"><Icon src={Add} /></button>
+	</div>
+	<div class="grid gird-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+		{#if $projects.isLoading}
+			Loading...
+		{/if}
+		{#if $projects.error}
+			An error has occurred:
+			{$projects.error.message}
+		{/if}
+		{#if $projects.isSuccess}
+			{#each $projects.data as project}
+				<ProjectCard {project} />
+			{/each}
+		{/if}
+		<!-- <ProjectForm /> -->
+	</div>
 </section>

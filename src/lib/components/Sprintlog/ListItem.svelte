@@ -82,7 +82,7 @@
 	);
 </script>
 
-<div class="flex space-x-3 space-y-1 hover:variant-ringed-primary">
+<div class="flex space-x-3 space-y-1 hover:variant-ringed-primary py-0.5">
 	<!-- <div class="flex flex-row flex-shrink-0 items-top">
 		<button
 			on:click={() => $progressUpMutation.mutate()}
@@ -158,7 +158,7 @@
 			onItemClick={handleItemClick}
 		/>
 	</div>
-	<span class="inline-flex gap-x-1.5 items-top opacity-0 hover:opacity-100">
+	<span class="inline-flex gap-x-1.5 items-top">
 		<slot />
 	</span>
 </div>

@@ -1,6 +1,8 @@
-<header class="mt-2 px-2 flex items-center justify-between mb-2">
-	<h8 class="text-xl font-bold leading-none"><slot name="title" /></h8>
+<div class="mt-2 px-6 flex items-center justify-between">
+	<h5 class="text-xl font-bold leading-none"><slot name="title" /></h5>
 	<slot name="action" />
-</header>
+</div>
 
-<slot />
+<div class=" m-4 border border-surface-600 rounded-md min-h-0 overflow-y-scroll h-full">
+	<slot />
+</div>

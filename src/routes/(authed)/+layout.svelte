@@ -1,8 +1,8 @@
 <script lang="ts">
 	// The ordering of these imports is critical to your app working properly
 	// import '@skeletonlabs/skeleton/themes/theme-vintage.css';
-	import '../../theme.greenslate.postcss';
-	// import '@skeletonlabs/skeleton/themes/theme-vintage.css';
+	// import '../../theme.greenslate.postcss';
+	import '@skeletonlabs/skeleton/themes/theme-hamlindigo.css';
 	// If you have source.organizeImports set to true in VSCode, then it will auto change this ordering
 	import '@skeletonlabs/skeleton/styles/all.css';
 	// Most of your app wide CSS should be put in this file
@@ -29,9 +29,10 @@
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 	import { Skull } from 'lucide-svelte';
+	import type { LayoutServerData } from './$types';
 	const regionLead = 'flex justify-center items-center';
 
-	export let data: LayoutData;
+	export let data: LayoutServerData;
 	const queryClient = new QueryClient({
 		defaultOptions: {
 			queries: {
@@ -43,54 +44,53 @@
 
 <QueryClientProvider client={queryClient}>
 	<!-- App Shell -->
-	<div id="appShell" class="w-full h-full flex flex-col overflow-hidden" data-testid="app-shell">
-		<div class="flex-auto w-full h-full flex overflow-hidden">
-			<div class="flex-auto w-full h-full flex overflow-hidden">
-				<aside id="sidebar-left" class="flex-none overflow-x-hidden overflow-y-auto w-auto">
-					<AppRail>
-						<AppRailAnchor {regionLead} href="/">
-							<svelte:fragment slot="lead">
-								<Icon src={Dashboard} size="24px" />
-							</svelte:fragment>
+	<div id="appShell" class="flex min-h-full" data-testid="app-shell">
+		<aside id="sidebar-left" class="">
+			<AppRail>
+				<AppRailAnchor {regionLead} href="/" name="tile-1" selected={$page.url.pathname === '/'}>
+					<svelte:fragment slot="lead">
+						<Icon src={Dashboard} size="24px" />
+					</svelte:fragment>
+				</AppRailAnchor>
+				<!-- --- -->
+				<AppRailAnchor
+					{regionLead}
+					bind:group={activeRail}
+					href="/projects"
+					name="tile-2"
+					selected={$page.url.pathname === '/projects'}
+				>
+					<svelte:fragment slot="lead"><Icon src={Roadmap} size="24px" /></svelte:fragment>
+					<span>Projects</span>
+				</AppRailAnchor>
+				<AppRailAnchor
+					{regionLead}
+					bind:group={activeRail}
+					href="/reports"
+					name="tile-3"
+					selected={$page.url.pathname === '/reports'}
+				>
+					<svelte:fragment slot="lead"><Icon src={Report} size="24px" /></svelte:fragment>
+					<span>Reports</span>
+				</AppRailAnchor>
+				<!-- --- -->
+				<svelte:fragment slot="trail">
+					<div class="flex justify-center my-4">
+						<LightSwitch />
+					</div>
+					{#if data.user}
+						<AppRailAnchor {regionLead} href="/login" target="_blank" title="Account">
+							<svelte:fragment slot="lead"><Icon src={Logout} size="24px" /></svelte:fragment>
 						</AppRailAnchor>
-						<!-- --- -->
-						<AppRailAnchor
-							{regionLead}
-							bind:group={activeRail}
-							href="/projects"
-							name="tile-1"
-							value={0}
-						>
-							<svelte:fragment slot="lead"><Icon src={Roadmap} size="24px" /></svelte:fragment>
-							<span>Projects</span>
+					{:else}
+						<AppRailAnchor {regionLead} href="/login" target="_blank" title="Account">
+							<svelte:fragment slot="lead"><Icon src={Login} size="24px" /></svelte:fragment>
 						</AppRailAnchor>
-						<AppRailAnchor
-							{regionLead}
-							bind:group={activeRail}
-							href="/reports"
-							name="tile-3"
-							value={2}
-						>
-							<svelte:fragment slot="lead"><Icon src={Report} size="24px" /></svelte:fragment>
-							<span>Reports</span>
-						</AppRailAnchor>
-						<!-- --- -->
-						<svelte:fragment slot="trail">
-							{#if data.user}
-								<AppRailAnchor {regionLead} href="/login" target="_blank" title="Account">
-									<svelte:fragment slot="lead"><Icon src={Logout} size="24px" /></svelte:fragment>
-								</AppRailAnchor>
-							{:else}
-								<AppRailAnchor {regionLead} href="/login" target="_blank" title="Account">
-									<svelte:fragment slot="lead"><Icon src={Login} size="24px" /></svelte:fragment>
-								</AppRailAnchor>
-							{/if}
-						</svelte:fragment>
-					</AppRail>
-				</aside>
-				<slot />
-			</div>
-		</div>
+					{/if}
+				</svelte:fragment>
+			</AppRail>
+		</aside>
+		<slot />
 	</div>
 	<!--<+layout>--><!--<Layout>-->
 </QueryClientProvider>
