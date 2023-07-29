@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { ActionData } from './$types';
 	import { enhance } from '$app/forms';
+	import { onMount } from 'svelte';
 
 	export let form: ActionData;
 </script>
@@ -10,9 +11,7 @@
 </svelte:head>
 
 <main class="container h-full mx-auto my-auto">
-	<div
-		class="flex flex-col items-center justify-center mx-auto md:h-screen pt:mt-0 "
-	>
+	<div class="flex flex-col items-center justify-center mx-auto md:h-screen pt:mt-0">
 		<a
 			href="https://flowbite-admin-dashboard.vercel.app/"
 			class="flex items-center justify-center mb-8 text-2xl font-semibold lg:mb-10 dark:text-white"
@@ -76,9 +75,9 @@
 							>Remember me</label
 						>
 					</div>
-					<a href="#" class="ml-auto text-sm text-primary-700 hover:underline dark:text-primary-500"
+					<!-- <a href="#" class="ml-auto text-sm text-primary-700 hover:underline dark:text-primary-500"
 						>Lost Password?</a
-					>
+					> -->
 				</div>
 				<button
 					type="submit"

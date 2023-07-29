@@ -27,7 +27,7 @@ form .group {
 	flex-direction: column;
 }
 
-form .group>* {
+form .group > * {
 	margin-bottom: 0.5rem;
 }
 
@@ -53,4 +53,22 @@ form button[type='submit'] {
 .notice.error {
 	background: #f8d7da;
 	border-color: #f5c6cb;
+}
+
+.contentWindow {
+	position: absolute;
+	background-color: #b4e0de;
+}
+
+.resizer {
+	position: absolute;
+	z-index: 100;
+}
+
+.verticalResizer {
+	cursor: ns-resize;
+}
+
+.horizontalResizer {
+	cursor: ew-resize;
 }
