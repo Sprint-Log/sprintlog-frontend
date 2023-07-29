@@ -1,11 +1,12 @@
 <script lang="ts">
-	import type { Project, ProjectCreate } from '$lib/types/sprintlog';
+	import type { Project } from '$lib/types/sprintlog';
 	import ProjectCard from '$lib/components/Project/ProjectCard.svelte';
 	import { useQueryClient, createQuery } from '@tanstack/svelte-query';
 	import { getProjects } from '$lib/api/sprintlog';
 	import ProjectForm from '$lib/components/Project/ProjectForm.svelte';
 	import { Add } from '@steeze-ui/carbon-icons';
 	import { Icon } from '@steeze-ui/svelte-icon';
+	import { Modal, modalStore } from '@skeletonlabs/skeleton';
 
 	let limit = 5;
 	let page = 1;
@@ -23,12 +24,20 @@
 		refetchOnWindowFocus: true,
 		cacheTime: 0
 	});
+
+	function openModal() {
+		modalStore.trigger({
+			type: 'component',
+			component: 'form'
+		});
+	}
 </script>
 
+<Modal components={{ form: { ref: ProjectForm } }} />
 <section class="p-8 flex-grow">
 	<div class="flex items-center mb-8 space-x-4">
 		<h2 class="font-semibold">Projects</h2>
-		<button class="btn-icon hover:variant-soft"><Icon src={Add} /></button>
+		<button class="btn-icon hover:variant-soft" on:click={openModal}><Icon src={Add} /></button>
 	</div>
 	<div class="grid gird-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
 		{#if $projects.isLoading}
@@ -43,6 +52,5 @@
 				<ProjectCard {project} />
 			{/each}
 		{/if}
-		<!-- <ProjectForm /> -->
 	</div>
 </section>

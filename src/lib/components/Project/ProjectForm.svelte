@@ -1,21 +1,26 @@
 <script lang="ts">
 	import { createProject } from '$lib/api/sprintlog';
 	import type { ProjectCreate } from '$lib/types/sprintlog';
+	import { Icon } from '@steeze-ui/svelte-icon';
+	import { useQueryClient, createMutation } from '@tanstack/svelte-query';
+	import { XMark } from '@steeze-ui/heroicons';
+	import { Add } from '@steeze-ui/carbon-icons';
+	import { Toast, modalStore, toastStore } from '@skeletonlabs/skeleton';
+
 	let project: ProjectCreate = {
-		slug: 'my-project',
-		name: 'My Project',
+		slug: '',
+		name: '',
 		pin: false,
-		description: 'This is my project',
+		description: '',
 		documents: [],
 		labels: [],
-		start_date: new Date(),
-		end_date: new Date(),
-		sprint_weeks: 2,
-		sprint_amount: 5,
-		sprint_checkup_day: 7,
-		repo_urls: ['https://github.com/my-project']
+		start_date: new Date().toISOString().split('T')[0],
+		end_date: new Date().toISOString().split('T')[0],
+		sprint_weeks: 0,
+		sprint_amount: 0,
+		sprint_checkup_day: 0,
+		repo_urls: ['']
 	};
-	import { useQueryClient, createQuery, createMutation } from '@tanstack/svelte-query';
 	const client = useQueryClient();
 
 	const projectMutation = createMutation(
@@ -25,145 +30,121 @@
 		{
 			onSuccess: function () {
 				client.invalidateQueries(['refetch-project']);
+				modalStore.close();
+			},
+			onError: function (err) {
+				toastStore.trigger({ message: 'Something went wrong', background: 'variant-filled-error' });
 			}
 		}
 	);
 </script>
 
+<Toast />
 <form
 	on:submit={(e) => {
 		e.preventDefault();
 		$projectMutation.mutate();
 	}}
-	class="card bg-surface-500 shadow-md rounded px-2 pt-1 pb-1 overflow-scroll flex flex-col space-y-4"
+	class="card bg-surface-100 p-6 rounded-md space-y-4 max-w-3xl"
 >
-	<div class="mb-1">
-		<label class="block text-gray-700 font-bold mb-2" for="name"> Name </label>
-		<input
-			class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-			id="name"
-			type="text"
-			placeholder="Enter name"
-			bind:value={project.name}
-			required
-		/>
+	<h2>Create a Project</h2>
+	<div class="grid grid-cols-2 gap-4">
+		<label class="label">
+			<span>Name</span>
+			<input
+				class="input variant-form-material"
+				type="text"
+				placeholder="Enter Name"
+				bind:value={project.name}
+			/>
+		</label>
+		<label class="label">
+			<span>Slug</span>
+			<input
+				class="input variant-form-material"
+				type="text"
+				placeholder="Enter Slug"
+				bind:value={project.slug}
+			/>
+		</label>
 	</div>
-	<div class="mb-1">
-		<label class="block text-gray-700 font-bold mb-2" for="name"> Slug </label>
-		<input
-			class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-			id="name"
-			type="text"
-			placeholder="Enter name"
-			bind:value={project.slug}
-			required
-		/>
-	</div>
-	<div class="mb-1">
-		<label class="block text-gray-700 font-bold mb-2" for="description"> Description </label>
+
+	<label class="label">
+		<span>Description</span>
 		<textarea
-			class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-			id="description"
-			placeholder="Enter description"
+			class="textarea variant-form-material"
+			rows="4"
+			placeholder="Enter Description"
 			bind:value={project.description}
 		/>
-	</div>
-	<div class="mb-1">
-		<label class="block text-gray-700 font-bold mb-2" for="startDate"> Start Date </label>
-		<input
-			class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-			id="startDate"
-			type="date"
-			bind:value={project.start_date}
-		/>
-	</div>
-	<div class="mb-1">
-		<label class="block text-gray-700 font-bold mb-2" for="endDate"> End Date </label>
-		<input
-			class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-			id="endDate"
-			type="date"
-			bind:value={project.end_date}
-		/>
-	</div>
-	<div class="mb-1">
-		<label class="block text-gray-700 font-bold mb-2" for="sprintWeeks"> Sprint Weeks </label>
-		<input
-			class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-			id="sprintWeeks"
-			type="number"
-			min="1"
-			max="4"
-			placeholder="Enter sprint weeks"
-			bind:value={project.sprint_weeks}
-		/>
-	</div>
-	<div class="mb-1">
-		<label class="block text-gray-700 font-bold mb-2" for="sprintAmount"> Sprint Amount </label>
-		<input
-			class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-			id="sprintAmount"
-			type="number"
-			min="1"
-			max="12"
-			placeholder="Enter sprint amount"
-			bind:value={project.sprint_amount}
-		/>
-	</div>
-	<div class="mb-1">
-		<label class="block text-gray-700 font-bold mb-2" for="sprintCheckupDay">
-			Sprint Checkup Day
+	</label>
+
+	<div class="grid grid-cols-2 gap-4">
+		<label class="label">
+			<span>Start Date</span>
+			<input class="input variant-form-material" type="date" bind:value={project.start_date} />
 		</label>
-		<input
-			class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-			id="sprintCheckupDay"
-			type="number"
-			min="1"
-			max="7"
-			placeholder="Enter sprint checkup day"
-			bind:value={project.sprint_checkup_day}
-		/>
+		<label class="label">
+			<span>End Date</span>
+			<input class="input variant-form-material" type="date" bind:value={project.end_date} />
+		</label>
 	</div>
-	<div class="mb-1">
-		<label class="block text-gray-700 font-bold mb-2" for="repoUrls"> Repository URLs </label>
-		{#each project.repo_urls as url, index}
-			<div class="flex items-center mb-2">
-				<input
-					class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-					type="text"
-					placeholder="Enter repository URL"
-					bind:value={project.repo_urls[index]}
-					required
-				/>
-				{#if index === project.repo_urls.length - 1}
+
+	<div class="grid grid-cols-3 gap-4">
+		<label class="label">
+			<span>Sprint Weeks</span>
+			<input
+				class="input variant-form-material"
+				type="number"
+				placeholder="Enter Sprint Weeks"
+				bind:value={project.sprint_weeks}
+			/>
+		</label>
+		<label class="label">
+			<span>Sprint Amount</span>
+			<input
+				class="input variant-form-material"
+				type="number"
+				placeholder="Enter Sprint Amount"
+				bind:value={project.sprint_amount}
+			/>
+		</label>
+		<label class="label">
+			<span>Sprint Checkup Day</span>
+			<input
+				class="input variant-form-material"
+				type="number"
+				placeholder="Enter Sprint Checkup day"
+				bind:value={project.sprint_checkup_day}
+			/>
+		</label>
+	</div>
+	<label class="label">
+		<span>Repository URLs</span>
+		<div class="grid grid-cols-2 gap-4">
+			{#each project.repo_urls as url, i}
+				<div class="input-group input-group-divider grid-cols-[1fr_auto] variant-form-material">
+					<input type="text" placeholder="Enter URL" bind:value={url} />
 					<button
-						class="ml-2 rounded-full text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:shadow-outline"
+						class="variant-filled-error btn-icon rounded-none"
 						type="button"
 						on:click={() => {
-							project.repo_urls.push(url);
+							const urls = project.repo_urls;
+							project.repo_urls = [...urls.slice(0, i), ...urls.slice(i + 1)];
 						}}
 					>
-						+
+						<Icon src={XMark} />
 					</button>
-				{/if}
-				{#if project.repo_urls.length > 1}
-					<button
-						class="ml-2 rounded-full text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:shadow-outline"
-						type="button"
-						on:click={() => project.repo_urls.splice(index)}
-					>
-						-
-					</button>
-				{/if}
-			</div>
-		{/each}
-	</div>
-	<div class="flex items-center justify-between">
-		<button
-			class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-			type="submit"
-		>
-			Save
-		</button>
+				</div>
+			{/each}
+			<button
+				on:click={() => (project.repo_urls = [...project.repo_urls, ''])}
+				type="button"
+				class="btn variant-outline-surface"><Icon src={Add} size="20" /></button
+			>
+		</div>
+	</label>
+	<div class="text-right pt-4">
+		<button class="btn variant-filled-primary" type="submit"> Create </button>
 	</div>
 </form>
