@@ -9,13 +9,11 @@
 			<li>
 				<div class="flex items-center">
 					{#if item.href}
-						<a
-							href={item.href}
-							class="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2 dark:text-gray-400 dark:hover:text-white"
+						<a href={item.href} class="!no-underline hover:!underline !text-surface-100"
 							>{item.text}</a
 						>
 					{:else}
-						<span class="ml-1 text-sm font-medium text-gray-700 md:ml-2 dark:text-gray-400"
+						<span class="ml-1 text-base font-medium text-gray-700 md:ml-2 dark:text-gray-400"
 							>{item.text}</span
 						>
 					{/if}

@@ -37,7 +37,7 @@
 		switchToTask
 	} from '$lib/api/sprintlog';
 	const prjItems: ProjectItems[] = [
-		{ text: 'Home', href: '#' },
+		{ text: 'Home', href: '/' },
 		{ text: 'Projects', href: '/projects' },
 		{ text: project_slug }
 	];
@@ -159,7 +159,7 @@
 
 <!-- Scrollable container -->
 <div class="flex-grow">
-	<nav class="sticky top-0 variant-ringed rounded variant-glass-surface px-2 py-1 mx-1 space-x-4">
+	<nav class="px-6 py-2 bg-surface-800">
 		<Breadcrumb items={prjItems} />
 	</nav>
 
@@ -169,7 +169,7 @@
 				<div class="resizable-top flex flex-col" id="win1">
 					<ListBox>
 						<svelte:fragment slot="title">Tasks</svelte:fragment>
-						<div class="px-4 pt-2 overflow-scroll">
+						<div class="px-4 pt-2">
 							{#if $tasks.isSuccess}
 								{#each $tasks.data.items as task}
 									<Listitem item={task}>

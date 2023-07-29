@@ -22,9 +22,10 @@ export const actions: Actions = {
 				sameSite: 'strict',
 				maxAge: 60 * 60 * 24 // 1 day
 			});
-		} catch (error) {
-			console.error(error);
-			throw redirect(302, '/login');
+		} catch (error: any) {
+			return fail(400, {
+				error: error.message
+			});
 		}
 
 		// Set the cookie

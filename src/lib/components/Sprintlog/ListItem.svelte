@@ -82,23 +82,7 @@
 	);
 </script>
 
-<div class="flex space-x-3 space-y-1 hover:variant-ringed-primary py-0.5">
-	<!-- <div class="flex flex-row flex-shrink-0 items-top">
-		<button
-			on:click={() => $progressUpMutation.mutate()}
-			type="button"
-			class="btn-icon btn-icon-sm variant-surface items-top"
-		>
-			<Icon src={ArrowUp} size="18px" />
-		</button>
-		<button
-			on:click={() => $progressDownMutation.mutate()}
-			type="button"
-			class="btn-icon btn-icon-sm variant-surface items-top"
-		>
-			<Icon src={ArrowDown} size="18px" />
-		</button>
-	</div> -->
+<div class="flex space-x-3 space-y-1 hover:variant-ringed-primary py-0.5 group">
 	<div class="flex-1">
 		<Field
 			text={item.status}
@@ -158,7 +142,7 @@
 			onItemClick={handleItemClick}
 		/>
 	</div>
-	<span class="inline-flex gap-x-1.5 items-top">
+	<span class="inline-flex gap-x-1.5 items-top group-hover:opacity-100 opacity-0">
 		<slot />
 	</span>
 </div>

@@ -2,15 +2,60 @@
 	import type { ActionData } from './$types';
 	import { enhance } from '$app/forms';
 	import { onMount } from 'svelte';
+	import { Icon } from '@steeze-ui/svelte-icon';
+	import { Eye, EyeSlash } from '@steeze-ui/heroicons';
 
 	export let form: ActionData;
+	let pwShow = false;
 </script>
 
 <svelte:head>
 	<title>Login</title>
 </svelte:head>
 
-<main class="container h-full mx-auto my-auto">
+<main class="grid place-items-center h-full p-8">
+	<div class="bg-surface-800 p-8 rounded-lg w-full max-w-lg">
+		<h3 class="text-center mb-4">Login</h3>
+		<form class="space-y-4" method="post" use:enhance action="">
+			<label class="label">
+				<span>Email</span>
+				<input
+					type="email"
+					name="email"
+					class="input variant-form-material"
+					placeholder="Enter your email"
+				/>
+			</label>
+			<label class="label">
+				<span>Password</span>
+				<div class="input-group input-group-divider grid-cols-[1fr_auto] variant-form-material">
+					<input
+						name="password"
+						type={pwShow ? 'text' : 'password'}
+						placeholder="Enter your password"
+					/>
+					<button
+						class="variant-filled-surface btn-icon rounded-none"
+						type="button"
+						on:click={() => (pwShow = !pwShow)}
+					>
+						{#if pwShow}
+							<Icon src={EyeSlash} size="24" />
+						{:else}
+							<Icon src={Eye} size="24" />
+						{/if}
+					</button>
+				</div>
+			</label>
+			{#if form?.error}
+				<p class="text-error-400">{form.error}</p>
+			{/if}
+			<button class="btn variant-filled-primary" type="submit">Login</button>
+		</form>
+	</div>
+</main>
+
+<!-- <main class="container h-full mx-auto my-auto">
 	<div class="flex flex-col items-center justify-center mx-auto md:h-screen pt:mt-0">
 		<a
 			href="https://flowbite-admin-dashboard.vercel.app/"
@@ -23,7 +68,6 @@
 			/>
 			<span>SprintLog</span>
 		</a>
-		<!-- Card -->
 		<div class="w-full max-w-xl p-6 space-y-8 sm:p-8 bg-white rounded-lg shadow dark:bg-gray-800">
 			<h2 class="text-2xl font-bold text-gray-900 dark:text-white">Sign In</h2>
 			<form method="post" use:enhance class="mt-8 space-y-6" action="#">
@@ -75,9 +119,9 @@
 							>Remember me</label
 						>
 					</div>
-					<!-- <a href="#" class="ml-auto text-sm text-primary-700 hover:underline dark:text-primary-500"
+					<a href="#" class="ml-auto text-sm text-primary-700 hover:underline dark:text-primary-500"
 						>Lost Password?</a
-					> -->
+					>
 				</div>
 				<button
 					type="submit"
@@ -87,4 +131,4 @@
 			</form>
 		</div>
 	</div>
-</main>
+</main> -->
