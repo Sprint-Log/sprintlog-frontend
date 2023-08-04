@@ -16,9 +16,9 @@
 		labels: [],
 		start_date: new Date().toISOString().split('T')[0],
 		end_date: new Date().toISOString().split('T')[0],
-		sprint_weeks: 0,
-		sprint_amount: 0,
-		sprint_checkup_day: 0,
+		sprint_weeks: 2,
+		sprint_amount: 2,
+		sprint_checkup_day: 3,
 		repo_urls: ['']
 	};
 	const client = useQueryClient();
@@ -45,7 +45,7 @@
 		e.preventDefault();
 		$projectMutation.mutate();
 	}}
-	class="card bg-surface-100 p-6 rounded-md space-y-4 max-w-3xl"
+	class="card bg-surface-100 p-6 rounded-md space-y-4 max-w-3xl overflow-y-scroll"
 >
 	<h2>Create a Project</h2>
 	<div class="grid grid-cols-2 gap-4">
@@ -68,16 +68,6 @@
 			/>
 		</label>
 	</div>
-
-	<label class="label">
-		<span>Description</span>
-		<textarea
-			class="textarea variant-form-material"
-			rows="4"
-			placeholder="Enter Description"
-			bind:value={project.description}
-		/>
-	</label>
 
 	<div class="grid grid-cols-2 gap-4">
 		<label class="label">
@@ -143,6 +133,15 @@
 				class="btn variant-outline-surface"><Icon src={Add} size="20" /></button
 			>
 		</div>
+	</label>
+	<label class="label">
+		<span>Description</span>
+		<textarea
+			class="textarea variant-form-material"
+			rows="10"
+			placeholder="Enter Description"
+			bind:value={project.description}
+		/>
 	</label>
 	<div class="text-right pt-4">
 		<button class="btn variant-filled-primary" type="submit"> Create </button>
