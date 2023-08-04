@@ -2,30 +2,29 @@
 	import type { Sprintlog } from '$lib/types/sprintlog';
 	import { useQueryClient, createMutation, createQuery } from '@tanstack/svelte-query';
 	let client = useQueryClient();
-	export let item: Sprintlog;
-	import {
-		getBacklogByPrjSlug,
-		getProjects,
-		getTaskByPrjSlug,
-		switchToBacklog,
-		switchToTask
-	} from '$lib/api/sprintlog';
+	import { switchToTask } from '$lib/api/sprintlog';
 	import ClickableIcon from '$lib/components/Sprintlog/ClickableIcon.svelte';
+	import {
+		CheckmarkOutline,
+		OverflowMenuVertical,
+		UserAdmin,
+		Calendar,
+		UpToTop,
+		RowExpand,
+		RowCollapse
+	} from '@steeze-ui/carbon-icons';
+	import { createEventDispatcher } from 'svelte';
+
+	export let item: Sprintlog;
+	export let expand: boolean;
+	const dispatch = createEventDispatcher();
+
 	const handleItemClick = function (event: any, item: any) {
 		// client.invalidateQueries(['refetch-backlogs']);
 	};
 	const toBacklog = function (event: any, item: any) {
 		// client.invalidateQueries(['refetch-backlogs']);
 	};
-	import {
-		CheckmarkOutline,
-		OverflowMenuVertical,
-		Upgrade,
-		UserAdmin,
-		Calendar,
-		DownToBottom,
-		UpToTop
-	} from '@steeze-ui/carbon-icons';
 	const switchToTaskMutation = createMutation(
 		async function () {
 			return switchToTask(item.slug);
@@ -39,6 +38,12 @@
 	);
 </script>
 
+<ClickableIcon
+	id="checkmark"
+	iconSrc={expand ? RowCollapse : RowExpand}
+	size="18px"
+	onItemClick={() => dispatch('expand')}
+/>
 <ClickableIcon
 	id="overflowMenu"
 	iconSrc={OverflowMenuVertical}

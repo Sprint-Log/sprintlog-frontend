@@ -159,7 +159,7 @@
 
 <!-- Scrollable container -->
 <div class="flex-grow">
-	<nav class="px-6 py-2 bg-surface-800">
+	<nav class="px-6 py-2 bg-surface-100-800-token">
 		<Breadcrumb items={prjItems} />
 	</nav>
 
@@ -172,9 +172,7 @@
 						<div class="px-4 pt-2">
 							{#if $tasks.isSuccess}
 								{#each $tasks.data.items as task}
-									<Listitem item={task}>
-										<TaskActions item={task} />
-									</Listitem>
+									<Listitem item={task} />
 								{/each}
 							{/if}
 						</div>
@@ -186,9 +184,7 @@
 						<div class="px-4 pt-2">
 							{#if $backlogs.isSuccess}
 								{#each $backlogs.data.items as task}
-									<Listitem item={task}>
-										<BacklogActions item={task} />
-									</Listitem>
+									<Listitem item={task} isTask={false} />
 								{/each}
 							{/if}
 						</div>
@@ -196,8 +192,6 @@
 				</div>
 			</div>
 		</div>
-		<div class="sticky bottom-0 variant-ringed rounded variant-glass-surface p-2 mx-1">
-			<FloatingTask {project_slug} {owner_id} />
-		</div>
+		<FloatingTask {project_slug} {owner_id} />
 	</div>
 </div>

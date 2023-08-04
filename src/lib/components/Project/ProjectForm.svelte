@@ -6,6 +6,19 @@
 	import { XMark } from '@steeze-ui/heroicons';
 	import { Add } from '@steeze-ui/carbon-icons';
 	import { Toast, modalStore, toastStore } from '@skeletonlabs/skeleton';
+	import { EditorView, basicSetup } from 'codemirror';
+	import { markdown } from '@codemirror/lang-markdown';
+	import { onMount } from 'svelte';
+
+	let editor: HTMLDivElement;
+	let view: EditorView;
+
+	onMount(() => {
+		view = new EditorView({
+			extensions: [basicSetup, markdown()],
+			parent: editor
+		});
+	});
 
 	let project: ProjectCreate = {
 		slug: '',
@@ -43,9 +56,10 @@
 <form
 	on:submit={(e) => {
 		e.preventDefault();
+		project.description = view.state.doc.toString();
 		$projectMutation.mutate();
 	}}
-	class="card bg-surface-100 p-6 rounded-md space-y-4 max-w-3xl overflow-y-scroll"
+	class="card bg-surface-100 p-6 rounded-md space-y-4 max-w-3xl overflow-y-scroll max-h-[36rem]"
 >
 	<h2>Create a Project</h2>
 	<div class="grid grid-cols-2 gap-4">
@@ -134,15 +148,16 @@
 			>
 		</div>
 	</label>
-	<label class="label">
+	<div class="mr-4">
 		<span>Description</span>
-		<textarea
+		<div bind:this={editor} />
+	</div>
+	<!-- <textarea
 			class="textarea variant-form-material"
 			rows="10"
 			placeholder="Enter Description"
 			bind:value={project.description}
-		/>
-	</label>
+		/> -->
 	<div class="text-right pt-4">
 		<button class="btn variant-filled-primary" type="submit"> Create </button>
 	</div>

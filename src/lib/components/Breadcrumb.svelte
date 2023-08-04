@@ -9,7 +9,7 @@
 			<li>
 				<div class="flex items-center">
 					{#if item.href}
-						<a href={item.href} class="!no-underline hover:!underline !text-surface-100"
+						<a href={item.href} class="!no-underline hover:!underline !text-surface-800-100-token"
 							>{item.text}</a
 						>
 					{:else}

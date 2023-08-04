@@ -43,6 +43,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@codemirror/lang-markdown": "^6.2.0",
 		"@floating-ui/dom": "^1.2.7",
 		"@steeze-ui/carbon-icons": "^1.1.2",
 		"@steeze-ui/heroicons": "^2.2.2",
@@ -51,6 +52,7 @@
 		"@tiptap/core": "^2.0.4",
 		"@tiptap/pm": "^2.0.4",
 		"@tiptap/starter-kit": "^2.0.4",
+		"codemirror": "^6.0.1",
 		"lucide-svelte": "^0.224.0",
 		"svelte-time": "^0.7.2"
 	}

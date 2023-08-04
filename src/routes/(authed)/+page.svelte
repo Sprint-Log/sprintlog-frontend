@@ -1,5 +1,18 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import { EditorView, basicSetup } from 'codemirror';
+	import { markdown } from '@codemirror/lang-markdown';
+	import { onMount } from 'svelte';
+
+	let editor: HTMLDivElement;
+	let view: EditorView;
+
+	onMount(() => {
+		view = new EditorView({
+			extensions: [basicSetup, markdown()],
+			parent: editor
+		});
+	});
 
 	export let data: PageData;
 
@@ -10,6 +23,7 @@
 	<title>Welcome {user.email}</title>
 </svelte:head>
 <div class="container h-full mx-auto flex flex-col justify-center items-center space-y-5">
+	<div bind:this={editor} class="w-full" />
 	<h1 class="h1">
 		<span
 			class="bg-gradient-to-br from-blue-500 to-cyan-300 bg-clip-text text-transparent box-decoration-clone"

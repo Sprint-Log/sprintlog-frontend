@@ -28,6 +28,21 @@
 	import EffortChoices from './EffortChoices.svelte';
 	import Milkdown from '../Editors/TipTap.svelte';
 	import TipTap from '../Editors/TipTap.svelte';
+
+	import { EditorView, basicSetup } from 'codemirror';
+	import { markdown } from '@codemirror/lang-markdown';
+	import { onMount } from 'svelte';
+
+	let editor: HTMLDivElement;
+	let view: EditorView;
+
+	onMount(() => {
+		view = new EditorView({
+			extensions: [basicSetup, markdown()],
+			parent: editor
+		});
+	});
+
 	let topic = '';
 	let description = '';
 	export let sprintSettings: PopupSettings = { event: 'click', target: 'sprintPopup' };
@@ -86,143 +101,100 @@
 	);
 </script>
 
-<div class="input-group gap-0 auto-cols-auto flex rounded-container-token">
-	<div class="chip relative" use:popup={sprintSettings}>
-		<span class="badge-icon absolute -top-0 -right-0 z-10">{sprint}</span>
-		⚡
-	</div>
-	<div class="chip relative" use:popup={effortSettings}>
-		<span class="badge-icon absolute -top-0 -right-0 z-10">{estDays}</span>
-		⏰
-	</div>
-	<span class="chip" use:popup={progressSettings}>
-		<span>{progress}</span>
-	</span>
-
-	<span class="chip" use:popup={statusSettings}>
-		{status}
-	</span>
-
-	<span class="chip variant-warning" use:popup={priPopupSettings}>
-		{priority}
-	</span>
-	<span
-		class="chip variant-warning"
-		on:keydown={() => (toggleDescription = !toggleDescription)}
-		on:click={() => (toggleDescription = !toggleDescription)}
-	>
-		<Icon src={Add} size="20" />
-	</span>
-
-	<span class="chip" use:popup={tagsPopupSettings}>
-		{selTag}
-	</span>
-	<div class="chip relative font-bold" use:popup={teamMenuSettings}>@ {assignee?.name}</div>
-
-	<textarea
-		bind:value={topic}
-		class="input resize-none bg-transparent border-0 ring-0"
-		name="prompt"
-		id="prompt"
-		placeholder="Add Backlog or Task topic..."
-		rows="1"
-	/>
-	<button
-		class="btn btn-sm variant-ghost-secondary"
-		on:click={(e) => {
-			$addMutation.mutate();
-		}}
-	>
-		<span><Icon src={SendAlt} size="20" /></span>
-	</button>
-</div>
-<!-- <div class="input h-20 max-h-30"> -->
-<!-- </div> -->
-{#if toggleDescription}
-	<div
-		class="w-full flex flex-col pt-1 my-1 pb-1 h-[100px] max-h-[200px] variant-filled-surface rounded px-1 overflow-y-auto overflow-x-hidden"
-	>
-		<TipTap {description} />
-	</div>
-{/if}
-
-<!-- hidden containers for popup -->
-
-<div class="card p-4" data-popup="prgPopup">
-	<!-- Append the arrow element -->
-	<ProgressChoices bind:progress />
-	<div class="arrow variant-filled-secondary" />
-</div>
-<div class="card p-4" data-popup="statPopup">
-	<!-- Append the arrow element -->
-	<StatusChoices bind:status />
-	<div class="arrow variant-filled-secondary" />
-</div>
-<div class="card p-4" data-popup="sprintPopup">
-	<!-- Append the arrow element -->
-	<SprintChoices bind:sprint />
-	<div class="arrow variant-filled-secondary" />
-</div>
-<div class="card p-4" data-popup="effortPopup">
-	<!-- Append the arrow element -->
-	<EffortChoices bind:estDays />
-	<div class="arrow variant-filled-secondary" />
-</div>
-<div class="card p-4" data-popup="tagsPopup">
-	<!-- Append the arrow element -->
-	<TagsChoices bind:selTag />
-	<div class="arrow variant-filled-secondary" />
-</div>
-<div class="card p-4" data-popup="priPopup">
-	<!-- Append the arrow element -->
-	<PriorityChoices bind:priority />
-	<div class="arrow variant-filled-secondary" />
-</div>
-<div class="card p-4" data-popup="priPopup">
-	<!-- Append the arrow element -->
-	<PriorityChoices bind:priority />
-	<div class="arrow variant-filled-secondary" />
-</div>
-<div class="card p-4" data-popup="teamPopup">
-	<!-- Append the arrow element -->
-	<Team bind:assignee />
-	<div class="arrow variant-filled-secondary" />
-</div>
-
-<!-- 
-<div class="py-1">
-	<div class="flex justify-start items-center space-x-1">
-		Type: <ItemTypeChoices bind:itemTyp />
-
-		<span>Progress:</span>
-		<span class="chip variant-soft" use:popup={progressSettings}>
+<div class="sticky bottom-0 variant-ringed rounded variant-glass-surface p-2 mx-1">
+	<div class="input-group gap-0 auto-cols-auto flex rounded-container-token">
+		<div class="chip relative" use:popup={sprintSettings}>
+			<span class="badge-icon absolute -top-0 -right-0 z-10">{sprint}</span>
+			⚡
+		</div>
+		<div class="chip relative" use:popup={effortSettings}>
+			<span class="badge-icon absolute -top-0 -right-0 z-10">{estDays}</span>
+			⏰
+		</div>
+		<span class="chip" use:popup={progressSettings}>
 			<span>{progress}</span>
 		</span>
 
-		<span>Status:</span>
 		<span class="chip" use:popup={statusSettings}>
 			{status}
 		</span>
 
-		<span>Priority:</span>
 		<span class="chip variant-warning" use:popup={priPopupSettings}>
 			{priority}
 		</span>
+		<span
+			class="chip variant-warning"
+			on:keydown={() => (toggleDescription = !toggleDescription)}
+			on:click={() => (toggleDescription = !toggleDescription)}
+		>
+			<Icon src={Add} size="20" />
+		</span>
 
-		<span>Tags:</span>
 		<span class="chip" use:popup={tagsPopupSettings}>
 			{selTag}
 		</span>
-		<Sprints bind:sprint />
-		<Team bind:assignee_id />
+		<div class="chip relative font-bold" use:popup={teamMenuSettings}>@ {assignee?.name}</div>
+
+		<textarea
+			bind:value={topic}
+			class="input resize-none bg-transparent border-0 ring-0"
+			name="prompt"
+			id="prompt"
+			placeholder="Add Backlog or Task topic..."
+			rows="1"
+		/>
 		<button
 			class="btn btn-sm variant-ghost-secondary"
 			on:click={(e) => {
+				description = view.state.doc.toString();
 				$addMutation.mutate();
 			}}
 		>
-			<span><Icon src={FetchUpload} size="18" /></span>
-			<span>Submit</span>
+			<span><Icon src={SendAlt} size="20" /></span>
 		</button>
 	</div>
-</div> -->
+
+	<!-- MD -->
+	<div bind:this={editor} class:hidden={toggleDescription} />
+
+	<div class="card p-4" data-popup="prgPopup">
+		<!-- Append the arrow element -->
+		<ProgressChoices bind:progress />
+		<div class="arrow variant-filled-secondary" />
+	</div>
+	<div class="card p-4" data-popup="statPopup">
+		<!-- Append the arrow element -->
+		<StatusChoices bind:status />
+		<div class="arrow variant-filled-secondary" />
+	</div>
+	<div class="card p-4" data-popup="sprintPopup">
+		<!-- Append the arrow element -->
+		<SprintChoices bind:sprint />
+		<div class="arrow variant-filled-secondary" />
+	</div>
+	<div class="card p-4" data-popup="effortPopup">
+		<!-- Append the arrow element -->
+		<EffortChoices bind:estDays />
+		<div class="arrow variant-filled-secondary" />
+	</div>
+	<div class="card p-4" data-popup="tagsPopup">
+		<!-- Append the arrow element -->
+		<TagsChoices bind:selTag />
+		<div class="arrow variant-filled-secondary" />
+	</div>
+	<div class="card p-4" data-popup="priPopup">
+		<!-- Append the arrow element -->
+		<PriorityChoices bind:priority />
+		<div class="arrow variant-filled-secondary" />
+	</div>
+	<div class="card p-4" data-popup="priPopup">
+		<!-- Append the arrow element -->
+		<PriorityChoices bind:priority />
+		<div class="arrow variant-filled-secondary" />
+	</div>
+	<div class="card p-4" data-popup="teamPopup">
+		<!-- Append the arrow element -->
+		<Team bind:assignee />
+		<div class="arrow variant-filled-secondary" />
+	</div>
+</div>
