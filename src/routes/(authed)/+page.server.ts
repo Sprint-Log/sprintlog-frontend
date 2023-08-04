@@ -3,6 +3,7 @@ import { error, redirect } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ parent }) => {
 	await parent();
+	throw redirect(303, '/projects');
 };
 
 export const actions: Actions = {

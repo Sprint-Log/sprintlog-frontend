@@ -38,13 +38,13 @@
 <QueryClientProvider client={queryClient}>
 	<!-- App Shell -->
 	<div id="appShell" class="flex min-h-full" data-testid="app-shell">
-		<aside id="sidebar-left" class="border-surface-900 border-r-2">
+		<aside id="sidebar-left">
 			<AppRail>
-				<AppRailAnchor {regionLead} href="/" name="tile-1" selected={$page.url.pathname === '/'}>
+				<!-- <AppRailAnchor {regionLead} href="/" name="tile-1" selected={$page.url.pathname === '/'}>
 					<svelte:fragment slot="lead">
 						<Icon src={Dashboard} size="24px" />
 					</svelte:fragment>
-				</AppRailAnchor>
+				</AppRailAnchor> -->
 				<!-- --- -->
 				<AppRailAnchor
 					{regionLead}
