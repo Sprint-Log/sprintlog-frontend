@@ -6,6 +6,7 @@
 	import TimeField from './TimeField.svelte';
 	import TaskActions from './TaskActions.svelte';
 	import BacklogActions from './BacklogActions.svelte';
+	import { marked } from 'marked';
 
 	export let item: Sprintlog;
 	export let isTask = true;
@@ -133,7 +134,11 @@
 			{/if}
 		</span>
 	</div>
-	{#if expand}
-		<div class="h-16">{item.description}</div>
+	{#if expand && item.description}
+		<div class="p-2 [&_ul]:list-disc [&_ul]:ml-6 [&_ol]:list-decimal [&_ol]:ml-6">
+			<div class="rounded-md p-2 bg-surface-100-800-token">
+				{@html marked.parse(item.description)}
+			</div>
+		</div>
 	{/if}
 </div>

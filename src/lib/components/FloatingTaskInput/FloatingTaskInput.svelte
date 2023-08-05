@@ -1,6 +1,4 @@
 <script lang="ts">
-	import Sprints from './Sprints.svelte';
-	import Projects from './Projects.svelte';
 	import { useQueryClient, createQuery, createMutation } from '@tanstack/svelte-query';
 	import Team from './Team.svelte';
 	import {
@@ -8,40 +6,50 @@
 		PriorityEnum,
 		TagEnum,
 		ProgressEnum,
-		type Sprintlog,
 		type SprintlogCreate as SprintlogCreate
 	} from '$lib/types/sprintlog';
-	import { popup } from '@skeletonlabs/skeleton';
+	import { modeCurrent, popup } from '@skeletonlabs/skeleton';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
 	import type { User } from '$lib/types/sprintlog';
-
-	import ItemTypeChoices from './ItemTypeChoices.svelte';
 	import StatusChoices from './StatusChoices.svelte';
 	import SprintChoices from './SprintChoices.svelte';
 	import TagsChoices from './TagsChoices.svelte';
 	import PriorityChoices from './PriorityChoices.svelte';
 	import ProgressChoices from './ProgressChoices.svelte';
-	import { Add, FetchUpload, SendAlt } from '@steeze-ui/carbon-icons';
+	import { Add, SendAlt } from '@steeze-ui/carbon-icons';
 	import { Icon } from '@steeze-ui/svelte-icon';
-	import { createSprintlog, getBacklogByPrjSlug } from '$lib/api/sprintlog';
-	import ItemType from './ItemType.svelte';
+	import { createSprintlog } from '$lib/api/sprintlog';
 	import EffortChoices from './EffortChoices.svelte';
-	import Milkdown from '../Editors/TipTap.svelte';
-	import TipTap from '../Editors/TipTap.svelte';
-
 	import { EditorView, basicSetup } from 'codemirror';
 	import { markdown } from '@codemirror/lang-markdown';
 	import { onMount } from 'svelte';
+	import { Compartment } from '@codemirror/state';
+	import { oneDark } from '@codemirror/theme-one-dark';
+	import { basicLight } from 'cm6-theme-basic-light';
+
+	export let user: User;
 
 	let editor: HTMLDivElement;
 	let view: EditorView;
 
+	const theme = new Compartment();
+
 	onMount(() => {
 		view = new EditorView({
-			extensions: [basicSetup, markdown()],
+			extensions: [basicSetup, theme.of(basicLight), markdown()],
 			parent: editor
 		});
+
+		return () => {
+			view.destroy();
+		};
 	});
+
+	$: {
+		view?.dispatch({
+			effects: theme.reconfigure($modeCurrent ? basicLight : oneDark)
+		});
+	}
 
 	let topic = '';
 	let description = '';
@@ -66,11 +74,9 @@
 	export let estDays = 1;
 	export let owner_id: string;
 
-	let assignee: User;
-	let assignee_id: string;
+	let assignee: User = user;
 	let labels: string[] = [];
 	let client = useQueryClient();
-	let isFocused: boolean = true;
 	let toggleDescription = false;
 	const addMutation = createMutation(
 		async function () {
@@ -96,9 +102,17 @@
 			onSuccess: function () {
 				client.invalidateQueries(['refetch-backlogs']);
 				client.invalidateQueries(['refetch-tasks']);
+				topic = '';
+				reset();
 			}
 		}
 	);
+
+	function reset() {
+		view.dispatch({
+			changes: { from: 0, to: view.state.doc.toString().length, insert: '' }
+		});
+	}
 </script>
 
 <div class="sticky bottom-0 variant-ringed rounded variant-glass-surface p-2 mx-1">
@@ -149,13 +163,18 @@
 				description = view.state.doc.toString();
 				$addMutation.mutate();
 			}}
+			disabled={$addMutation.isLoading}
 		>
 			<span><Icon src={SendAlt} size="20" /></span>
 		</button>
 	</div>
 
 	<!-- MD -->
-	<div bind:this={editor} class:hidden={toggleDescription} />
+	<div
+		bind:this={editor}
+		class:hidden={!toggleDescription}
+		class="p-4 min-h-[6rem] max-h-40 rounded-container-token overflow-y-auto"
+	/>
 
 	<div class="card p-4" data-popup="prgPopup">
 		<!-- Append the arrow element -->

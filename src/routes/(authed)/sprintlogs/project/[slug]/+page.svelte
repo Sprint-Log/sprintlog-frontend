@@ -4,9 +4,22 @@
 	import Listitem from '$lib/components/Sprintlog/ListItem.svelte';
 	import { page } from '$app/stores';
 	import type { PageData } from '../../../sprintlogs/project/[slug]/$types';
+	import type { SprintlogPagination } from '$lib/types/sprintlog';
+	import type { ProjectItems } from '$lib/types/sprintlog';
+	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
+	import Resizable from '$lib/resizable';
+	import { onMount } from 'svelte';
+	import { createQuery } from '@tanstack/svelte-query';
+	import { getBacklogByPrjSlug, getTaskByPrjSlug } from '$lib/api/sprintlog';
+	import { ProgressRadial } from '@skeletonlabs/skeleton';
+
+	export const load = ({ params }: { params: any }) => {
+		return {
+			slug: params.slug
+		};
+	};
 
 	export let data: PageData;
-	import type { ProjectItems } from '$lib/types/sprintlog';
 	const { user } = data;
 	let owner_id: string;
 	if (user != null) {
@@ -14,38 +27,11 @@
 	}
 	let project_slug = $page.params.slug;
 
-	import type {
-		Sprintlog,
-		SprintlogPagination,
-		PriorityEnum,
-		ProgressEnum,
-		StatusEnum,
-		TagEnum
-	} from '$lib/types/sprintlog';
-	export const load = ({ params }: { params: any }) => {
-		return {
-			slug: params.slug
-		};
-	};
-	// Import the Project type
-	import { createQuery, createMutation, useQueryClient } from '@tanstack/svelte-query';
-	import {
-		getBacklogByPrjSlug,
-		getProjects,
-		getTaskByPrjSlug,
-		switchToBacklog,
-		switchToTask
-	} from '$lib/api/sprintlog';
 	const prjItems: ProjectItems[] = [
 		{ text: 'Home', href: '/' },
 		{ text: 'Projects', href: '/projects' },
 		{ text: project_slug }
 	];
-	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
-	import TaskActions from '$lib/components/Sprintlog/TaskActions.svelte';
-	import BacklogActions from '$lib/components/Sprintlog/BacklogActions.svelte';
-	import Resizable from '$lib/resizable';
-	import { onMount } from 'svelte';
 
 	$: taskTotal = 200;
 	$: currentPageTask = 0;
@@ -55,7 +41,6 @@
 	$: amountBacklog = 200;
 	let order = 'desc';
 	let intervalMs = 15000;
-	let client = useQueryClient();
 
 	$: tasks = createQuery<SprintlogPagination, Error>({
 		queryKey: ['refetch-tasks', currentPageTask, amountTask, order],
@@ -63,7 +48,6 @@
 			return await getTaskByPrjSlug($page.params.slug, currentPageTask, amountTask, order).then(
 				(res) => {
 					taskTotal = res.total;
-					// currentPageTask = res.offset;
 					return res;
 				}
 			);
@@ -83,7 +67,6 @@
 				order
 			).then((res) => {
 				backlogTotal = res.total;
-				// currentPageBacklog = res.offset;
 				return res;
 			});
 		},
@@ -92,43 +75,6 @@
 		refetchInterval: intervalMs,
 		cacheTime: 0
 	});
-	$: taskPager = {
-		offset: currentPageTask,
-		limit: amountTask,
-		size: taskTotal,
-		amounts: [100, 200, 500]
-	};
-	$: backlogPager = {
-		offset: currentPageBacklog,
-		limit: 5,
-		size: backlogTotal,
-		amounts: [5]
-	};
-	function onTaskPageChange(e: CustomEvent): void {
-		console.log('event:page', e.detail);
-		currentPageTask = parseInt(e.detail);
-	}
-
-	function onTaskAmountChange(e: CustomEvent): void {
-		console.log('event:amount', e.detail);
-		amountTask = parseInt(e.detail);
-	}
-	function onBacklogPageChange(e: CustomEvent): void {
-		console.log('event:page', e.detail);
-		currentPageBacklog = parseInt(e.detail);
-	}
-
-	function onBacklogAmountChange(e: CustomEvent): void {
-		console.log('event:amount', e.detail);
-		amountBacklog = parseInt(e.detail);
-	}
-
-	const handleItemClick = function (event: any, item: any) {
-		// client.invalidateQueries(['refetch-backlogs']);
-	};
-	const toBacklog = function (event: any, item: any) {
-		// client.invalidateQueries(['refetch-backlogs']);
-	};
 
 	let wrapper: HTMLDivElement;
 
@@ -167,31 +113,43 @@
 		<div class="flex-grow mb-8" bind:this={wrapper}>
 			<div id="main">
 				<div class="resizable-top flex flex-col" id="win1">
-					<ListBox>
-						<svelte:fragment slot="title">Tasks</svelte:fragment>
-						<div class="px-4 pt-2">
-							{#if $tasks.isSuccess}
-								{#each $tasks.data.items as task}
-									<Listitem item={task} />
-								{/each}
-							{/if}
+					{#if $tasks.isLoading}
+						<div class="h-full grid place-items-center">
+							<ProgressRadial width="w-12" />
 						</div>
-					</ListBox>
+					{:else}
+						<ListBox>
+							<svelte:fragment slot="title">Tasks</svelte:fragment>
+							<div class="px-4 pt-2">
+								{#if $tasks.isSuccess}
+									{#each $tasks.data.items as task}
+										<Listitem item={task} />
+									{/each}
+								{/if}
+							</div>
+						</ListBox>
+					{/if}
 				</div>
 				<div class="resizable-bottom flex flex-col" id="win2">
-					<ListBox>
-						<svelte:fragment slot="title">Backlogs</svelte:fragment>
-						<div class="px-4 pt-2">
-							{#if $backlogs.isSuccess}
-								{#each $backlogs.data.items as task}
-									<Listitem item={task} isTask={false} />
-								{/each}
-							{/if}
+					{#if $backlogs.isLoading}
+						<div class="h-full grid place-items-center">
+							<ProgressRadial width="w-12" />
 						</div>
-					</ListBox>
+					{:else}
+						<ListBox>
+							<svelte:fragment slot="title">Backlogs</svelte:fragment>
+							<div class="px-4 pt-2">
+								{#if $backlogs.isSuccess}
+									{#each $backlogs.data.items as task}
+										<Listitem item={task} isTask={false} />
+									{/each}
+								{/if}
+							</div>
+						</ListBox>
+					{/if}
 				</div>
 			</div>
 		</div>
-		<FloatingTask {project_slug} {owner_id} />
+		<FloatingTask {project_slug} {owner_id} {user} />
 	</div>
 </div>
