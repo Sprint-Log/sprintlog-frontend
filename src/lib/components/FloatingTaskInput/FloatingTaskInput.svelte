@@ -16,7 +16,7 @@
 	import TagsChoices from './TagsChoices.svelte';
 	import PriorityChoices from './PriorityChoices.svelte';
 	import ProgressChoices from './ProgressChoices.svelte';
-	import { Add, SendAlt } from '@steeze-ui/carbon-icons';
+	import { Add, SendAlt, Subtract } from '@steeze-ui/carbon-icons';
 	import { Icon } from '@steeze-ui/svelte-icon';
 	import { createSprintlog } from '$lib/api/sprintlog';
 	import EffortChoices from './EffortChoices.svelte';
@@ -115,7 +115,24 @@
 	}
 </script>
 
-<div class="sticky bottom-0 variant-ringed rounded variant-glass-surface p-2 mx-1">
+<div class="sticky bottom-0 variant-ringed rounded p-2 mx-1 bg-surface-100-800-token">
+	{#if toggleDescription}
+		<input
+			bind:value={topic}
+			class="input resize-none bg-transparent border-0 ring-0 px-4 py-1"
+			name="prompt"
+			id="prompt"
+			placeholder="Add Backlog or Task topic..."
+			autocomplete="off"
+		/>
+	{/if}
+
+	<div
+		bind:this={editor}
+		class:hidden={!toggleDescription}
+		class="min-h-[6rem] max-h-40 rounded-container-token overflow-y-auto py-1 px-2"
+	/>
+
 	<div class="input-group gap-0 auto-cols-auto flex rounded-container-token">
 		<div class="chip relative" use:popup={sprintSettings}>
 			<span class="badge-icon absolute -top-0 -right-0 z-10">{sprint}</span>
@@ -136,27 +153,35 @@
 		<span class="chip variant-warning" use:popup={priPopupSettings}>
 			{priority}
 		</span>
-		<span
-			class="chip variant-warning"
-			on:keydown={() => (toggleDescription = !toggleDescription)}
-			on:click={() => (toggleDescription = !toggleDescription)}
-		>
-			<Icon src={Add} size="20" />
-		</span>
 
 		<span class="chip" use:popup={tagsPopupSettings}>
 			{selTag}
 		</span>
 		<div class="chip relative font-bold" use:popup={teamMenuSettings}>@ {assignee?.name}</div>
 
-		<textarea
-			bind:value={topic}
-			class="input resize-none bg-transparent border-0 ring-0"
-			name="prompt"
-			id="prompt"
-			placeholder="Add Backlog or Task topic..."
-			rows="1"
-		/>
+		{#if !toggleDescription}
+			<input
+				bind:value={topic}
+				class="input resize-none bg-transparent border-0 ring-0 px-4 py-1 outline-0"
+				name="prompt"
+				id="prompt"
+				placeholder="Add Backlog or Task topic..."
+				autocomplete="off"
+			/>
+		{:else}
+			<div class="w-full" />
+		{/if}
+		<span
+			class="chip variant-warning"
+			on:keydown={() => (toggleDescription = !toggleDescription)}
+			on:click={() => (toggleDescription = !toggleDescription)}
+		>
+			{#if !toggleDescription}
+				<Icon src={Add} size="20" />
+			{:else}
+				<Icon src={Subtract} size="20" />
+			{/if}
+		</span>
 		<button
 			class="btn btn-sm variant-ghost-secondary"
 			on:click={(e) => {
@@ -168,13 +193,6 @@
 			<span><Icon src={SendAlt} size="20" /></span>
 		</button>
 	</div>
-
-	<!-- MD -->
-	<div
-		bind:this={editor}
-		class:hidden={!toggleDescription}
-		class="p-4 min-h-[6rem] max-h-40 rounded-container-token overflow-y-auto"
-	/>
 
 	<div class="card p-4" data-popup="prgPopup">
 		<!-- Append the arrow element -->
