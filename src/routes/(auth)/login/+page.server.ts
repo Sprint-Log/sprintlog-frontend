@@ -1,6 +1,7 @@
 import type { Actions } from './$types';
 import { redirect, fail } from '@sveltejs/kit';
 import { loginUser } from '$lib/api/auth';
+import { env } from '$env/dynamic/public';
 
 export const actions: Actions = {
 	default: async (event) => {
@@ -19,8 +20,9 @@ export const actions: Actions = {
 				httpOnly: true,
 				path: '/',
 				secure: true,
-				sameSite: 'lax',
-				maxAge: 60 * 60 * 24 // 1 day
+				sameSite: 'strict',
+				maxAge: 60 * 60 * 24, // 1 day
+				domain: env.PUBLIC_COOKIE_DOMAIN
 			});
 		} catch (error: any) {
 			return fail(400, {
