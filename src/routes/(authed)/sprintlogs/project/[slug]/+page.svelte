@@ -1,0 +1,155 @@
+<script lang="ts">
+	import FloatingTask from '$lib/components/FloatingTaskInput/FloatingTaskInput.svelte';
+	import ListBox from '$lib/components/Sprintlog/ListBox.svelte';
+	import Listitem from '$lib/components/Sprintlog/ListItem.svelte';
+	import { page } from '$app/stores';
+	import type { PageData } from '../../../sprintlogs/project/[slug]/$types';
+	import type { SprintlogPagination } from '$lib/types/sprintlog';
+	import type { ProjectItems } from '$lib/types/sprintlog';
+	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
+	import Resizable from '$lib/resizable';
+	import { onMount } from 'svelte';
+	import { createQuery } from '@tanstack/svelte-query';
+	import { getBacklogByPrjSlug, getTaskByPrjSlug } from '$lib/api/sprintlog';
+	import { ProgressRadial } from '@skeletonlabs/skeleton';
+
+	export const load = ({ params }: { params: any }) => {
+		return {
+			slug: params.slug
+		};
+	};
+
+	export let data: PageData;
+	const { user } = data;
+	let owner_id: string;
+	if (user != null) {
+		owner_id = user.id;
+	}
+	let project_slug = $page.params.slug;
+
+	const prjItems: ProjectItems[] = [
+		{ text: 'Home', href: '/' },
+		{ text: 'Projects', href: '/projects' },
+		{ text: project_slug }
+	];
+
+	$: taskTotal = 200;
+	$: currentPageTask = 0;
+	$: amountTask = 200;
+	$: backlogTotal = 200;
+	$: currentPageBacklog = 0;
+	$: amountBacklog = 200;
+	let order = 'desc';
+	let intervalMs = 15000;
+
+	$: tasks = createQuery<SprintlogPagination, Error>({
+		queryKey: ['refetch-tasks', currentPageTask, amountTask, order],
+		queryFn: async () => {
+			return await getTaskByPrjSlug($page.params.slug, currentPageTask, amountTask, order).then(
+				(res) => {
+					taskTotal = res.total;
+					return res;
+				}
+			);
+		},
+		refetchOnMount: 'always',
+		refetchOnWindowFocus: true,
+		refetchInterval: intervalMs,
+		cacheTime: 0
+	});
+	$: backlogs = createQuery<SprintlogPagination, Error>({
+		queryKey: ['refetch-backlogs', currentPageBacklog, amountBacklog, order],
+		queryFn: async () => {
+			return await getBacklogByPrjSlug(
+				$page.params.slug,
+				currentPageBacklog,
+				amountBacklog,
+				order
+			).then((res) => {
+				backlogTotal = res.total;
+				return res;
+			});
+		},
+		refetchOnMount: 'always',
+		refetchOnWindowFocus: true,
+		refetchInterval: intervalMs,
+		cacheTime: 0
+	});
+
+	let wrapper: HTMLDivElement;
+
+	onMount(() => {
+		document.getElementById('main')!.style.width = wrapper.offsetWidth + 'px';
+		document.getElementById('main')!.style.height = wrapper.offsetHeight + 'px';
+		Resizable.initialise(
+			'main',
+			{
+				win1: 0.5,
+				win2: 0.5
+			},
+			2
+		);
+		document.getElementsByClassName('resizer')[0].classList.add('bg-surface-600');
+
+		function onResize() {
+			Resizable.activeContentWindows[0].changeSize(wrapper.offsetWidth, wrapper.offsetHeight);
+			Resizable.activeContentWindows[0].childrenResize();
+		}
+		window.addEventListener('resize', onResize);
+
+		return () => {
+			window.removeEventListener('resize', onResize);
+		};
+	});
+</script>
+
+<!-- Scrollable container -->
+<div class="flex-grow">
+	<nav class="px-6 py-2 bg-surface-100-800-token">
+		<Breadcrumb items={prjItems} />
+	</nav>
+
+	<div class="flex flex-col h-full">
+		<div class="flex-grow mb-8" bind:this={wrapper}>
+			<div id="main">
+				<div class="resizable-top flex flex-col" id="win1">
+					{#if $tasks.isLoading}
+						<div class="h-full grid place-items-center">
+							<ProgressRadial width="w-12" />
+						</div>
+					{:else}
+						<ListBox>
+							<svelte:fragment slot="title">Tasks</svelte:fragment>
+							<div class="px-4 pt-2">
+								{#if $tasks.isSuccess}
+									{#each $tasks.data.items as task}
+										<Listitem item={task} />
+									{/each}
+								{/if}
+							</div>
+						</ListBox>
+					{/if}
+				</div>
+				<div class="resizable-bottom flex flex-col" id="win2">
+					{#if $backlogs.isLoading}
+						<div class="h-full grid place-items-center">
+							<ProgressRadial width="w-12" />
+						</div>
+					{:else}
+						<ListBox>
+							<svelte:fragment slot="title">Backlogs</svelte:fragment>
+							<div class="px-4 pt-2">
+								{#if $backlogs.isSuccess}
+									{#each $backlogs.data.items as task}
+										<Listitem item={task} isTask={false} />
+									{/each}
+								{/if}
+							</div>
+						</ListBox>
+					{/if}
+				</div>
+			</div>
+		</div>
+		<FloatingTask {project_slug} {owner_id} {user} />
+	</div>
+</div>
