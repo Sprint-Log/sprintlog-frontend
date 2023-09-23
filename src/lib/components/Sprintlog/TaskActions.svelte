@@ -10,12 +10,16 @@
 		Calendar,
 		DownToBottom,
 		RowExpand,
-		RowCollapse
+		RowCollapse,
+
+		UpToTop
+
 	} from '@steeze-ui/carbon-icons';
 	import { createEventDispatcher } from 'svelte';
 
 	export let item: Sprintlog;
 	export let expand: boolean;
+	export let edit: boolean;
 	let client = useQueryClient();
 
 	const handleItemClick = function (event: any, item: any) {
@@ -41,7 +45,7 @@
 
 <ClickableIcon
 	id="checkmark"
-	iconSrc={expand ? RowCollapse : RowExpand}
+	iconSrc={expand ? UpToTop : DownToBottom}
 	size="18px"
 	onItemClick={() => dispatch('expand')}
 />
@@ -49,11 +53,11 @@
 	id="overflowMenu"
 	iconSrc={OverflowMenuVertical}
 	size="18px"
-	onItemClick={handleItemClick}
+	onItemClick={() => dispatch('edit')}
 />
 <ClickableIcon
-	id="DownToBottom"
-	iconSrc={DownToBottom}
+	id="RowCollapse"
+	iconSrc={RowCollapse}
 	size="18px"
 	onItemClick={() => $switchToBacklogMutation.mutate()}
 />

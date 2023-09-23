@@ -12,7 +12,7 @@
 	import { createQuery } from '@tanstack/svelte-query';
 	import { getBacklogByPrjSlug, getTaskByPrjSlug } from '$lib/api/sprintlog';
 	import { ProgressRadial } from '@skeletonlabs/skeleton';
-
+    import type {SprintlogCreate,Sprintlog} from '$lib/types/sprintlog';
 	export const load = ({ params }: { params: any }) => {
 		return {
 			slug: params.slug
@@ -21,6 +21,7 @@
 
 	export let data: PageData;
 	const { user } = data;
+    let item:Sprintlog={} as Sprintlog;
 	let owner_id: string;
 	if (user != null) {
 		owner_id = user.id;
@@ -75,81 +76,55 @@
 		refetchInterval: intervalMs,
 		cacheTime: 0
 	});
-
-	let wrapper: HTMLDivElement;
-
-	onMount(() => {
-		document.getElementById('main')!.style.width = wrapper.offsetWidth + 'px';
-		document.getElementById('main')!.style.height = wrapper.offsetHeight + 'px';
-		Resizable.initialise(
-			'main',
-			{
-				win1: 0.5,
-				win2: 0.5
-			},
-			2
-		);
-		document.getElementsByClassName('resizer')[0].classList.add('bg-surface-600');
-
-		function onResize() {
-			Resizable.activeContentWindows[0].changeSize(wrapper.offsetWidth, wrapper.offsetHeight);
-			Resizable.activeContentWindows[0].childrenResize();
-		}
-		window.addEventListener('resize', onResize);
-
-		return () => {
-			window.removeEventListener('resize', onResize);
-		};
-	});
 </script>
 
-<!-- Scrollable container -->
-<div class="flex-grow">
+
+<main id="page-content" class="w-full h-full max-h-screen">
 	<nav class="px-6 py-2 bg-surface-100-800-token">
 		<Breadcrumb items={prjItems} />
 	</nav>
+    <section class="container flex-auto  gap-y-2 min-h-[80vh] max-h-[90vh]  grid grid-rows-[auto_auto_1fr_auto_1fr] max-w-[120rem] mx-auto">
 
-	<div class="flex flex-col h-full">
-		<div class="flex-grow mb-8" bind:this={wrapper}>
-			<div id="main">
-				<div class="resizable-top flex flex-col" id="win1">
-					{#if $tasks.isLoading}
-						<div class="h-full grid place-items-center">
-							<ProgressRadial width="w-12" />
-						</div>
-					{:else}
-						<ListBox>
-							<svelte:fragment slot="title">Tasks</svelte:fragment>
-							<div class="px-4 pt-2">
-								{#if $tasks.isSuccess}
-									{#each $tasks.data.items as task}
-										<Listitem item={task} />
-									{/each}
-								{/if}
-							</div>
-						</ListBox>
-					{/if}
-				</div>
-				<div class="resizable-bottom flex flex-col" id="win2">
-					{#if $backlogs.isLoading}
-						<div class="h-full grid place-items-center">
-							<ProgressRadial width="w-12" />
-						</div>
-					{:else}
-						<ListBox>
-							<svelte:fragment slot="title">Backlogs</svelte:fragment>
-							<div class="px-4 pt-2">
-								{#if $backlogs.isSuccess}
-									{#each $backlogs.data.items as task}
-										<Listitem item={task} isTask={false} />
-									{/each}
-								{/if}
-							</div>
-						</ListBox>
-					{/if}
-				</div>
-			</div>
-		</div>
-		<FloatingTask {project_slug} {owner_id} {user} />
-	</div>
-</div>
+        <div class="px-4 pt-4 flex flex-col">
+            <FloatingTask {project_slug} {item} {user} />
+        </div>
+        <div  class="px-4" > <h3>Backlogs</h3> </div>
+
+        <section class="grid h-full max-h-screen overflow-y-scroll">
+            <div class="px-4 rounded h-full">
+                {#if $backlogs.isLoading}
+                    <div class="h-full grid place-items-center">
+                        <ProgressRadial width="w-12" />
+                    </div>
+                {:else}
+                    <ListBox>
+                        {#if $backlogs.isSuccess}
+                            {#each $backlogs.data.items as task}
+                                <Listitem item={task} isTask={false} />
+                            {/each}
+                        {/if}
+                    </ListBox>
+                {/if}
+            </div>
+        </section>
+        <div class="px-4"> <h3>Tasks</h3> </div>
+        <section class="grid h-full max-h-screen overflow-y-scroll">
+            <div class="px-4   rounded h-full">
+                
+                {#if $tasks.isLoading}
+                    <div class="h-full grid place-items-center">
+                        <ProgressRadial width="w-12" />
+                    </div>
+                {:else}
+                    <ListBox>
+                        {#if $tasks.isSuccess}
+                            {#each $tasks.data.items as task}
+                                <Listitem item={task} />
+                            {/each}
+                        {/if}
+                    </ListBox>
+                {/if}
+            </div>
+        </section>
+    </section>
+</main>

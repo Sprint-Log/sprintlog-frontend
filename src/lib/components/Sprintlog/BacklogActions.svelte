@@ -9,18 +9,23 @@
 		OverflowMenuVertical,
 		UserAdmin,
 		Calendar,
-		UpToTop,
 		RowExpand,
-		RowCollapse
+		RowCollapse,
+		DownToBottom,
+
+		UpToTop
+
+
 	} from '@steeze-ui/carbon-icons';
 	import { createEventDispatcher } from 'svelte';
+	export let edit: boolean;
 
 	export let item: Sprintlog;
 	export let expand: boolean;
 	const dispatch = createEventDispatcher();
 
 	const handleItemClick = function (event: any, item: any) {
-		// client.invalidateQueries(['refetch-backlogs']);
+		client.invalidateQueries(['refetch-backlogs']);
 	};
 	const toBacklog = function (event: any, item: any) {
 		// client.invalidateQueries(['refetch-backlogs']);
@@ -39,10 +44,10 @@
 </script>
 
 <ClickableIcon
-	id="checkmark"
-	iconSrc={expand ? RowCollapse : RowExpand}
-	size="18px"
-	onItemClick={() => dispatch('expand')}
+    id="checkmark"
+    iconSrc={expand ? UpToTop : DownToBottom}
+    size="18px"
+    onItemClick={() => dispatch('expand')}
 />
 <ClickableIcon
 	id="overflowMenu"
@@ -51,8 +56,8 @@
 	onItemClick={handleItemClick}
 />
 <ClickableIcon
-	id="upToTop"
-	iconSrc={UpToTop}
+	id="DownToBottom"
+	iconSrc={RowExpand}
 	size="18px"
 	onItemClick={() => $switchToTaskMutation.mutate()}
 />

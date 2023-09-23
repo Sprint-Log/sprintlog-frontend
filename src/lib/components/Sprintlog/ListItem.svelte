@@ -12,6 +12,7 @@
 	export let isTask = true;
 	let client = useQueryClient();
 	let expand = false;
+	let edit = false;
 	const handleItemClick = function (event: any, item: any) {
 		client.invalidateQueries(['refetch-backlogs']);
 	};
@@ -63,74 +64,83 @@
 	function onExpand() {
 		expand = !expand;
 	}
+	function onEdit() {
+		expand = !expand;
+	}
 </script>
 
 <div class="hover:variant-ringed-primary py-0.5 group">
 	<div class="flex space-x-3 space-y-1">
 		<div class="flex-1">
-			<Field
-				text={item.status}
-				color=" select-none hover:variant-soft-secondary"
-				typography="text-sm font-bold"
-				onItemClick={handleItemClick}
-			/>
-			<Field
-				text={item.category}
-				color="select-none hover:variant-soft-secondary"
-				typography="text-sm font-medium"
-				onItemClick={handleItemClick}
-			/>
-			<Field
-				text={item.priority}
-				color="select-none hover:variant-soft-secondary"
-				typography="text-sm font-semibold"
-				onItemClick={() => $priorityCircleMutation.mutate()}
-			/>
-			<Field
-				text={item.progress}
-				color="select-none hover:variant-soft-secondary"
-				typography="text-sm font-normal"
-				onItemClick={() => $progressCircleMutation.mutate()}
-			/>
+            <span class="flex-grow">
 
-			<Field
-				text={`[${item.slug}]`}
-				color="uppercase  hover:variant-soft-secondary"
-				typography="text-sm font-mono"
-				onItemClick={handleItemClick}
-			/>
-			<Field
-				text={`@${item.assignee_name}`}
-				color=" hover:variant-soft-secondary"
-				typography="text-sm font-mono"
-				onItemClick={handleItemClick}
-			/>
-			<Field
-				text={item.title}
-				color="hover:variant-soft-primary"
-				typography="text-sm font-mono"
-				onItemClick={handleItemClick}
-			/>
-			<TimeField
-				prefix="⏱️"
-				text={item.beg_date}
-				color=""
-				typography="text-sm font-normal"
-				onItemClick={handleItemClick}
-			/>
-			<TimeField
-				text={item.due_date}
-				prefix="⏰"
-				color=""
-				typography="text-sm font-semibold"
-				onItemClick={handleItemClick}
-			/>
+                <Field
+                    text={`[${item.slug}]`}
+                    color="uppercase  hover:variant-soft-secondary"
+                    typography="text-sm font-mono font-bold"
+                    onItemClick={handleItemClick}
+                />
+                <Field
+                    text={item.status}
+                    color=" select-none hover:variant-soft-secondary"
+                    typography="text-sm font-bold"
+                    onItemClick={handleItemClick}
+                />
+                <Field
+                    text={item.category}
+                    color="select-none hover:variant-soft-secondary"
+                    typography="text-sm font-medium"
+                    onItemClick={handleItemClick}
+                />
+                <Field
+                    text={item.priority}
+                    color="select-none hover:variant-soft-secondary"
+                    typography="text-sm font-semibold"
+                    onItemClick={() => $priorityCircleMutation.mutate()}
+                />
+                <Field
+                    text={item.progress}
+                    color="select-none hover:variant-soft-secondary"
+                    typography="text-sm font-normal"
+                    onItemClick={() => $progressCircleMutation.mutate()}
+                />
+    
+                <Field
+                    text={`@${item.assignee_name}`}
+                    color=" hover:variant-soft-secondary"
+                    typography="text-sm font-mono"
+                    onItemClick={handleItemClick}
+                />
+                <Field
+                    text={item.title}
+                    color="hover:variant-soft-primary"
+                    typography="text-sm font-mono"
+                    onItemClick={handleItemClick}
+                />
+            </span>
+            <span class="inline-block">
+                <TimeField
+                    prefix="⏱️"
+                    text={item.beg_date}
+                    color=""
+                    typography="text-sm font-normal"
+                    onItemClick={handleItemClick}
+                />
+                <TimeField
+                    text={item.due_date}
+                    prefix="⏰"
+                    color=""
+                    typography="text-sm font-semibold"
+                    onItemClick={handleItemClick}
+                />
+
+            </span>
 		</div>
 		<span class="inline-flex gap-x-1.5 items-top group-hover:opacity-100 opacity-0">
 			{#if isTask}
-				<TaskActions {item} on:expand={onExpand} {expand} />
+				<TaskActions {item} on:expand={onExpand} on:edit={onEdit} {edit} {expand} />
 			{:else}
-				<BacklogActions {item} on:expand={onExpand} {expand} />
+				<BacklogActions {item} on:expand={onExpand} on:edit={onEdit} {edit} {expand} />
 			{/if}
 		</span>
 	</div>
