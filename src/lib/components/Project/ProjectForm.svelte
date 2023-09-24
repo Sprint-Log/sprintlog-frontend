@@ -9,16 +9,9 @@
 	import { EditorView, basicSetup } from 'codemirror';
 	import { markdown } from '@codemirror/lang-markdown';
 	import { onMount } from 'svelte';
+	import CMEditor from '../Editors/CMEditor.svelte';
 
-	let editor: HTMLDivElement;
-	let view: EditorView;
 
-	onMount(() => {
-		view = new EditorView({
-			extensions: [basicSetup, markdown()],
-			parent: editor
-		});
-	});
 
 	let project: ProjectCreate = {
 		slug: '',
@@ -56,7 +49,6 @@
 <form
 	on:submit={(e) => {
 		e.preventDefault();
-		project.description = view.state.doc.toString();
 		$projectMutation.mutate();
 	}}
 	class="card bg-surface-100 p-6 rounded-md space-y-4 max-w-3xl overflow-y-scroll max-h-[36rem]"
@@ -148,16 +140,7 @@
 			>
 		</div>
 	</label>
-	<div class="mr-4">
-		<span>Description</span>
-		<div bind:this={editor} />
-	</div>
-	<!-- <textarea
-			class="textarea variant-form-material"
-			rows="10"
-			placeholder="Enter Description"
-			bind:value={project.description}
-		/> -->
+    <CMEditor bind:description={project.description} on:save={() =>$projectMutation.mutate()} />
 	<div class="text-right pt-4">
 		<button class="btn variant-filled-primary" type="submit"> Create </button>
 	</div>

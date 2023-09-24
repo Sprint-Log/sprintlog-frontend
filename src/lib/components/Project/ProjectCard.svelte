@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Project } from '$lib/types/sprintlog';
+	import { marked } from 'marked';
 
 	export let project: Project;
 </script>
@@ -8,9 +9,9 @@
 	<h3 class="p-4 font-semibold">{project.name}</h3>
 
 	<hr class="opacity-50" />
-	<div class="p-4 space-y-4">
+	<div class="p-4 space-y-4 overflow-auto">
 		<article>
-			{project.description}
+			{@html marked(project.description)}
 		</article>
 	</div>
 

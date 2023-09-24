@@ -19,7 +19,6 @@
 
 	export let item: Sprintlog;
 	export let expand: boolean;
-	export let edit: boolean;
 	let client = useQueryClient();
 
 	const handleItemClick = function (event: any, item: any) {
@@ -53,7 +52,7 @@
 	id="overflowMenu"
 	iconSrc={OverflowMenuVertical}
 	size="18px"
-	onItemClick={() => dispatch('edit')}
+	onItemClick={() => {dispatch('edit')}}
 />
 <ClickableIcon
 	id="RowCollapse"

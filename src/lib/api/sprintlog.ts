@@ -124,7 +124,7 @@ export const createSprintlog = async (sprintlog: SprintlogCreate): Promise<Sprin
   return data
 }
 export const updateSprintlog = async (sprintlog: Sprintlog): Promise<Sprintlog> => {
-  const response = await authFetch(`api/sprintlogs/`, {
+  const response = await authFetch(`api/sprintlogs/detail/${sprintlog.id}`, {
     method: 'PUT',
     body: JSON.stringify(sprintlog)
   })

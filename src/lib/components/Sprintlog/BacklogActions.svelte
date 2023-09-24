@@ -18,7 +18,6 @@
 
 	} from '@steeze-ui/carbon-icons';
 	import { createEventDispatcher } from 'svelte';
-	export let edit: boolean;
 
 	export let item: Sprintlog;
 	export let expand: boolean;
@@ -53,7 +52,7 @@
 	id="overflowMenu"
 	iconSrc={OverflowMenuVertical}
 	size="18px"
-	onItemClick={handleItemClick}
+    onItemClick={() => dispatch('edit')}
 />
 <ClickableIcon
 	id="DownToBottom"

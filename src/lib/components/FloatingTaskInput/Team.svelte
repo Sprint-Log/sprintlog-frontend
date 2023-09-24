@@ -2,10 +2,10 @@
 	import { createQuery } from '@tanstack/svelte-query';
 	import type { User } from '$lib/types/sprintlog';
 	import { getUsers } from '$lib/api/sprintlog';
-	export let assignee: User;
+	export let assignee: User | undefined;
 	$: assignees = createQuery<User[], Error>({
 		queryKey: ['refetch-assignee'],
-		queryFn: async () => await getUsers(1, 20, 'desc'),
+		queryFn: async () => await getUsers(1, 200, 'desc'),
 		refetchOnMount: 'always',
 		refetchOnWindowFocus: true
 	});

@@ -13,7 +13,7 @@
 </script>
 
 {#each Object.values(TagEnum) as tag}
-	<span
+	<div
 		class="chip {selTag === tag ? 'variant-filled-success' : 'variant-soft'}"
 		on:click={() => {
 			setTag(tag);
@@ -21,5 +21,5 @@
 		on:keypress
 	>
 		{tag}
-	</span>
+	</div>
 {/each}

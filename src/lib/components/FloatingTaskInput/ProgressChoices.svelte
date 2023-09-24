@@ -10,7 +10,7 @@
 
 <span class="hidden md:visible">Progress:</span>
 {#each Object.values(ProgressEnum) as prog}
-	<span
+	<div
 		class="chip {progress === prog ? 'variant-filled-surface' : 'variant-soft'}"
 		on:click={() => {
 			setProgress(prog);
@@ -18,5 +18,5 @@
 		on:keypress
 	>
 		{prog}
-	</span>
+	</div>
 {/each}

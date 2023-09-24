@@ -5,6 +5,7 @@
 	export let color: String;
 	export let typography: String;
 	// export let padding: String;
+
 </script>
 
 <span

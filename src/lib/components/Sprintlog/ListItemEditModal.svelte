@@ -148,9 +148,9 @@
 			</div>
 			<span class="inline-flex gap-x-1.5 items-top group-hover:opacity-100 opacity-0">
 				{#if isTask}
-					<TaskActions {item} on:completion={()=>{isEdit=false;}} on:expand={onExpand} on:edit={onEdit} edit={isEdit} {expand} />
+					<TaskActions {item} on:completion={()=>{isEdit=false;}} on:expand={onExpand} on:edit={onEdit}  {expand} />
 				{:else}
-					<BacklogActions {item} on:completion={()=>{isEdit=false;}} on:expand={onExpand} on:edit={onEdit} edit={isEdit} {expand} />
+					<BacklogActions {item} on:completion={()=>{isEdit=false;}} on:expand={onExpand} on:edit={onEdit}  {expand} />
 				{/if}
 			</span>
 		</div>
