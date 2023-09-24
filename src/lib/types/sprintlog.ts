@@ -61,7 +61,7 @@ export type Sprintlog = {
 	created_at: Date;
 	updated_at: Date;
 	// Relationships
-	assingee?: User;
+	assignee?: User;
 	owner?: User;
 	assignee_id?: string;
 	assignee_name?: string;

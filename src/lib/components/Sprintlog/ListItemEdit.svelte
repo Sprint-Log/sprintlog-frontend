@@ -10,6 +10,7 @@
 	import BacklogActions from './BacklogActions.svelte';
 	import TaskActions from './TaskActions.svelte';
 	import TimeField from './TimeField.svelte';
+	import Team from '../FloatingTaskInput/Team.svelte';
 	export let item: Sprintlog;
 	export let isTask = true;
 	let topic: string = item.title;
@@ -39,13 +40,11 @@
 	function toggleFlag(flagName: FlagName) {
 		flags[flagName] = !flags[flagName];
 		resetOtherFlags(flagName);
-		console.log(flags);
 	}
 
 	function enableOnlyFlag(flagName: FlagName) {
 		flags[flagName] = true;
 		resetOtherFlags(flagName);
-		console.log(flags);
 	}
 
 	function resetOtherFlags(currentFlagName: FlagName) {
@@ -54,20 +53,19 @@
 				flags[key as FlagName] = false;
 			}
 		});
-		console.log(flags);
 	}
 
 	function resetAllFlags() {
 		Object.keys(flags).forEach((key) => {
 			flags[key as FlagName] = false;
 		});
-		console.log(flags);
 	}
 
 	const handleItemClick = function (event: any, item: any) {};
 	const handleBegDateClick = function (event: any, item: any) {
 		toggleFlag('begDateEdit');
 	};
+
 	const dueDateClick = function (event: any, item: any) {
 		toggleFlag('dueDateEdit');
 	};
@@ -114,7 +112,7 @@
 		// flagManager.enableOnlyFlag('descriptionEdit');
 		resetAllFlags();
 	}
-	function onEdit() {
+	function onDescriptionEdit() {
 		enableOnlyFlag('descriptionEdit');
 	}
 	function addDescription() {
@@ -162,13 +160,23 @@
 					typography="text-sm font-normal"
 					onItemClick={() => $progressCircleMutation.mutate()}
 				/>
-
-				<Field
-					text={`@${item.assignee_name}`}
-					color=" hover:variant-soft-secondary"
-					typography="text-sm font-mono"
-					onItemClick={handleItemClick}
-				/>
+				{#if flags.assigneeEdit}
+					<Team
+						bind:assignee={item.assignee}
+						on:assigneeSelected={() => {
+                            item.assignee_id = item.assignee?.id
+							resetAllFlags();
+							$postMutation.mutate();
+						}}
+					/>
+				{:else}
+					<Field
+						text={`@${item.assignee_name}`}
+						color=" hover:variant-soft-secondary"
+						typography="text-sm font-mono"
+						onItemClick={() => toggleFlag('assigneeEdit')}
+					/>
+				{/if}
 
 				{#if flags.titleEdit}
 					<InlineEditor
@@ -198,7 +206,7 @@
 			<span class="inline-block">
 				{#if flags.begDateEdit}
 					<input
-						class="variant-ghost"
+						class="variant-ghost resize-none bg-transparent ring-2 ring-amber-100 text-sm font-mono w-1/2"
 						type="date"
 						bind:value={item.beg_date}
 						on:change={() => {
@@ -217,7 +225,7 @@
 				{/if}
 				{#if flags.dueDateEdit}
 					<input
-						class="variant-ghost"
+						class="variant-ghost resize-none bg-transparent ring-2 ring-amber-100 text-sm font-mono w-1/2"
 						type="date"
 						bind:value={item.due_date}
 						on:change={() => {
@@ -244,7 +252,7 @@
 						resetAllFlags();
 					}}
 					on:expand={onExpand}
-					on:edit={onEdit}
+					on:edit={onDescriptionEdit}
 					{expand}
 				/>
 			{:else}
@@ -254,7 +262,7 @@
 						resetAllFlags();
 					}}
 					on:expand={onExpand}
-					on:edit={onEdit}
+					on:edit={onDescriptionEdit}
 					{expand}
 				/>
 			{/if}
@@ -268,7 +276,6 @@
 						bind:description={item.description}
 						on:save={(event) => {
 							item.description = event.detail.text;
-							console.log(item.description);
 							$postMutation.mutate();
 							resetAllFlags();
 						}}
