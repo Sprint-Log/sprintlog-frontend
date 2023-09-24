@@ -16,7 +16,7 @@
 
 <input
   bind:value={topic}
-  class="resize-none bg-transparent ring-2 ring-amber-100 text-sm font-mono flex-1 mx-20"
+  class="resize-none bg-transparent ring-2 ring-amber-100 text-sm font-mono w-1/2"
   name="prompt"
   id="prompt"
   placeholder="Add A Backlog Item..."

@@ -123,10 +123,15 @@
 	}
 </script>
 
-<div class="hover:variant-ringed-primary py-0.5 group" on:mouseleave={()=>resetAllFlags()} on:blur={()=>resetAllFlags()} on:focusout={()=>resetAllFlags()} >
+<div
+	class="hover:variant-ringed-primary py-0.5 group"
+	on:mouseleave={() => resetAllFlags()}
+	on:blur={() => resetAllFlags()}
+	on:focusout={() => resetAllFlags()}
+>
 	<div class="flex space-x-3 space-y-1">
 		<div class="flex-1">
-			<span class="">
+			<span>
 				<Field
 					text={`[${item.slug}]`}
 					color="uppercase  hover:variant-soft-secondary"
@@ -166,25 +171,21 @@
 				/>
 
 				{#if flags.titleEdit}
-                <span class="flex flex-row ">
-                    
-                    <InlineEditor
-                        bind:topic={item.title}
-                        on:save={() => {
-                            $postMutation.mutate();
-                            resetAllFlags();
-                        }}
-                        on:blur={() => {
-                            $postMutation.mutate();
-                            resetAllFlags();
-                        }}
-                        on:mouseleave={() => {
-                            $postMutation.mutate();
-                            resetAllFlags();
-                        }}
-                    />
-                </span>
-
+					<InlineEditor
+						bind:topic={item.title}
+						on:save={() => {
+							$postMutation.mutate();
+							resetAllFlags();
+						}}
+						on:blur={() => {
+							$postMutation.mutate();
+							resetAllFlags();
+						}}
+						on:mouseleave={() => {
+							$postMutation.mutate();
+							resetAllFlags();
+						}}
+					/>
 				{:else}
 					<Field
 						text={item.title}
