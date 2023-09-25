@@ -24,7 +24,7 @@ export const actions: Actions = {
           secure: true,
           sameSite: 'strict',
           maxAge: 60 * 60 * 2400, // 100 day
-          // domain: env.PUBLIC_COOKIE_DOMAIN
+          domain: env.PUBLIC_COOKIE_DOMAIN
         })
       } else {
         event.cookies.set('token', `Bearer ${token}`, {
