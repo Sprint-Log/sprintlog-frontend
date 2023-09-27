@@ -23,7 +23,7 @@
 		| 'titleEdit'
 		| 'begDateEdit'
 		| 'dueDateEdit';
-
+	import { debouncer } from '$lib/utils/debounce';
 	type Flags = {
 		[key in FlagName]: boolean;
 	};
@@ -119,13 +119,14 @@
 		item.description = `## ${item.category}  Description`;
 		enableOnlyFlag('descriptionEdit');
 	}
+	const debouncedResetAllFlags = debouncer(800, () => resetAllFlags());
 </script>
 
 <div
 	class="hover:variant-ringed-primary py-0.5 group"
-	on:mouseleave={() => resetAllFlags()}
-	on:blur={() => resetAllFlags()}
-	on:focusout={() => resetAllFlags()}
+	on:mouseleave={() => debouncedResetAllFlags()}
+	on:blur={() => debouncedResetAllFlags()}
+	on:focusout={() => debouncedResetAllFlags()}
 >
 	<div class="flex space-x-3 space-y-1">
 		<div class="flex-1">
@@ -138,7 +139,7 @@
 				/>
 				<Field
 					text={item.status}
-					color=" select-none hover:variant-soft-secondary"
+					color="select-none hover:variant-soft-secondary"
 					typography="text-sm font-bold"
 					onItemClick={handleItemClick}
 				/>
@@ -164,7 +165,7 @@
 					<Team
 						bind:assignee={item.assignee}
 						on:assigneeSelected={() => {
-                            item.assignee_id = item.assignee?.id
+							item.assignee_id = item.assignee?.id;
 							resetAllFlags();
 							$postMutation.mutate();
 						}}
@@ -172,7 +173,7 @@
 				{:else}
 					<Field
 						text={`@${item.assignee_name}`}
-						color=" hover:variant-soft-secondary"
+						color="select-none hover:variant-soft-secondary"
 						typography="text-sm font-mono"
 						onItemClick={() => toggleFlag('assigneeEdit')}
 					/>
@@ -186,12 +187,8 @@
 							resetAllFlags();
 						}}
 						on:blur={() => {
+							debouncedResetAllFlags();
 							$postMutation.mutate();
-							resetAllFlags();
-						}}
-						on:mouseleave={() => {
-							$postMutation.mutate();
-							resetAllFlags();
 						}}
 					/>
 				{:else}
@@ -206,12 +203,12 @@
 			<span class="inline-block">
 				{#if flags.begDateEdit}
 					<input
-						class="variant-ghost resize-none bg-transparent ring-2 ring-amber-100 text-sm font-mono w-1/2"
+						class="h-fit variant-ghost resize-none bg-transparent ring-2 ring-amber-100 text-sm font-mono w-1/2"
 						type="date"
 						bind:value={item.beg_date}
 						on:change={() => {
-							resetAllFlags();
 							$postMutation.mutate();
+							resetAllFlags();
 						}}
 					/>
 				{:else}
@@ -278,6 +275,11 @@
 							item.description = event.detail.text;
 							$postMutation.mutate();
 							resetAllFlags();
+						}}
+						on:lostFocus={(event) => {
+                            item.description = event.detail.text;
+							debouncedResetAllFlags();
+							$postMutation.mutate();
 						}}
 					/>
 				{:else}

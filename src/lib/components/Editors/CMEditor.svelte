@@ -32,7 +32,7 @@
 			parent: editor
 		});
 		view.contentDOM.addEventListener('blur', (event) => {
-			dispatch('lostFocus');
+			dispatch('lostFocus',{text: view.state.doc.toString()});
 		});
 
 		return () => {
