@@ -11,9 +11,9 @@
 		Calendar,
 		RowExpand,
 		RowCollapse,
-		DownToBottom,
+		AddAlt,
 
-		UpToTop
+		SubtractAlt
 
 
 	} from '@steeze-ui/carbon-icons';
@@ -44,7 +44,7 @@
 
 <ClickableIcon
     id="checkmark"
-    iconSrc={expand ? UpToTop : DownToBottom}
+    iconSrc={expand ? SubtractAlt : AddAlt}
     size="18px"
     onItemClick={() => dispatch('expand')}
 />
@@ -55,7 +55,7 @@
     onItemClick={() => dispatch('edit')}
 />
 <ClickableIcon
-	id="DownToBottom"
+	id="AddAlt"
 	iconSrc={RowExpand}
 	size="18px"
 	onItemClick={() => $switchToTaskMutation.mutate()}

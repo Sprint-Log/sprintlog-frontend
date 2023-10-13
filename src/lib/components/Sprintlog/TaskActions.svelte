@@ -8,11 +8,16 @@
 		OverflowMenuVertical,
 		UserAdmin,
 		Calendar,
-		DownToBottom,
 		RowExpand,
 		RowCollapse,
 
-		UpToTop
+		UpToTop,
+
+		SubtractAlt,
+
+		AddAlt
+
+
 
 	} from '@steeze-ui/carbon-icons';
 	import { createEventDispatcher } from 'svelte';
@@ -44,7 +49,7 @@
 
 <ClickableIcon
 	id="checkmark"
-	iconSrc={expand ? UpToTop : DownToBottom}
+	iconSrc={expand ? AddAlt: SubtractAlt}
 	size="18px"
 	onItemClick={() => dispatch('expand')}
 />

@@ -165,7 +165,7 @@
 		placeholder="Add A Backlog Item..."
 		autocomplete="off"
 		on:focus={() => {
-			toggleDescription = true;
+			// toggleDescription = true;
 		}}
 	/>
 	<!-- <div class="w-full" /> -->

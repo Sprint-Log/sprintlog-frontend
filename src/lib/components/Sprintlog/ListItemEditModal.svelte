@@ -74,7 +74,7 @@
 	<div class="hover:variant-ringed-tertiary py-0.5 group">
 		<div class="px-2 space-x-3 space-y-1">
 			<FloatingTaskInput
-				bind:user={item['assingee']}
+				bind:user={item['assignee']}
 				{item}
 				bind:project_slug={item.project_slug}
 			/>
@@ -148,9 +148,25 @@
 			</div>
 			<span class="inline-flex gap-x-1.5 items-top group-hover:opacity-100 opacity-0">
 				{#if isTask}
-					<TaskActions {item} on:completion={()=>{isEdit=false;}} on:expand={onExpand} on:edit={onEdit}  {expand} />
+					<TaskActions
+						{item}
+						on:completion={() => {
+							isEdit = false;
+						}}
+						on:expand={onExpand}
+						on:edit={onEdit}
+						{expand}
+					/>
 				{:else}
-					<BacklogActions {item} on:completion={()=>{isEdit=false;}} on:expand={onExpand} on:edit={onEdit}  {expand} />
+					<BacklogActions
+						{item}
+						on:completion={() => {
+							isEdit = false;
+						}}
+						on:expand={onExpand}
+						on:edit={onEdit}
+						{expand}
+					/>
 				{/if}
 			</span>
 		</div>

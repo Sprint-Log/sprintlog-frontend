@@ -16,7 +16,7 @@ export async function authFetch(path: string, settings?: RequestInit): Promise<R
 }
 export const getProjects = async (
   currentPage = 1,
-  pageSize = 20,
+  pageSize = 200,
   sortOrder = 'asc'
 ): Promise<Project[]> => {
   const response = await authFetch(
@@ -98,7 +98,7 @@ export const getBacklogByPrjSlug = async (
 export const getTaskByPrjSlug = async (
   prjSlug: string,
   currentPage = 1,
-  pageSize = 5,
+  pageSize = 500,
   sortOrder = 'asc'
 ): Promise<SprintlogPagination> => {
   currentPage = currentPage + 1

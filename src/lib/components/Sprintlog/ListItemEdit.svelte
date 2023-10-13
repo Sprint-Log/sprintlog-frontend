@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { priorityCircle, progressCircle, updateSprintlog } from '$lib/api/sprintlog';
 	import Field from '$lib/components/Sprintlog/Fields.svelte';
-	import type { Sprintlog } from '$lib/types/sprintlog';
+	import type { Sprintlog, User } from '$lib/types/sprintlog';
 	import { createMutation, useQueryClient } from '@tanstack/svelte-query';
 	import { marked } from 'marked';
 	import { createEventDispatcher } from 'svelte';
@@ -13,6 +13,7 @@
 	import Team from '../FloatingTaskInput/Team.svelte';
 	export let item: Sprintlog;
 	export let isTask = true;
+    export let currentUser:User;
 	let topic: string = item.title;
 	let client = useQueryClient();
 	let expand = false;
@@ -69,7 +70,7 @@
 	const dueDateClick = function (event: any, item: any) {
 		toggleFlag('dueDateEdit');
 	};
-
+    const isCurrentlyAssigned = currentUser === item.assignee
 	const dispatch = createEventDispatcher();
 
 	const progressCircleMutation = createMutation(
@@ -173,12 +174,12 @@
 				{:else}
 					<Field
 						text={`@${item.assignee_name}`}
-						color="select-none hover:variant-soft-secondary"
+						color="select-none hover:variant-soft-secondary { isCurrentlyAssigned? 'variant-gradient-success-warning':'' }"
 						typography="text-sm font-mono"
 						onItemClick={() => toggleFlag('assigneeEdit')}
 					/>
 				{/if}
-
+                <span class="px-4" ></span>
 				{#if flags.titleEdit}
 					<InlineEditor
 						bind:topic={item.title}
