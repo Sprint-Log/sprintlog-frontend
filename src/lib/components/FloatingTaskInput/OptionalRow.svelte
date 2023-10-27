@@ -2,7 +2,7 @@
 	import Sprints from './Sprints.svelte';
 
 	import Projects from './Projects.svelte';
-	import Team from './Team.svelte';
+	import Team from './Members.svelte';
 
 	let topic = '';
 	let description = '';

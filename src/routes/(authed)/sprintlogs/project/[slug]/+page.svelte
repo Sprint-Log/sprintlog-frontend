@@ -84,7 +84,7 @@
 		<Breadcrumb items={prjItems} />
 	</nav>
 	<section
-		class="container flex-auto gap-y-2 min-h-[80vh] max-h-[90vh] grid grid-rows-[auto_auto_auto_auto_1fr] max-w-[120rem] mx-auto"
+		class="container flex-auto gap-y-2 min-h-[80vh] max-h-[90vh] grid grid-rows-[auto_auto_1fr_auto_1fr] max-w-[120rem] mx-auto"
 	>
 		<div class="px-4 pt-4 flex flex-col">
 			<container class="sticky variant-ringed rounded p-2 bg-surface-100-800-token">
@@ -121,7 +121,7 @@
 					<ListBox>
 						{#if $tasks.isSuccess}
 							{#each $tasks.data.items as task}
-								<Listitem item={task}  currentUser={user} />
+								<Listitem item={task} currentUser={user} />
 							{/each}
 						{/if}
 					</ListBox>

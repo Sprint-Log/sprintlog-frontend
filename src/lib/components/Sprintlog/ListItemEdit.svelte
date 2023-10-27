@@ -10,10 +10,10 @@
 	import BacklogActions from './BacklogActions.svelte';
 	import TaskActions from './TaskActions.svelte';
 	import TimeField from './TimeField.svelte';
-	import Team from '../FloatingTaskInput/Team.svelte';
+	import Members from '../FloatingTaskInput/Members.svelte';
 	export let item: Sprintlog;
 	export let isTask = true;
-    export let currentUser:User;
+	export let currentUser: User;
 	let topic: string = item.title;
 	let client = useQueryClient();
 	let expand = false;
@@ -70,7 +70,7 @@
 	const dueDateClick = function (event: any, item: any) {
 		toggleFlag('dueDateEdit');
 	};
-    const isCurrentlyAssigned = currentUser === item.assignee
+	let isCurrentlyAssigned = currentUser?.id === item.assignee_id;
 	const dispatch = createEventDispatcher();
 
 	const progressCircleMutation = createMutation(
@@ -163,7 +163,7 @@
 					onItemClick={() => $progressCircleMutation.mutate()}
 				/>
 				{#if flags.assigneeEdit}
-					<Team
+					<Members
 						bind:assignee={item.assignee}
 						on:assigneeSelected={() => {
 							item.assignee_id = item.assignee?.id;
@@ -174,12 +174,14 @@
 				{:else}
 					<Field
 						text={`@${item.assignee_name}`}
-						color="select-none hover:variant-soft-secondary { isCurrentlyAssigned? 'variant-gradient-success-warning':'' }"
+						color="select-none hover:variant-soft-secondary {isCurrentlyAssigned
+							? 'text-slate-100'
+							: ''}"
 						typography="text-sm font-mono"
 						onItemClick={() => toggleFlag('assigneeEdit')}
 					/>
 				{/if}
-                <span class="px-4" ></span>
+				<span class="px-4" />
 				{#if flags.titleEdit}
 					<InlineEditor
 						bind:topic={item.title}
@@ -278,7 +280,7 @@
 							resetAllFlags();
 						}}
 						on:lostFocus={(event) => {
-                            item.description = event.detail.text;
+							item.description = event.detail.text;
 							debouncedResetAllFlags();
 							$postMutation.mutate();
 						}}
