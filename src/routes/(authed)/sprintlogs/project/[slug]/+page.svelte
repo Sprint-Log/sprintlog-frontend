@@ -41,7 +41,7 @@
 	$: currentPageBacklog = 0;
 	$: amountBacklog = 200;
 	let order = 'desc';
-	let intervalMs = 1500000;
+	let intervalMs = 15000;
 	let cacheTime = 1500000;
 
 	$: tasks = createQuery<SprintlogPagination, Error>({
@@ -56,8 +56,8 @@
 		},
 		refetchOnMount: 'always',
 		refetchOnWindowFocus: true,
-		refetchInterval: intervalMs,
-		cacheTime: cacheTime
+		refetchInterval: intervalMs
+		// cacheTime: cacheTime
 	});
 	$: backlogs = createQuery<SprintlogPagination, Error>({
 		queryKey: ['refetch-backlogs', currentPageBacklog, amountBacklog, order],
@@ -74,8 +74,8 @@
 		},
 		refetchOnMount: 'always',
 		refetchOnWindowFocus: true,
-		refetchInterval: intervalMs,
-		cacheTime: cacheTime
+		refetchInterval: intervalMs
+		// cacheTime: cacheTime
 	});
 </script>
 
@@ -84,7 +84,7 @@
 		<Breadcrumb items={prjItems} />
 	</nav>
 	<section
-		class="container flex-auto gap-y-2 min-h-[80vh] max-h-[90vh] grid grid-rows-[auto_auto_1fr_auto_1fr] max-w-[120rem] mx-auto"
+		class="container flex-auto gap-y-2 min-h-[80vh] max-h-[90vh] grid grid-rows-[auto_auto_1fr_auto_2fr] max-w-[120rem] mx-auto"
 	>
 		<div class="px-4 pt-4 flex flex-col">
 			<container class="sticky variant-ringed rounded p-2 bg-surface-100-800-token">
@@ -121,7 +121,7 @@
 					<ListBox>
 						{#if $tasks.isSuccess}
 							{#each $tasks.data.items as task}
-								<Listitem item={task} currentUser={user} />
+								<Listitem item={task} isTask={true} currentUser={user} />
 							{/each}
 						{/if}
 					</ListBox>

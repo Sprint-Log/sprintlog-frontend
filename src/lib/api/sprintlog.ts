@@ -139,6 +139,14 @@ export const progressUp = async (sprintlogSlug: string): Promise<Sprintlog> => {
   const data = (await response.json()) as Sprintlog
   return data
 }
+export const toggleCompletion = async (sprintlogSlug: string): Promise<Sprintlog> => {
+  const response = await authFetch(`api/sprintlogs/progress/complete/${sprintlogSlug}`, {
+    headers: { 'Content-Type': 'application/json' },
+    method: 'PUT'
+  })
+  const data = (await response.json()) as Sprintlog
+  return data
+}
 export const progressDown = async (sprintlogSlug: string): Promise<Sprintlog> => {
   const response = await authFetch(`api/sprintlogs/progress/down/${sprintlogSlug}`, {
     headers: { 'Content-Type': 'application/json' },

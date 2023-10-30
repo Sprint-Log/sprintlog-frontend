@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { useQueryClient, createQuery, createMutation } from '@tanstack/svelte-query';
-	import Members from './Members.svelte';
+	import Members from './MembersChoice.svelte';
 	import {
 		StatusEnum,
 		PriorityEnum,
