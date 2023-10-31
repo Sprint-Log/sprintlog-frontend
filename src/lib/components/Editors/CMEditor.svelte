@@ -13,7 +13,7 @@
   import { keymap } from '@codemirror/view';
   let editor: HTMLDivElement;
   let view: EditorView;
-  export let description: string;
+  export let description: string | undefined = '';
   export let readonly: boolean = false;
   const saveKeyMap = [
     {

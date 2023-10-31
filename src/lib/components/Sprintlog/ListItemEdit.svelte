@@ -323,14 +323,19 @@
         {:else}
           <CmEditor readonly={true} bind:description={item.description} />
         {/if}
-      {:else}
-        <div
-          class="p-2 bg-surface-100-800-token"
-          on:click={() => addDescription()}
-          on:keydown={() => addDescription()}
-        >
-          Click to add Description
-        </div>
+      {:else if flags.descriptionEdit}
+        <CmEditor
+          readonly={false}
+          on:save={(event) => {
+            item.description = event.detail.text;
+            $postMutation.mutate();
+          }}
+          on:lostFocus={(event) => {
+            item.description = event.detail.text;
+            //   debouncedResetAllFlags();
+            $postMutation.mutate();
+          }}
+        />
       {/if}
     </div>
   {/if}
