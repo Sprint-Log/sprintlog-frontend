@@ -8,7 +8,6 @@
   import Field from '$lib/components/Sprintlog/Fields.svelte';
   import type { Sprintlog, User } from '$lib/types/sprintlog';
   import { createMutation, useQueryClient } from '@tanstack/svelte-query';
-  import { marked } from 'marked';
   import { createEventDispatcher } from 'svelte';
   import CmEditor from '../Editors/CMEditor.svelte';
   import InlineEditor from '../Editors/InlineEditor.svelte';
@@ -30,6 +29,8 @@
     | 'begDateEdit'
     | 'dueDateEdit';
   import { debouncer } from '$lib/utils/debounce';
+  import ClickableIcon from './ClickableIcon.svelte';
+  import { AddAlt, SubtractAlt } from '@steeze-ui/carbon-icons';
   type Flags = {
     [key in FlagName]: boolean;
   };
@@ -42,7 +43,6 @@
     begDateEdit: false,
     dueDateEdit: false
   };
-
   function toggleFlag(flagName: FlagName) {
     flags[flagName] = !flags[flagName];
     resetOtherFlags(flagName);
@@ -65,6 +65,7 @@
     Object.keys(flags).forEach((key) => {
       flags[key as FlagName] = false;
     });
+    expand = false;
   }
   const toggleCompletionMutation = createMutation(
     async function () {
@@ -126,16 +127,17 @@
       }
     }
   );
-  function onExpand() {
+  function toggleExpand() {
     expand = !expand;
     // flagManager.enableOnlyFlag('descriptionEdit');
-    resetAllFlags();
+    // resetAllFlags();
   }
   function onDescriptionEdit() {
     enableOnlyFlag('descriptionEdit');
   }
   function addDescription() {
-    item.description = `## ${item.category}  Description`;
+    expand = !expand;
+    expand = true;
     enableOnlyFlag('descriptionEdit');
   }
   const debouncedResetAllFlags = debouncer(800, () => resetAllFlags());
@@ -203,10 +205,10 @@
           />
         {/if}
       </span>
-      <span class="inline-block">
+      <span class="">
         {#if flags.begDateEdit}
           <input
-            class="h-fit resize-none bg-transparent text-xs font-mono w-1/2"
+            class="resize-none bg-transparent text-xs font-mono"
             type="date"
             bind:value={item.beg_date}
             on:change={() => {
@@ -225,7 +227,7 @@
         {/if}
         {#if flags.dueDateEdit}
           <input
-            class="h-fit resize-none bg-transparent text-xs font-mono w-1/2"
+            class="resize-none bg-transparent text-xs font-mono"
             type="date"
             bind:value={item.due_date}
             on:change={() => {
@@ -261,9 +263,18 @@
             onItemClick={() => toggleFlag('assigneeEdit')}
           />
         {/if}
+        {#if item.description}
+          <span
+            class="px-2 select-none cursor-pointer text-slate-500 text-xs"
+            on:click={toggleExpand}
+            on:keydown={toggleExpand}
+          >
+            {expand ? 'less' : 'more'}
+          </span>
+        {/if}
       </span>
     </div>
-    <span class="inline-flex gap-x-1.5 items-top group-hover:opacity-100 opacity-0">
+    <span class="inline-flex px-4 gap-x-2 items-top group-hover:opacity-100 opacity-0">
       {#if isTask}
         <TaskActions
           {item}
@@ -273,9 +284,7 @@
           on:progress_complete={() => {
             $toggleCompletionMutation.mutate();
           }}
-          on:expand={onExpand}
-          on:edit={onDescriptionEdit}
-          {expand}
+          on:edit={addDescription}
         />
       {:else}
         <BacklogActions
@@ -283,12 +292,10 @@
           on:completion={() => {
             resetAllFlags();
           }}
-          on:expand={onExpand}
           on:progress_complete={() => {
             $toggleCompletionMutation.mutate();
           }}
-          on:edit={onDescriptionEdit}
-          {expand}
+          on:edit={addDescription}
         />
       {/if}
     </span>
@@ -299,10 +306,10 @@
         {#if flags.descriptionEdit}
           <CmEditor
             bind:description={item.description}
+            readonly={false}
             on:save={(event) => {
               item.description = event.detail.text;
               $postMutation.mutate();
-              resetAllFlags();
             }}
             on:lostFocus={(event) => {
               item.description = event.detail.text;
@@ -311,17 +318,11 @@
             }}
           />
         {:else}
-          <div
-            class="rounded-md p-2 bg-surface-100-800-token"
-            on:click={() => enableOnlyFlag('descriptionEdit')}
-            on:keydown={() => enableOnlyFlag('descriptionEdit')}
-          >
-            {@html marked.parse(item.description)}
-          </div>
+          <CmEditor readonly={true} bind:description={item.description} />
         {/if}
       {:else}
         <div
-          class="mx-auto p-2 bg-surface-100-800-token"
+          class="p-2 bg-surface-100-800-token"
           on:click={() => addDescription()}
           on:keydown={() => addDescription()}
         >

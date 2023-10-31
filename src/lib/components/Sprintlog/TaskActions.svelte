@@ -12,20 +12,14 @@
     RowCollapse,
     UpToTop,
     SubtractAlt,
-    AddAlt
+    AddAlt,
+    Edit
   } from '@steeze-ui/carbon-icons';
   import { createEventDispatcher } from 'svelte';
 
   export let item: Sprintlog;
-  export let expand: boolean;
   let client = useQueryClient();
 
-  const handleItemClick = function (event: any, item: any) {
-    // client.invalidateQueries(['refetch-backlogs']);
-  };
-  const toBacklog = function (event: any, item: any) {
-    // client.invalidateQueries(['refetch-backlogs']);
-  };
   const dispatch = createEventDispatcher();
 
   const switchToBacklogMutation = createMutation(
@@ -42,29 +36,22 @@
 </script>
 
 <ClickableIcon
-  id="expand"
-  iconSrc={expand ? AddAlt : SubtractAlt}
-  size="18px"
-  onItemClick={() => dispatch('expand')}
+  color="fill-blue-300"
+  id="edit"
+  iconSrc={Edit}
+  onItemClick={() => dispatch('edit')}
 />
+
 <ClickableIcon
-  id="overflow"
-  iconSrc={OverflowMenuVertical}
-  size="18px"
-  onItemClick={() => {
-    dispatch('edit');
-  }}
-/>
-<ClickableIcon
-  id="backlog"
+  id="switch_backlog"
   iconSrc={RowCollapse}
-  size="18px"
+  color="fill-yellow-300"
   onItemClick={() => $switchToBacklogMutation.mutate()}
 />
 <ClickableIcon
   id="checkmark"
   iconSrc={CheckmarkOutline}
-  size="18px"
+  color="fill-green-500"
   onItemClick={() => {
     dispatch('progress_complete');
   }}
