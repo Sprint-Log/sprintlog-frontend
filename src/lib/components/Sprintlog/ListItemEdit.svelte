@@ -136,19 +136,13 @@
     enableOnlyFlag('descriptionEdit');
   }
   function addDescription() {
-    expand = !expand;
     expand = true;
     enableOnlyFlag('descriptionEdit');
   }
-  const debouncedResetAllFlags = debouncer(800, () => resetAllFlags());
+  const debouncedResetAllFlags = debouncer(3000, () => resetAllFlags());
 </script>
 
-<div
-  class="hover:variant-ringed-primary py-0.5 group"
-  on:mouseleave={() => debouncedResetAllFlags()}
-  on:blur={() => debouncedResetAllFlags()}
-  on:focusout={() => debouncedResetAllFlags()}
->
+<div class="hover:variant-ringed-primary py-0.5 group">
   <div class="flex space-x-3 space-y-1">
     <div class="flex-1">
       <span>
@@ -191,7 +185,7 @@
               $postMutation.mutate();
               resetAllFlags();
             }}
-            on:blur={() => {
+            on:mouseleft={() => {
               debouncedResetAllFlags();
               $postMutation.mutate();
             }}
@@ -205,12 +199,13 @@
           />
         {/if}
       </span>
-      <span class="">
+      <span class="pl-2">
         {#if flags.begDateEdit}
           <input
             class="resize-none bg-transparent text-xs font-mono"
             type="date"
             bind:value={item.beg_date}
+            on:mouseleave={() => debouncedResetAllFlags()}
             on:change={() => {
               $postMutation.mutate();
               resetAllFlags();
@@ -230,6 +225,10 @@
             class="resize-none bg-transparent text-xs font-mono"
             type="date"
             bind:value={item.due_date}
+            on:mouseleave={() => {
+              debouncedResetAllFlags();
+              $postMutation.mutate();
+            }}
             on:change={() => {
               $postMutation.mutate();
               resetAllFlags();
@@ -247,6 +246,10 @@
         {#if flags.assigneeEdit}
           <Members
             bind:assignee={item.assignee}
+            on:mouseleave={() => {
+              debouncedResetAllFlags();
+              $postMutation.mutate();
+            }}
             on:assigneeSelected={() => {
               item.assignee_id = item.assignee?.id;
               $postMutation.mutate();
@@ -313,7 +316,7 @@
             }}
             on:lostFocus={(event) => {
               item.description = event.detail.text;
-              debouncedResetAllFlags();
+              //   debouncedResetAllFlags();
               $postMutation.mutate();
             }}
           />

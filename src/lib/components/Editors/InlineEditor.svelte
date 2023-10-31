@@ -20,4 +20,7 @@
   id="prompt"
   autocomplete="on"
   on:keydown={handleKeyPress}
+  on:mouseleave={() => {
+    dispatch('mouseleft');
+  }}
 />

@@ -145,7 +145,6 @@
             }}
             on:expand={onExpand}
             on:edit={onEdit}
-            {expand}
           />
         {:else}
           <BacklogActions
@@ -155,7 +154,6 @@
             }}
             on:expand={onExpand}
             on:edit={onEdit}
-            {expand}
           />
         {/if}
       </span>

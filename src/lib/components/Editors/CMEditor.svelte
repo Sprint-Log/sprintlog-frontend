@@ -41,7 +41,7 @@
     view.contentDOM.addEventListener('blur', (event) => {
       dispatch('lostFocus', { text: view.state.doc.toString() });
     });
-
+    editor.parentElement?.parentElement?.scrollIntoView();
     return () => {
       view.destroy();
     };
@@ -62,6 +62,6 @@
 </script>
 
 <div
-  class="min-h-[10rem] max-h-30 rounded-container-token overflow-y-scroll py-1 px-2"
+  class="min-h-[5rem] max-h-30 rounded-container-token overflow-y-scroll py-1 px-2"
   bind:this={editor}
 />
