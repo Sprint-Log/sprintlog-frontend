@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { useQueryClient, createQuery, createMutation } from '@tanstack/svelte-query';
-	import Team from './Team.svelte';
+	import Members from './MembersChoice.svelte';
 	import {
 		StatusEnum,
 		PriorityEnum,
@@ -13,7 +13,7 @@
 	let sprintSettings: PopupSettings = { event: 'click', target: 'sprintPopup' };
 	let effortSettings: PopupSettings = { event: 'click', target: 'effortPopup' };
 	let statusSettings: PopupSettings = { event: 'click', target: 'statPopup' };
-	let teamMenuSettings: PopupSettings = { event: 'click', target: 'teamPopup' };
+	let teamMenuSettings: PopupSettings = { event: 'click', target: 'memberPopup' };
 	let priPopupSettings: PopupSettings = { event: 'click', target: 'priPopup' };
 	let tagsPopupSettings: PopupSettings = { event: 'click', target: 'tagsPopup' };
 	let progressSettings: PopupSettings = {
@@ -165,7 +165,7 @@
 		placeholder="Add A Backlog Item..."
 		autocomplete="off"
 		on:focus={() => {
-			toggleDescription = true;
+			// toggleDescription = true;
 		}}
 	/>
 	<!-- <div class="w-full" /> -->
@@ -221,7 +221,7 @@
 	<PriorityChoices bind:priority />
 	<div class="arrow variant-filled-secondary" />
 </div>
-<div class="card p-4" data-popup="teamPopup">
-	<Team bind:assignee={user} />
+<div class="card p-4" data-popup="memberPopup">
+	<Members bind:assignee={user} />
 	<div class="arrow variant-filled-secondary" />
 </div>

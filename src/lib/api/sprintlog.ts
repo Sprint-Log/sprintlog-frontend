@@ -16,7 +16,7 @@ export async function authFetch(path: string, settings?: RequestInit): Promise<R
 }
 export const getProjects = async (
   currentPage = 1,
-  pageSize = 20,
+  pageSize = 200,
   sortOrder = 'asc'
 ): Promise<Project[]> => {
   const response = await authFetch(
@@ -98,7 +98,7 @@ export const getBacklogByPrjSlug = async (
 export const getTaskByPrjSlug = async (
   prjSlug: string,
   currentPage = 1,
-  pageSize = 5,
+  pageSize = 500,
   sortOrder = 'asc'
 ): Promise<SprintlogPagination> => {
   currentPage = currentPage + 1
@@ -133,6 +133,14 @@ export const updateSprintlog = async (sprintlog: Sprintlog): Promise<Sprintlog> 
 }
 export const progressUp = async (sprintlogSlug: string): Promise<Sprintlog> => {
   const response = await authFetch(`api/sprintlogs/progress/up/${sprintlogSlug}`, {
+    headers: { 'Content-Type': 'application/json' },
+    method: 'PUT'
+  })
+  const data = (await response.json()) as Sprintlog
+  return data
+}
+export const toggleCompletion = async (sprintlogSlug: string): Promise<Sprintlog> => {
+  const response = await authFetch(`api/sprintlogs/progress/complete/${sprintlogSlug}`, {
     headers: { 'Content-Type': 'application/json' },
     method: 'PUT'
   })

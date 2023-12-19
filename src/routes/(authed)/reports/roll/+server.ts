@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit'
+import { json } from '@sveltejs/kit';
 
 export function GET() {
-  const number = Math.floor(Math.random() * 6) + 1
+  const number = Math.floor(Math.random() * 6) + 1;
 
-  return json(number)
+  return json(number);
 }
