@@ -7,6 +7,8 @@
 	import { Roadmap } from '@steeze-ui/carbon-icons';
 	import { Dashboard } from '@steeze-ui/carbon-icons';
 	import { Report } from '@steeze-ui/carbon-icons';
+	import { User } from '@steeze-ui/carbon-icons';
+	import { UserMultiple } from '@steeze-ui/carbon-icons';
 	import { writable } from 'svelte/store';
 	import { page } from '$app/stores';
 	let activeRail = writable<string>();
@@ -65,6 +67,24 @@
 				>
 					<svelte:fragment slot="lead"><Icon src={Report} size="24px" /></svelte:fragment>
 					<span>Reports</span>
+				</AppRailAnchor>
+				<AppRailAnchor
+				{regionLead}
+					bind:group={activeRail}
+					href="/users"
+					name="tile-3"
+					selected={$page.url.pathname === '/users'}>
+					<svelte:fragment slot="lead"><Icon src={User} size="24px" /></svelte:fragment>
+					<span>Users</span>
+				</AppRailAnchor>
+				<AppRailAnchor
+				{regionLead}
+					bind:group={activeRail}
+					href="/teams"
+					name="tile-3"
+					selected={$page.url.pathname === '/teams'}>
+					<svelte:fragment slot="lead"><Icon src={UserMultiple} size="24px" /></svelte:fragment>
+					<span>Teams</span>
 				</AppRailAnchor>
 				<!-- --- -->
 				<svelte:fragment slot="trail">

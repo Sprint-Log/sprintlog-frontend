@@ -15,7 +15,7 @@
 		</article>
 	</div>
 
-	<footer class="p-4 flex justify-start items-center space-x-4">
+	<footer class="p-4 flex justify-start items-center ">
 		<div class="flex-auto flex justify-between items-center">
 			<small>Started On {project.start_date}</small>
 		</div>
