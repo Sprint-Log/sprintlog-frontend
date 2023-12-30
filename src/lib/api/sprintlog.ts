@@ -2,6 +2,7 @@ import type {
   Project,
   Sprintlog,
   User,
+  UserCreate,
   SprintlogCreate,
   SprintlogPagination,
   Token,
@@ -59,7 +60,7 @@ export const getUsers = async (
   const response = await authFetch(
     `api/users?currentPage=${currentPage}&pageSize=${pageSize}&sortOrder=${sortOrder}`
   )
-  const data = (await response.json()).items as User[]
+   const data = (await response.json()).items as User[]
   return data
 }
 export const createProject = async (project: ProjectCreate): Promise<Project> => {
@@ -195,3 +196,16 @@ export const switchToBacklog = async (sprintlogSlug: string): Promise<Sprintlog>
 //   const data = (await response.json()) as Post
 //   return data
 // }
+
+export const createUser = async (user: UserCreate): Promise<User> => {
+  const response = await authFetch(`api/users/`, {
+    method: 'POST',
+    body: JSON.stringify(user),
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    }
+  })
+  const data = (await response.json()) as User
+  return data
+}

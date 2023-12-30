@@ -1,7 +1,11 @@
-<script>
+<script lang="ts">
+    import type { User } from '$lib/types/sprintlog';
     import { Icon } from '@steeze-ui/svelte-icon';
     import {Edit} from '@steeze-ui/carbon-icons';
     import {TrashCan} from '@steeze-ui/carbon-icons';
+
+    export let user: User;
+
 </script>
 <a href="" class="card bg-initial card-hover overflow-hidden mt-2" >
     <div class="flex">
@@ -9,7 +13,7 @@
         
         <div class="flex-1 flex-col justify-center px-2 mt-1">
            <div class="flex ">
-            <span class="me-1">Thinzar</span>
+            <span class="me-1">{user.name}</span>
             <div class="rounded-full flex justify-center items-center bg-surface-200 text-surface-800 text-sm w-10 h-4 mt-1">
                 User
             </div>
