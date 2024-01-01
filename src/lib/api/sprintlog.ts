@@ -209,3 +209,13 @@ export const createUser = async (user: UserCreate): Promise<User> => {
   const data = (await response.json()) as User
   return data
 }
+
+export const deleteUser = async (id: string): Promise<{ status: number }> => {
+  try {
+    await authFetch(`/api/users/${id}`, { method: 'DELETE' })
+    return { status: 204 };
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    throw error; 
+  }
+};

@@ -1,15 +1,17 @@
 <script lang="ts">
   import type { User } from '$lib/types/sprintlog';
+  import type { ModalSettings } from '@skeletonlabs/skeleton';
 
   import { Icon } from '@steeze-ui/svelte-icon';
   import { Search } from '@steeze-ui/carbon-icons';
   import { Add } from '@steeze-ui/carbon-icons';
 
   import { Modal, modalStore } from '@skeletonlabs/skeleton';
-  import UserCard  from '$lib/components/Users/UserCard.svelte';
-  import UserForm  from '$lib/components/Users/UserForm.svelte';
+
+  import UserCard from '$lib/components/Users/UserCard.svelte';
+  import UserForm from '$lib/components/Users/UserForm.svelte';
   import { useQueryClient, createQuery } from '@tanstack/svelte-query';
-  import { getUsers } from '$lib/api/sprintlog';
+  import { deleteUser, getUsers } from '$lib/api/sprintlog';
 
   function openModal() {
     modalStore.trigger({
@@ -22,16 +24,48 @@
   let page = 1;
   let order = 'desc';
 
-  let intervalMs = 15000;
+  let intervalMs = 10000; //15s
+  const client = useQueryClient();
 
-  $: users = createQuery<User[], Error>({
+  $:users = createQuery<User[], Error>({
     queryKey: ['refetch-user', page, limit, order],
-    queryFn: async () => getUsers(page, limit, order),
+    queryFn: async ()=> {
+      console.log('refetch')
+      return getUsers(page, limit, order);
+    },
     refetchOnMount: 'always',
     refetchOnWindowFocus: true,
-    cacheTime: 0,
     refetchInterval: intervalMs
   });
+  $:{
+    console.log($users)
+  }
+
+  async function handleDelUser(event: CustomEvent<{ id: string }>) {
+    let title, body;
+    const id = event.detail.id;
+    try {
+      const response: { status: number } = await deleteUser(id);
+
+      if (response.status === 204) {
+        title = 'Successful deletion';
+        body = 'User account has been deleted';
+   
+        client.invalidateQueries(['refetch-user']);
+      }
+    } catch (error) {
+      title = 'Fail';
+      body = 'Something went wrong';
+      console.error('Error handling user deletion:', error);
+    } finally {
+      modalStore.trigger({
+        type: 'alert',
+        title: title,
+        body: body,
+        image: ''
+      });
+    }
+  }
 </script>
 
 <Modal components={{ form: { ref: UserForm } }} />
@@ -61,7 +95,7 @@
       {/if}
       {#if $users.isSuccess}
         {#each $users.data as user}
-          <UserCard {user} />
+          <UserCard on:delete={handleDelUser} {user} />
         {/each}
       {/if}
     {/if}

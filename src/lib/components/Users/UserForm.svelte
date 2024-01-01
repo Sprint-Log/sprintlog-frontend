@@ -25,21 +25,18 @@
 
   const client = useQueryClient();
 
-  const userMutation = createMutation(
-    async function () {
-      return createUser(user);
+  const userMutation = createMutation({
+    mutationFn: async () => createUser(user), 
+
+    onSuccess: () => {
+      console.log('success');
+      client.invalidateQueries(['refetch-user']);
+      modalStore.close();
     },
-    {
-      onSuccess: function () {
-        console.log("success")
-        client.invalidateQueries(['refetch-user']);
-        modalStore.close();
-      },
-      onError: function (err) {
-        toastStore.trigger({ message: 'Something went wrong', background: 'variant-filled-error' });
-      }
+    onError: () => {
+      toastStore.trigger({ message: 'Something went wrong', background: 'variant-filled-error' });
     }
-  );
+  });
 
   function handleUserType(event: MouseEvent) {
     let value = (event.target as HTMLButtonElement).value;
