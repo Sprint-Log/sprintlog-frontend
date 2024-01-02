@@ -70,36 +70,39 @@
 
 <Modal components={{ form: { ref: UserForm } }} />
 <div
-  class="basis-1/3 mb-8 space-x-4 p-2 bg-surface-800 border-r h-screen border-surface-200 border-opacity-25"
+  class="basis-1/3 p-2 bg-surface-800 border-r h-screen border-surface-200 border-opacity-25"
 >
   <div class="flex items-center">
     <h3 class="font-semibold">Users</h3>
     <button class="btn-icon hover:variant-soft" on:click={openModal}><Icon src={Add} /></button>
   </div>
-  <div class="grid gap-3" />
-  <div class="flex flex-col items-center my-64">
+  <div class="grid gap-3">
     {#if users === null}
-      <button
-        class=" flex text-2xl btn border border-surface-200 rounded opacity-30"
-        on:click={openModal}
-      >
-        Create User <div class="w-9"><Icon src={Add} /></div>
-      </button>
-    {:else}
-      {#if $users.isLoading}
-        Loading...
-      {/if}
-      {#if $users.error}
-        An error has occurred:
-        {$users.error.message}
-      {/if}
-      {#if $users.isSuccess}
-        {#each $users.data as user}
-          <UserCard on:delete={handleDelUser} {user} />
-        {/each}
-      {/if}
+        <div class="flex flex-col items-center my-64">
+            
+            <button class="flex text-2xl btn border border-surface-200 rounded opacity-30"
+            on:click={openModal}
+            >
+            Create User <div class="w-9"><Icon src={Add} /></div>
+            </button>
+        </div>
+        {:else}
+          {#if $users.isLoading}
+            Loading...
+          {/if}
+          {#if $users.error}
+            An error has occurred:
+            {$users.error.message}
+          {/if}
+          {#if $users.isSuccess}
+            {#each $users.data as user}
+              <UserCard on:delete={handleDelUser} {user} />
+            {/each}
+          {/if}
     {/if}
+  
   </div>
+  
 </div>
 <div class="basis-4/5 mb-8 space-x-4">
   <nav class="flex justify-between bg-surface-800 px-6 py-2">

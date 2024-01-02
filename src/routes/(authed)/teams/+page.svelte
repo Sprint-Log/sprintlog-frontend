@@ -16,19 +16,20 @@
 
 </script>
     <Modal components={{ form: { ref: TeamForm } }} />
-    <div class="basis-1/3 mb-8 space-x-4 p-4 bg-surface-800 border-r h-screen border-surface-200 border-opacity-25 ">
+    <div class="basis-1/3 space-x-4 p-4 bg-surface-800 border-r h-screen border-surface-200 border-opacity-25 ">
 		<div class="flex items-center ">
             <h2 class="font-semibold">Teams</h2>
 		<button class="btn-icon hover:variant-soft" on:click={openModal}><Icon src={Add} /></button>
         </div>
         <div class="grid gap-3 ">
-           
+            <div class="flex flex-col items-center my-64">
+                <button class=" flex text-2xl btn border border-surface-200 rounded opacity-30" on:click={openModal}>
+                    Create Team <div class="w-9"><Icon src={Add} /></div>
+                </button>
+            </div>
+           <!-- team card add -->
         </div>
-        <div class="flex flex-col items-center my-64">
-            <button class=" flex text-2xl btn border border-surface-200 rounded opacity-30" on:click={openModal}>
-                Create Team <div class="w-9"><Icon src={Add} /></div>
-            </button>
-        </div>
+        
 	</div>
     <div class="basis-4/5 mb-8 space-x-4 ">
 		<nav class="flex justify-between bg-surface-800 px-6 py-2">
@@ -43,34 +44,7 @@
             </div>
         </nav>
         <section class="space-y-4 mt-3">
-            <div class="flex items-center">
-                <div class="flex-none rounded-full bg-surface-200 flex justify-center items-center w-9 h-9 me-2 text-surface-800">TS</div>
-                <h4>SprintLog</h4>
-            </div>
-            <p class="text-xs"> 0 Opine Tasks, 0 Tasks Completed</p>
-            <span class="text-sm">Efficient office management fosters productivity</span>
-            <h5>Project Members-0</h5>
-           <div class="grid grid-cols-5 ">
-            <div class="card bg-initial card-hover overflow-hidden mt-2">
-                
-                <div class="flex">
-                    <span class=" rounded-full bg-surface-200 flex justify-center items-center w-10 h-10 m-2 text-black">TS</span>
-                    <div class="flex-col justify-center">
-                        <p class="me-1">Thinzar</p>
-                        <button class="text-xs underline">Member</button>
-                    </div>
-                    <div class="w-5 ml-auto me-2">
-                        <Icon src={SubtractAlt}></Icon> 
-                     </div>
-                </div>
-                
-            </div>
-            <div class="flex mt-2 items-center justify-start">
-                <button class="btn btn-sm hover:variant-soft  "> 
-                    <div class="w-9"><Icon src={Add} /></div>Add Member
-                </button>
-            </div>
-           </div>
+            <!-- Team view add -->
         </section>
        <div class="flex flex-col items-center my-72">
         <p class="text-3xl border-surface-200 opacity-30 font-semibold">Please select a team</p>
