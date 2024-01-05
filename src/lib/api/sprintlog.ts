@@ -3,6 +3,7 @@ import type {
   Sprintlog,
   User,
   UserCreate,
+  UserUpdate,
   SprintlogCreate,
   SprintlogPagination,
   Token,
@@ -219,3 +220,17 @@ export const deleteUser = async (id: string): Promise<{ status: number }> => {
     throw error; 
   }
 };
+
+
+export const updateUser = async (id: string, user: UserUpdate): Promise<User> => {
+  const response = await authFetch(`api/users/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(user),
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    }
+  })
+  const data = (await response.json()) as User
+  return data
+}

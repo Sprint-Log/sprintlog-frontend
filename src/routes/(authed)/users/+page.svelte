@@ -37,9 +37,7 @@
     refetchOnWindowFocus: true,
     refetchInterval: intervalMs
   });
-  $:{
-    console.log($users)
-  }
+ 
 
   async function handleDelUser(event: CustomEvent<{ id: string }>) {
     let title, body;

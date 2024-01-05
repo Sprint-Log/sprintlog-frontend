@@ -175,6 +175,7 @@ export interface UserCreate {
 export interface UserUpdate {
   email?: null | string;
   name?: null | string;
+  password?: null | string;
   isSuperuser?: null | boolean;
   isActive?: null | boolean;
   isVerified?: null | boolean;

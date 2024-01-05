@@ -1,39 +1,62 @@
 <script lang="ts">
-    import type { User } from '$lib/types/sprintlog';
-    import { Icon } from '@steeze-ui/svelte-icon';
-    import {Edit} from '@steeze-ui/carbon-icons';
-    import {TrashCan} from '@steeze-ui/carbon-icons';
-    import {createEventDispatcher} from 'svelte';
+  import type { User } from '$lib/types/sprintlog';
+  import { Icon } from '@steeze-ui/svelte-icon';
+  import { Edit } from '@steeze-ui/carbon-icons';
+  import { TrashCan } from '@steeze-ui/carbon-icons';
+  import { createEventDispatcher } from 'svelte';
+  import { Modal, modalStore } from '@skeletonlabs/skeleton';
+  import UserUpdateForm from '$lib/components/Users/UserUpdateForm.svelte';
+  import type { ModalSettings } from '@skeletonlabs/skeleton';
 
-    const dispatch = createEventDispatcher<{delete:{id:string}}>();
- 
-    export let user: User;
+  const dispatch = createEventDispatcher<{ delete: { id: string } }>();
 
-    function handleDelUser(){
-        dispatch('delete',{
-            id: user.id.toString()
-        })
-    }
+  export let user: User;
 
+  function handleDelUser() {
+    dispatch('delete', {
+      id: user.id.toString()
+    });
+  }
+
+  function openModal() {
+    let modal: ModalSettings = {
+      type: 'component',
+      component: 'form',
+      meta: {user, user_id: user.id}
+    };
+    modalStore.trigger(modal);
+  }
 </script>
-<a href="" class="card bg-initial card-hover overflow-hidden mt-2" >
-    <div class="flex">
-        <div class="flex-none rounded-full bg-surface-200 flex justify-center items-center w-10 h-10 m-2 text-black">TS</div>
-        
-        <div class="flex-1 flex-col justify-center px-2 py-1">
-           <div class="flex">
-            <span class="me-1">{user.name}</span>
-            <div class="rounded-full flex justify-center items-center bg-surface-200 text-surface-800 text-sm px-2 h-4 mt-1">
-                {user.isSuperuser ? "Admin":"User"}
-            </div>
-            <div class="ml-auto">
-                <button class="btn-icon hover:variant-soft w-5 mx-4"><Icon src={Edit} /></button>
-                <button class="btn-icon hover:variant-soft w-5" on:click ={handleDelUser}><Icon src={TrashCan} /></button>
-            </div>
-           </div>
-           <div class="">
-           <p class="text-sm text-surface-400">Member of Sprintlog</p>
-           </div>
-        </div>
+
+<Modal components={{ form: { ref: UserUpdateForm } }} />
+<a href="" class="card bg-initial card-hover overflow-hidden mt-2">
+  <div class="flex">
+    <div
+      class="flex-none rounded-full bg-surface-200 flex justify-center items-center w-10 h-10 m-2 text-black"
+    >
+      TS
     </div>
-</a> 
+
+    <div class="flex-1 flex-col justify-center px-2 py-1">
+      <div class="flex">
+        <span class="me-1">{user.name}</span>
+        <div
+          class="rounded-full flex justify-center items-center bg-surface-200 text-surface-800 text-sm px-2 h-4 mt-1"
+        >
+          {user.isSuperuser ? 'Admin' : 'User'}
+        </div>
+        <div class="ml-auto">
+          <button class="btn-icon hover:variant-soft w-5 mx-4" on:click={openModal}
+            ><Icon src={Edit} /></button
+          >
+          <button class="btn-icon hover:variant-soft w-5" on:click={handleDelUser}
+            ><Icon src={TrashCan} /></button
+          >
+        </div>
+      </div>
+      <div class="">
+        <p class="text-sm text-surface-400">Member of Sprintlog</p>
+      </div>
+    </div>
+  </div>
+</a>
