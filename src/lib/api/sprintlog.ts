@@ -61,8 +61,10 @@ export const getUsers = async (
   const response = await authFetch(
     `api/users?currentPage=${currentPage}&pageSize=${pageSize}&sortOrder=${sortOrder}`
   )
-   const data = (await response.json()).items as User[]
-  return data
+   const data = (await response.json()).items as User[];
+  console.log("Refetched completed");
+  console.log(data)
+  return data;
 }
 export const createProject = async (project: ProjectCreate): Promise<Project> => {
   const response = await authFetch(`api/projects/`, {
@@ -207,7 +209,8 @@ export const createUser = async (user: UserCreate): Promise<User> => {
       'Content-Type': 'application/json'
     }
   })
-  const data = (await response.json()) as User
+  const data = (await response.json()) as User;
+  console.log("Created user"+ data.email)
   return data
 }
 

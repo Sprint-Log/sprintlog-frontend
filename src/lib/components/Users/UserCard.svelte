@@ -7,9 +7,9 @@
   import { Modal, modalStore } from '@skeletonlabs/skeleton';
   import UserUpdateForm from '$lib/components/Users/UserUpdateForm.svelte';
   import type { ModalSettings } from '@skeletonlabs/skeleton';
+  import type { ModalComponent } from '@skeletonlabs/skeleton';
 
   const dispatch = createEventDispatcher<{ delete: { id: string } }>();
-
   export let user: User;
 
   function handleDelUser() {
@@ -18,17 +18,18 @@
     });
   }
 
-  function openModal() {
+  function openUpdateModal() {
+    modalStore.clear();
     let modal: ModalSettings = {
       type: 'component',
-      component: 'form',
-      meta: {user, user_id: user.id}
+      component: 'userUpdateForm',
+      meta: { user, user_id: user.id }
     };
     modalStore.trigger(modal);
   }
 </script>
 
-<Modal components={{ form: { ref: UserUpdateForm } }} />
+<Modal components={{ userUpdateForm: { ref: UserUpdateForm } }} />
 <a href="" class="card bg-initial card-hover overflow-hidden mt-2">
   <div class="flex">
     <div
@@ -46,7 +47,7 @@
           {user.isSuperuser ? 'Admin' : 'User'}
         </div>
         <div class="ml-auto">
-          <button class="btn-icon hover:variant-soft w-5 mx-4" on:click={openModal}
+          <button class="btn-icon hover:variant-soft w-5 mx-4" on:click={openUpdateModal}
             ><Icon src={Edit} /></button
           >
           <button class="btn-icon hover:variant-soft w-5" on:click={handleDelUser}

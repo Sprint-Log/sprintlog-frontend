@@ -4,14 +4,17 @@
   import { updateUser } from '$lib/api/sprintlog';
   import { useQueryClient, createMutation } from '@tanstack/svelte-query';
   import { Toast, modalStore, toastStore } from '@skeletonlabs/skeleton';
-
-  let user: UserUpdate = $modalStore[0].meta.user;
-  let userId = $modalStore[0].meta.user_id;
+  
+  // modalStore.close();
 
   // default active button
-  let clickedAdminBtn = user.isSuperuser;
   const active_btn = 'bg-success-500 text-black';
   const unactive_btn = 'bg-surface-500 text-white';
+
+  const user: UserUpdate = $modalStore[0].meta.user;
+  const userId = $modalStore[0].meta.user_id;
+
+  let clickedAdminBtn = user.isSuperuser;
 
   let pswdMismatch = false;
   let confirmPassword: string;
@@ -24,7 +27,7 @@
 
     onSuccess: () => {
       console.log('success');
-      client.invalidateQueries(['refetch-user']);
+      client.invalidateQueries({ queryKey: ['refetch-user'] });
       modalStore.close();
     },
     onError: () => {
@@ -59,10 +62,10 @@
     $userUpdateMutation.mutate();
   }}
   action="?/create"
-  class=" left-24 card bg-surface-100 p-3 rounded-md space-y-4 max-w-3xl overflow-y-scroll max-h-[36rem]"
+  class="modal-form  left-24 card bg-surface-100 p-3 rounded-md space-y-4 max-w-3xl overflow-y-scroll max-h-[36rem]"
 >
   <div class="grid grid-cols-2 gap-4">
-    <h3>Create User</h3>
+    <h3>Update User</h3>
   </div>
   <div class="flex justify-end">
     <button
@@ -112,7 +115,6 @@
       class="input variant-form-material col-span-2"
       type="password"
       bind:value={newPassword}
-      required
     />
   </div>
 
@@ -122,7 +124,6 @@
       class="input variant-form-material col-span-2"
       type="password"
       bind:value={confirmPassword}
-      required
     />
   </div>
   {#if pswdMismatch}
@@ -130,6 +131,6 @@
   {/if}
   <div class="flex justify-between py-2">
     <button class="text-sm">Back</button>
-    <button class="btn btn-sm variant-filled-primary" type="submit"> Create </button>
+    <button class="btn btn-sm variant-filled-primary" type="submit"> Update </button>
   </div>
 </form>

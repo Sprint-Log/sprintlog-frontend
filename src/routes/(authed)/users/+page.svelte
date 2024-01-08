@@ -13,31 +13,33 @@
   import { useQueryClient, createQuery } from '@tanstack/svelte-query';
   import { deleteUser, getUsers } from '$lib/api/sprintlog';
 
-  function openModal() {
-    modalStore.trigger({
-      type: 'component',
-      component: 'form'
-    });
-  }
-
   let limit = 500;
   let page = 1;
   let order = 'desc';
 
-  let intervalMs = 10000; //15s
+  const intervalMs = 10000;
   const client = useQueryClient();
 
-  $:users = createQuery<User[], Error>({
+  $: users = createQuery<User[], Error>({
     queryKey: ['refetch-user', page, limit, order],
-    queryFn: async ()=> {
-      console.log('refetch')
-      return getUsers(page, limit, order);
-    },
+    queryFn: () => getUsers(page, limit, order),
     refetchOnMount: 'always',
     refetchOnWindowFocus: true,
     refetchInterval: intervalMs
   });
- 
+  $: {
+    console.log('This is refetch user data');
+    console.log($users.data);
+  }
+
+  function openCreateFormModal() {
+    modalStore.clear();
+    let userFormModal: ModalSettings = {
+      type: 'component',
+      component: 'userForm'
+    };
+    modalStore.trigger(userFormModal);
+  }
 
   async function handleDelUser(event: CustomEvent<{ id: string }>) {
     let title, body;
@@ -46,10 +48,11 @@
       const response: { status: number } = await deleteUser(id);
 
       if (response.status === 204) {
+        console.log('Response status 204');
         title = 'Successful deletion';
         body = 'User account has been deleted';
-   
-        client.invalidateQueries(['refetch-user']);
+
+        client.invalidateQueries({ queryKey: ['refetch-user'] });
       }
     } catch (error) {
       title = 'Fail';
@@ -66,41 +69,38 @@
   }
 </script>
 
-<Modal components={{ form: { ref: UserForm } }} />
-<div
-  class="basis-1/3 p-2 bg-surface-800 border-r h-screen border-surface-200 border-opacity-25"
->
+<Modal components={{ userForm: { ref: UserForm } }} />
+<div class="basis-1/3 p-2 bg-surface-800 border-r h-screen border-surface-200 border-opacity-25">
   <div class="flex items-center">
     <h3 class="font-semibold">Users</h3>
-    <button class="btn-icon hover:variant-soft" on:click={openModal}><Icon src={Add} /></button>
+    <button class="btn-icon hover:variant-soft" on:click={openCreateFormModal}
+      ><Icon src={Add} /></button
+    >
   </div>
   <div class="grid gap-3">
-    {#if users === null}
-        <div class="flex flex-col items-center my-64">
-            
-            <button class="flex text-2xl btn border border-surface-200 rounded opacity-30"
-            on:click={openModal}
-            >
-            Create User <div class="w-9"><Icon src={Add} /></div>
-            </button>
-        </div>
-        {:else}
-          {#if $users.isLoading}
-            Loading...
-          {/if}
-          {#if $users.error}
-            An error has occurred:
-            {$users.error.message}
-          {/if}
-          {#if $users.isSuccess}
-            {#each $users.data as user}
-              <UserCard on:delete={handleDelUser} {user} />
-            {/each}
-          {/if}
+    {#if !$users.data || $users.data.length === 0}
+      <div class="flex flex-col items-center my-64">
+        <button
+          class="flex text-2xl btn border border-surface-200 rounded opacity-30"
+          on:click={openCreateFormModal}
+        >
+          Create User <div class="w-9"><Icon src={Add} /></div>
+        </button>
+      </div>
+    {:else}
+      {#if $users.isLoading}
+        Loading...
+      {/if}
+      {#if $users.error}
+        An error has occurred: {$users.error.message}
+      {/if}
+      {#if $users.isSuccess}
+        {#each $users.data as user}
+          <UserCard on:delete={handleDelUser} {user} />
+        {/each}
+      {/if}
     {/if}
-  
   </div>
-  
 </div>
 <div class="basis-4/5 mb-8 space-x-4">
   <nav class="flex justify-between bg-surface-800 px-6 py-2">
