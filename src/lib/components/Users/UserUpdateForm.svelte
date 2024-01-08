@@ -62,7 +62,7 @@
     $userUpdateMutation.mutate();
   }}
   action="?/create"
-  class="modal-form  left-24 card bg-surface-100 p-3 rounded-md space-y-4 max-w-3xl overflow-y-scroll max-h-[36rem]"
+  class="left-24 card bg-surface-100 p-3 rounded-md space-y-4 max-w-3xl overflow-y-scroll max-h-[36rem]"
 >
   <div class="grid grid-cols-2 gap-4">
     <h3>Update User</h3>

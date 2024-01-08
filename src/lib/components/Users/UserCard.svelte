@@ -19,17 +19,16 @@
   }
 
   function openUpdateModal() {
-    modalStore.clear();
     let modal: ModalSettings = {
       type: 'component',
-      component: 'userUpdateForm',
+      component: 'updateFormComponent',
       meta: { user, user_id: user.id }
     };
     modalStore.trigger(modal);
   }
 </script>
 
-<Modal components={{ userUpdateForm: { ref: UserUpdateForm } }} />
+<!-- <Modal components={{ userUpdateForm: { ref: UserUpdateForm } }} /> -->
 <a href="" class="card bg-initial card-hover overflow-hidden mt-2">
   <div class="flex">
     <div

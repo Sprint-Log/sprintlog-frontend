@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { User } from '$lib/types/sprintlog';
   import type { ModalSettings } from '@skeletonlabs/skeleton';
+  import type { ModalComponent } from '@skeletonlabs/skeleton';
 
   import { Icon } from '@steeze-ui/svelte-icon';
   import { Search } from '@steeze-ui/carbon-icons';
@@ -10,16 +11,16 @@
 
   import UserCard from '$lib/components/Users/UserCard.svelte';
   import UserForm from '$lib/components/Users/UserForm.svelte';
+  import UserUpdateForm from '$lib/components/Users/UserUpdateForm.svelte';
   import { useQueryClient, createQuery } from '@tanstack/svelte-query';
   import { deleteUser, getUsers } from '$lib/api/sprintlog';
 
   let limit = 500;
   let page = 1;
   let order = 'desc';
-
-  const intervalMs = 10000;
+  const intervalMs = 1000000;
   const client = useQueryClient();
-
+ 
   $: users = createQuery<User[], Error>({
     queryKey: ['refetch-user', page, limit, order],
     queryFn: () => getUsers(page, limit, order),
@@ -33,12 +34,10 @@
   }
 
   function openCreateFormModal() {
-    modalStore.clear();
-    let userFormModal: ModalSettings = {
+    modalStore.trigger({
       type: 'component',
-      component: 'userForm'
-    };
-    modalStore.trigger(userFormModal);
+      component: 'createFormComponent'
+    });
   }
 
   async function handleDelUser(event: CustomEvent<{ id: string }>) {
@@ -62,14 +61,12 @@
       modalStore.trigger({
         type: 'alert',
         title: title,
-        body: body,
-        image: ''
+        body: body
       });
     }
   }
 </script>
 
-<Modal components={{ userForm: { ref: UserForm } }} />
 <div class="basis-1/3 p-2 bg-surface-800 border-r h-screen border-surface-200 border-opacity-25">
   <div class="flex items-center">
     <h3 class="font-semibold">Users</h3>
