@@ -7,7 +7,7 @@
   import { Add } from '@steeze-ui/carbon-icons';
 
   import { Modal, modalStore } from '@skeletonlabs/skeleton';
-
+  
   import UserCard from '$lib/components/Users/UserCard.svelte';
   import UserForm from '$lib/components/Users/UserForm.svelte';
   import { useQueryClient, createQuery } from '@tanstack/svelte-query';
@@ -118,8 +118,8 @@
       </form>
     </div>
   </nav>
-
   <div class="flex flex-col items-center my-72">
     <p class="text-3xl border-surface-200 opacity-30 font-semibold">Please select a user</p>
   </div>
+  <!-- active pjs and tasks -->
 </div>
