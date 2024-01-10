@@ -1,26 +1,24 @@
 <script lang="ts">
   import type { User } from '$lib/types/sprintlog';
   import type { ModalSettings } from '@skeletonlabs/skeleton';
-  import type { ModalComponent } from '@skeletonlabs/skeleton';
+
+  import UserCard from '$lib/components/Users/UserCard.svelte';
 
   import { Icon } from '@steeze-ui/svelte-icon';
   import { Search } from '@steeze-ui/carbon-icons';
   import { Add } from '@steeze-ui/carbon-icons';
 
-  import { Modal, modalStore } from '@skeletonlabs/skeleton';
-
-  import UserCard from '$lib/components/Users/UserCard.svelte';
-  import UserForm from '$lib/components/Users/UserForm.svelte';
-  import UserUpdateForm from '$lib/components/Users/UserUpdateForm.svelte';
-  import { useQueryClient, createQuery } from '@tanstack/svelte-query';
   import { deleteUser, getUsers } from '$lib/api/sprintlog';
+
+  import { modalStore } from '@skeletonlabs/skeleton';
+  import { useQueryClient, createQuery } from '@tanstack/svelte-query';
 
   let limit = 500;
   let page = 1;
   let order = 'desc';
-  const intervalMs = 1000000;
+  const intervalMs = 15000;
   const client = useQueryClient();
- 
+
   $: users = createQuery<User[], Error>({
     queryKey: ['refetch-user', page, limit, order],
     queryFn: () => getUsers(page, limit, order),
@@ -28,10 +26,6 @@
     refetchOnWindowFocus: true,
     refetchInterval: intervalMs
   });
-  $: {
-    console.log('This is refetch user data');
-    console.log($users.data);
-  }
 
   function openCreateFormModal() {
     modalStore.trigger({
@@ -41,28 +35,32 @@
   }
 
   async function handleDelUser(event: CustomEvent<{ id: string }>) {
-    let title, body;
+    
     const id = event.detail.id;
+
+    const modal: ModalSettings = {
+      type: 'confirm',
+      title: 'Please Confirm',
+      body: 'Are you sure to delete the user?',
+      response: (r: boolean) => {
+        r ? removeUser(id) : modalStore.close();
+      }
+    };
+    modalStore.trigger(modal);
+  }
+
+  async function removeUser(uuid: string) {
     try {
-      const response: { status: number } = await deleteUser(id);
+      console.log('Right here');
+      const response: { status: number } = await deleteUser(uuid);
 
       if (response.status === 204) {
         console.log('Response status 204');
-        title = 'Successful deletion';
-        body = 'User account has been deleted';
-
         client.invalidateQueries({ queryKey: ['refetch-user'] });
       }
     } catch (error) {
-      title = 'Fail';
-      body = 'Something went wrong';
       console.error('Error handling user deletion:', error);
-    } finally {
-      modalStore.trigger({
-        type: 'alert',
-        title: title,
-        body: body
-      });
+      throw error;
     }
   }
 </script>

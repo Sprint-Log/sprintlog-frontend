@@ -28,13 +28,13 @@
   }
 </script>
 
-<!-- <Modal components={{ userUpdateForm: { ref: UserUpdateForm } }} /> -->
+
 <a href="" class="card bg-initial card-hover overflow-hidden mt-2">
   <div class="flex">
     <div
       class="flex-none rounded-full bg-surface-200 flex justify-center items-center w-10 h-10 m-2 text-black"
     >
-      TS
+      {user.name?.charAt(0).toUpperCase()}
     </div>
 
     <div class="flex-1 flex-col justify-center px-2 py-1">
