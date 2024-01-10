@@ -1,36 +1,33 @@
 <script lang="ts">
-  import type { UserCreate } from '$lib/types/sprintlog';
+  import type { UserUpdate } from '$lib/types/sprintlog';
 
-  import { createUser } from '$lib/api/sprintlog';
+  import { updateUser } from '$lib/api/sprintlog';
   import { useQueryClient, createMutation } from '@tanstack/svelte-query';
   import { Toast, modalStore, toastStore } from '@skeletonlabs/skeleton';
-
-  let user: UserCreate = {
-    email: '',
-    password: '',
-    name: '',
-    isSuperuser: true,
-    isActive: false,
-    isVerified: false
-  };
+  
+  // modalStore.close();
 
   // default active button
-  let clickedAdminBtn = true;
   const active_btn = 'bg-success-500 text-black';
   const unactive_btn = 'bg-surface-500 text-white';
 
-  let confirmPassword: string;
+  const user: UserUpdate = $modalStore[0].meta.user;
+  const userId = $modalStore[0].meta.user_id;
+
+  let clickedAdminBtn = user.isSuperuser;
 
   let pswdMismatch = false;
+  let confirmPassword: string;
+  let newPassword: string;
 
   const client = useQueryClient();
 
-  const userMutation = createMutation({
-    mutationFn:  () => createUser(user), 
+  const userUpdateMutation = createMutation({
+    mutationFn: async () => updateUser(userId, user),
 
     onSuccess: () => {
       console.log('success');
-      client.invalidateQueries({ queryKey:['refetch-user']});
+      client.invalidateQueries({ queryKey: ['refetch-user'] });
       modalStore.close();
     },
     onError: () => {
@@ -57,18 +54,18 @@
   on:submit={(e) => {
     e.preventDefault();
 
-    if (confirmPassword !== user.password) {
+    if (confirmPassword !== newPassword) {
       pswdMismatch = true;
       return;
     }
-    console.log(user);
-    $userMutation.mutate();
+    user.password = newPassword;
+    $userUpdateMutation.mutate();
   }}
   action="?/create"
   class="left-24 card bg-surface-100 p-3 rounded-md space-y-4 max-w-3xl overflow-y-scroll max-h-[36rem]"
 >
   <div class="grid grid-cols-2 gap-4">
-    <h3>Create User</h3>
+    <h3>Update User</h3>
   </div>
   <div class="flex justify-end">
     <button
@@ -103,7 +100,7 @@
     />
   </div>
   <div class="grid grid-cols-3 gap-3">
-    <span>Password</span>
+    <span>Old Password</span>
     <input
       class="input variant-form-material col-span-2 h-8"
       type="password"
@@ -111,13 +108,22 @@
       required
     />
   </div>
+
+  <div class="grid grid-cols-3 gap-3">
+    <span>New Password</span>
+    <input
+      class="input variant-form-material col-span-2"
+      type="password"
+      bind:value={newPassword}
+    />
+  </div>
+
   <div class="grid grid-cols-3 gap-3">
     <span>Confirm Password</span>
     <input
       class="input variant-form-material col-span-2"
       type="password"
       bind:value={confirmPassword}
-      required
     />
   </div>
   {#if pswdMismatch}
@@ -125,6 +131,6 @@
   {/if}
   <div class="flex justify-between py-2">
     <button class="text-sm">Back</button>
-    <button class="btn btn-sm variant-filled-primary" type="submit"> Create </button>
+    <button class="btn btn-sm variant-filled-primary" type="submit"> Update </button>
   </div>
 </form>

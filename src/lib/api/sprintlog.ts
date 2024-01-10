@@ -3,6 +3,7 @@ import type {
   Sprintlog,
   User,
   UserCreate,
+  UserUpdate,
   SprintlogCreate,
   SprintlogPagination,
   Token,
@@ -60,8 +61,10 @@ export const getUsers = async (
   const response = await authFetch(
     `api/users?currentPage=${currentPage}&pageSize=${pageSize}&sortOrder=${sortOrder}`
   )
-   const data = (await response.json()).items as User[]
-  return data
+   const data = (await response.json()).items as User[];
+  console.log("Refetched completed");
+  console.log(data)
+  return data;
 }
 export const createProject = async (project: ProjectCreate): Promise<Project> => {
   const response = await authFetch(`api/projects/`, {
@@ -206,7 +209,8 @@ export const createUser = async (user: UserCreate): Promise<User> => {
       'Content-Type': 'application/json'
     }
   })
-  const data = (await response.json()) as User
+  const data = (await response.json()) as User;
+  console.log("Created user"+ data.email)
   return data
 }
 
@@ -219,3 +223,17 @@ export const deleteUser = async (id: string): Promise<{ status: number }> => {
     throw error; 
   }
 };
+
+
+export const updateUser = async (id: string, user: UserUpdate): Promise<User> => {
+  const response = await authFetch(`api/users/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(user),
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    }
+  })
+  const data = (await response.json()) as User
+  return data
+}
