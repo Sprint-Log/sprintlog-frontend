@@ -13,6 +13,7 @@
   };
 </script>
 
-
+<div class="w-full">
 <slot />
 <Modal components={userModalRegistry} />
+</div>

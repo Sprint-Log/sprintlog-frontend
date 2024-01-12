@@ -75,7 +75,7 @@
     
   ];
 </script>
-<main class="container">
+
 <nav class="px-6 py-2 bg-surface-100-800-token flex justify-between">
   <BreadcrumbUser items={prjItems} />
     <form action="" class="">
@@ -97,9 +97,9 @@
       ><Icon src={Add} /></button
     >
   </div>
-  <div class="grid gap-2">
+  <div class="grid">
     {#if !$users.data || $users.data.length === 0}
-      <div class="flex flex-col items-center my-64">
+      <div class="flex flex-col items-center justify-center h-screen">
         <button
           class="flex text-2xl btn border border-surface-200 rounded opacity-30"
           on:click={openCreateFormModal}
@@ -123,11 +123,10 @@
   </div>
 </div>
 <div class="basis-4/5 mb-8 space-x-4 max-h-screen overflow-y-scroll">
-  <div class="flex flex-col items-center my-72">
+  <div class="flex flex-col items-center justify-center h-screen">
     <p class="text-3xl border-surface-200 opacity-30 font-semibold">Please select a user</p>
   </div>
   <!-- active pjs and tasks -->
     
 </div>
 </div>
-</main>
