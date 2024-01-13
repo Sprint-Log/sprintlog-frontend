@@ -7,6 +7,7 @@
   } from '$lib/api/sprintlog';
   import Field from '$lib/components/Sprintlog/Fields.svelte';
   import type { Sprintlog, User } from '$lib/types/sprintlog';
+  import { StatusEnum } from '$lib/types/sprintlog';
   import { createMutation, useQueryClient } from '@tanstack/svelte-query';
   import { createEventDispatcher } from 'svelte';
   import CmEditor from '../Editors/CMEditor.svelte';
@@ -140,6 +141,11 @@
     enableOnlyFlag('descriptionEdit');
   }
   const debouncedResetAllFlags = debouncer(3000, () => resetAllFlags());
+
+//   $:{
+    
+// console.log("project "+item.slug+" due date "+item.due_date)
+// }
 </script>
 
 <div class="hover:variant-ringed-primary py-0.5 group">

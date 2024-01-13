@@ -27,7 +27,7 @@
     owner_id = user.id;
   }
   let project_slug = $page.params.slug;
-
+  
   const prjItems: ProjectItems[] = [
     { text: 'Home', href: '/' },
     { text: 'Projects', href: '/projects' },
@@ -41,7 +41,9 @@
   $: currentPageBacklog = 0;
   $: amountBacklog = 200;
   let order = 'desc';
-  let intervalMs = 15000;
+  // let intervalMs = 15000;
+  let intervalMs = 1500000;
+
   let cacheTime = 1500000;
 
   $: tasks = createQuery<SprintlogPagination, Error>({
@@ -59,6 +61,11 @@
     refetchInterval: intervalMs
     // cacheTime: cacheTime
   });
+
+  $:{
+    console.log("Sprintlog tasks ")
+    console.log($tasks.data)
+  }
   $: backlogs = createQuery<SprintlogPagination, Error>({
     queryKey: ['refetch-backlogs', currentPageBacklog, amountBacklog, order],
     queryFn: async () => {
@@ -77,6 +84,10 @@
     refetchInterval: intervalMs
     // cacheTime: cacheTime
   });
+  $:{
+    console.log("backlog tasks ")
+    console.log($backlogs.data)
+  }
 </script>
 
 <main id="page-content" class="w-full h-full max-h-screen">

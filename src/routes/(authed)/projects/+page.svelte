@@ -17,12 +17,12 @@
 	let client = useQueryClient();
 
 	$: projects = createQuery<Project[], Error>({
-		queryKey: ['refetchProject', page, limit, order],
+		queryKey: ['refetch-projects', page, limit, order],
 		queryFn: async () => getProjects(page, limit, order),
-		refetchInterval: intervalMs,
 		refetchOnMount: 'always',
 		refetchOnWindowFocus: true,
-		cacheTime: 0
+		refetchInterval: intervalMs,
+		cacheTime: 15000
 	});
 
 	function openModal() {

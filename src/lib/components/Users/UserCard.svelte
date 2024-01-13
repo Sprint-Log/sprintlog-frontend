@@ -4,12 +4,10 @@
   import { Edit } from '@steeze-ui/carbon-icons';
   import { TrashCan } from '@steeze-ui/carbon-icons';
   import { createEventDispatcher } from 'svelte';
-  import { Modal, modalStore } from '@skeletonlabs/skeleton';
-  import UserUpdateForm from '$lib/components/Users/UserUpdateForm.svelte';
+  import { modalStore } from '@skeletonlabs/skeleton';
   import type { ModalSettings } from '@skeletonlabs/skeleton';
-  import type { ModalComponent } from '@skeletonlabs/skeleton';
 
-  const dispatch = createEventDispatcher<{ delete: { id: string } }>();
+  const dispatch = createEventDispatcher();
   export let user: User;
 
   function handleDelUser() {
@@ -28,8 +26,12 @@
   }
 </script>
 
-
-<a href="" class="card bg-initial card-hover overflow-hidden mt-2">
+<!-- <Modal components={{ userUpdateForm: { ref: UserUpdateForm } }} /> -->
+<a
+  href="/users/{user.id}"
+  class="card bg-initial card-hover overflow-hidden mt-2"
+  on:click={() => dispatch('selected', { name: user.name, id:user.id })}
+>
   <div class="flex">
     <div
       class="flex-none rounded-full bg-surface-200 flex justify-center items-center w-10 h-10 m-2 text-black"
