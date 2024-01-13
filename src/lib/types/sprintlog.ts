@@ -14,9 +14,10 @@ export enum ProgressEnum {
 export enum StatusEnum {
   new = '☀️',
   started = '🛠️',
-  checked_in = '📩',
+  // checked_in = '📩',
+  checked_in = '🔳',
   completed = '✅',
-  cancelled = '🚫'
+  cancelled = '🚫',
 }
 
 export enum TagEnum {
@@ -100,6 +101,7 @@ export type Project = {
   id: string;
   slug: string;
   name: string;
+  project_name:string;
   description: string;
   pin: boolean;
   labels?: string[];
@@ -130,6 +132,14 @@ export type ProjectCreate = {
   repo_urls: string[];
   owner_id?: string | null;
 };
+
+export type ActiveProject ={
+  project_name:string;
+  task_assigned:number;
+  completed_task:number;
+  remaining_task:number;
+  task_due:number;
+}
 
 export interface OAuth2Login {
   access_token: string;

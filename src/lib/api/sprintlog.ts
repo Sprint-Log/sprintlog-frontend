@@ -6,6 +6,7 @@ import type {
   UserUpdate,
   SprintlogCreate,
   SprintlogPagination,
+  ProjectPagination,
   Token,
   ProjectCreate
 } from '$lib/types/sprintlog'
@@ -13,7 +14,8 @@ import { PUBLIC_API_URL } from '$env/static/public'
 export async function authFetch(path: string, settings?: RequestInit): Promise<Response> {
   settings = settings || {}
   settings.credentials = 'include'
-  console.log(settings)
+  console.log("Fetch sent:")
+  console.log(`${PUBLIC_API_URL}/${path}`+"\n")
   return await fetch(`${PUBLIC_API_URL}/${path}`, settings)
 }
 export const getProjects = async (
@@ -25,7 +27,9 @@ export const getProjects = async (
     `api/projects?currentPage=${currentPage}&pageSize=${pageSize}&sortOrder=${sortOrder}`
   )
   if (!response.ok) throw response
-  const data = (await response.json()) as Project[]
+  const data = (await response.json()) as Project[];
+  console.log("refetched projects")
+  console.log(data)
   return data
 }
 export const getLiveToken = async (roomId: string): Promise<Token> => {
@@ -200,6 +204,9 @@ export const switchToBacklog = async (sprintlogSlug: string): Promise<Sprintlog>
 //   return data
 // }
 
+
+/* Functions created by Hein Min Min Maw */
+
 export const createUser = async (user: UserCreate): Promise<User> => {
   const response = await authFetch(`api/users/`, {
     method: 'POST',
@@ -237,3 +244,24 @@ export const updateUser = async (id: string, user: UserUpdate): Promise<User> =>
   const data = (await response.json()) as User
   return data
 }
+
+export const getProjectByUser =  async (
+  id:string,
+  currentPage = 1,
+  pageSize = 12,
+  sortOrder = 'asc'
+  ): Promise<SprintlogPagination> =>{
+    currentPage = currentPage + 1
+ 
+    const params = new URLSearchParams([
+      ['currentPage', currentPage.toString()],
+      ['pageSize', pageSize.toString()],
+      ['sortOrder', sortOrder]
+    ])
+  // "project/user/{user_id:uuid}"
+  const response = await authFetch(`api/sprintlogs/project/user/${id}?${params.toString()}`);
+  if (!response.ok) throw response;
+  const data = await response.json();
+  return data;
+}
+

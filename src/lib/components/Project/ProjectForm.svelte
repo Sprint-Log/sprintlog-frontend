@@ -35,7 +35,7 @@
 		},
 		{
 			onSuccess: function () {
-				client.invalidateQueries(['refetch-project']);
+				client.invalidateQueries({ queryKey:['refetch-projects']});
 				modalStore.close();
 			},
 			onError: function (err) {

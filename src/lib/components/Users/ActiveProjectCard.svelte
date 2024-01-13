@@ -1,19 +1,24 @@
-<script>
+<script lang="ts">
+    import type { Sprintlog, ActiveProject } from '$lib/types/sprintlog';
+
     import { Icon } from '@steeze-ui/svelte-icon';
     import { Document } from '@steeze-ui/carbon-icons';
     import { CheckmarkOutline } from '@steeze-ui/carbon-icons';
     import { Calendar } from '@steeze-ui/carbon-icons';
     import { Alarm } from '@steeze-ui/carbon-icons';
+    
+
+    export let project:ActiveProject;
 </script>
-<a href="" class="card bg-initial card-hover overflow-hidden ">
-    <h6 class="p-2 font-medium">SprintLog</h6>
+<a href="../sprintlogs/project/{project.project_name}" class="card bg-initial card-hover overflow-hidden ">
+    <h6 class="p-2 font-medium">{project.project_name}</h6>
     <div class="flex justify-between">
       <div class="flex text-xs justify-center items-end">
         <div class="w-5 mx-1"><Icon src={Document} /></div>
         <span >Tasks Assigned</span>
       </div>
       <div class="w-12 mx-2 rounded-full border border-surface-200 text-center text-sm">
-        6
+        {project.task_assigned}
       </div>
     </div>
     <div class="flex justify-between mt-2">
@@ -22,7 +27,7 @@
         <span>Completed Tasks</span>
       </div>
       <div class="w-12 mx-2 rounded-full border border-success-800 text-center text-sm">
-        6
+        {project.completed_task}
       </div>
     </div>
     <div class="flex justify-between mt-2">
@@ -31,7 +36,7 @@
         <span>Remaining Tasks</span>
       </div>
       <div class="w-12 mx-2 rounded-full border border-yellow-400 text-center text-sm">
-        3
+        {project.remaining_task}
       </div>
     </div>
     <div class="flex justify-between my-2">
@@ -40,7 +45,7 @@
         <span>Tasks Due</span>
       </div>
       <div class="w-12 mx-2 rounded-full border border-red-800 text-center text-sm">
-        3
+        {project.task_due}
       </div>
     </div>
   </a>
