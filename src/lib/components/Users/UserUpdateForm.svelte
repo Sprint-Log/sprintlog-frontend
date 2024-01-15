@@ -62,7 +62,7 @@
     $userUpdateMutation.mutate();
   }}
   action="?/create"
-  class="left-24 card bg-surface-100 p-3 rounded-md space-y-4 max-w-3xl overflow-y-scroll max-h-[36rem]"
+  class="left-24 card bg-surface-100 p-3 rounded-md space-y-4 max-w-xl overflow-y-scroll max-h-[36rem]"
 >
   <div class="grid grid-cols-2 gap-4">
     <h3>Update User</h3>
@@ -91,6 +91,40 @@
     />
   </div>
   <div class="grid grid-cols-3 gap-3">
+    <span>Address</span>
+    <input
+      class="input variant-form-material col-span-2 h-8"
+      type="text"
+
+      required
+    />
+  </div>
+  <div class="grid grid-cols-3 gap-3">
+    <span>Position</span>
+    <input
+      class="input variant-form-material col-span-2 h-8"
+      type="text"
+
+      required
+    />
+  </div>
+  <div class="grid grid-cols-3 gap-3">
+    <span>Bank Account</span>
+    <select id="countries" class="variant-form-material rounded h-8 text-xs focus:ring-primary-500 focus:border-surface-500">
+      <option class="bg-surface-800" selected>Choose Bank Account</option>
+      <option class="bg-surface-800" value="US">Kpay</option>
+      <option class="bg-surface-800" value="CA">KBZ</option>
+      <option class="bg-surface-800" value="FR">AYA</option>
+    </select>
+    <input
+      class="input variant-form-material h-8"
+      type="text"
+
+      required
+    />
+
+  </div>
+  <div class="grid grid-cols-3 gap-3">
     <span>Email</span>
     <input
       class="input variant-form-material col-span-2 h-8"
@@ -112,7 +146,7 @@
   <div class="grid grid-cols-3 gap-3">
     <span>New Password</span>
     <input
-      class="input variant-form-material col-span-2"
+      class="input variant-form-material col-span-2 h-8"
       type="password"
       bind:value={newPassword}
     />
@@ -121,7 +155,7 @@
   <div class="grid grid-cols-3 gap-3">
     <span>Confirm Password</span>
     <input
-      class="input variant-form-material col-span-2"
+      class="input variant-form-material col-span-2 h-8"
       type="password"
       bind:value={confirmPassword}
     />

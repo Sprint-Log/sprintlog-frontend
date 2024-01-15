@@ -10,6 +10,7 @@
   import UserCard from '$lib/components/Users/UserCard.svelte';
   import UserUpdateForm from '$lib/components/Users/UserUpdateForm.svelte';
   import BreadcrumbUser from '$lib/components/Users/BreadcrumbUser.svelte';
+  import UserView from '$lib/components/Users/UserView.svelte';
 
   import { Modal, modalStore } from '@skeletonlabs/skeleton';
   import { useQueryClient, createQuery } from '@tanstack/svelte-query';
@@ -24,12 +25,12 @@
   let limit = 500;
   let page = 1;
   let order = 'desc';
-  const intervalMs = 1000000;
+  const intervalMs = 15000;
   const client = useQueryClient();
 
   $: users = createQuery<User[], Error>({
     queryKey: ['refetch-user', page, limit, order],
-    queryFn: () => getUsers(page, limit, order),
+    queryFn: async() => await getUsers(page, limit, order),
     refetchOnMount: 'always',
     refetchOnWindowFocus: true,
     refetchInterval: intervalMs

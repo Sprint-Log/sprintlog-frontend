@@ -3,6 +3,7 @@
   import { Icon } from '@steeze-ui/svelte-icon';
   import { Edit } from '@steeze-ui/carbon-icons';
   import { TrashCan } from '@steeze-ui/carbon-icons';
+  import { View } from '@steeze-ui/carbon-icons';
   import { createEventDispatcher } from 'svelte';
   import { modalStore } from '@skeletonlabs/skeleton';
   import type { ModalSettings } from '@skeletonlabs/skeleton';
@@ -24,6 +25,7 @@
     };
     modalStore.trigger(modal);
   }
+  
 </script>
 
 <!-- <Modal components={{ userUpdateForm: { ref: UserUpdateForm } }} /> -->
@@ -48,7 +50,10 @@
           {user.isSuperuser ? 'Admin' : 'User'}
         </div>
         <div class="ml-auto">
-          <button class="btn-icon hover:variant-soft w-5 mx-4" on:click={openUpdateModal}
+          <button class="btn-icon hover:variant-soft w-5 " 
+            ><Icon src={View} /></button
+          >
+          <button class="btn-icon hover:variant-soft w-5 mx-2" on:click={openUpdateModal}
             ><Icon src={Edit} /></button
           >
           <button class="btn-icon hover:variant-soft w-5" on:click={handleDelUser}

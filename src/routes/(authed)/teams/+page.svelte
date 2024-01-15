@@ -46,7 +46,7 @@
         <section class="space-y-4 mt-3">
             <!-- Team view add -->
         </section>
-       <div class="flex flex-col items-center my-72">
+       <div class="flex flex-col items-center justify-center h-screen">
         <p class="text-3xl border-surface-200 opacity-30 font-semibold">Please select a team</p>
        </div>
 	</div>

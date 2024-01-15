@@ -1,12 +1,13 @@
 <script lang="ts">
   import type { PageData } from '../../users/[slug]/$types';
-  import type { ActiveProject, SprintlogPagination } from '$lib/types/sprintlog';
+  import type { SprintlogPagination } from '$lib/types/sprintlog';
 
   import TaskListBox from '$lib/components/Sprintlog/TaskListBox.svelte';
   import ActiveProjectCard from '$lib/components/Users/ActiveProjectCard.svelte';
 
   import { getProjectByUser } from '$lib/api/sprintlog';
   import { getActiveProjects } from '$lib/utils/getActiveProject';
+  import { generatePageNumbers } from '$lib/utils/getPageNum';
 
   import { useQueryClient, createQuery } from '@tanstack/svelte-query';
   import { page } from '$app/stores';
@@ -14,7 +15,7 @@
   $: user_id = $page.params.slug;
 
   let intervalMs = 1500000;
-  let limit = 12;
+  let limit = 1;
   $: pageNum = 0;
   let order = 'asc';
   let totalItems: number, totalPages: number;
@@ -37,13 +38,10 @@
     if ($projects.data != null) {
       totalItems = $projects.data?.total;
       totalPages = Math.ceil(totalItems / limit);
-      // console.log("Fetched items")
-      // console.log($projects.data?.items)
-      // console.log("Total items " +totalItems)
-      // console.log("Page num " + pageNum)
-      // console.log("Total page " +totalPages)
     }
   }
+
+  $: middlePageNumbers = generatePageNumbers(pageNum, totalPages);
 </script>
 
 <div class="flex flex-col mt-2 px-4">
@@ -71,11 +69,16 @@
           Previous
         </button>
 
-        <button
-          aria-current="page"
-          class="!no-underline hover:!underline !text-surface-900-50-token relative z-10 inline-flex items-center px-4 py-2 text-sm border-r border-surface-500"
-          >1</button
-        >
+        {#each middlePageNumbers as page (page)}
+          <button
+            class={`!no-underline hover:!underline !text-surface-900-50-token relative z-10 inline-flex items-center px-4 py-2 text-sm border-r border-surface-500 ${
+              pageNum === page ? 'bg-surface-500' : ''
+            }`}
+            on:click={() => setPage(page)}
+          >
+            {page + 1}
+          </button>
+        {/each}
 
         <button
           class="!no-underline hover:!underline !text-surface-900-50-token relative text-sm inline-flex items-center rounded-r-md px-2 py-2"
