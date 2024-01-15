@@ -10,6 +10,7 @@
   import UserCard from '$lib/components/Users/UserCard.svelte';
   import UserUpdateForm from '$lib/components/Users/UserUpdateForm.svelte';
   import BreadcrumbUser from '$lib/components/Users/BreadcrumbUser.svelte';
+  import UserView from '$lib/components/Users/UserView.svelte';
 
   import { Modal, modalStore } from '@skeletonlabs/skeleton';
   import { useQueryClient, createQuery } from '@tanstack/svelte-query';
