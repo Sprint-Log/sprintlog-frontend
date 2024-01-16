@@ -107,7 +107,6 @@
           ><Icon src={Add} /></button
         >
       </div>
-      <div class="grid">
         {#if !$users.data || $users.data.length === 0}
           <div class="flex flex-col items-center justify-center h-screen">
             <button
@@ -126,11 +125,15 @@
           {/if}
           {#if $users.isSuccess}
             {#each $users.data as user}
-              <UserCard on:delete={handleDelUser} on:selected={handleBreadCrumb} {user} />
+            <div class=" h-screen overflow-y-scroll scroll-smooth hide-scrollbar">
+              <div class="grid px-2">
+                <UserCard on:delete={handleDelUser} on:selected={handleBreadCrumb} {user} />
+              </div>
+            </div>
             {/each}
           {/if}
         {/if}
-      </div>
+      
     </div>
     <div class="basis-4/5 mb-8 space-x-4 max-h-screen overflow-y-scroll">
       <!-- active pjs and tasks -->

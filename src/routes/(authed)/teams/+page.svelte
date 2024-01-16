@@ -38,17 +38,15 @@
             <h2 class="font-semibold">Teams</h2>
 		    <button class="btn-icon hover:variant-soft" on:click={openModal}><Icon src={Add} /></button>
         </div>
-        <div class="grid gap-2">
-            <div class="flex flex-col items-center justify-center h-screen">
-                <button class=" flex text-2xl btn border border-surface-200 rounded opacity-30" on:click={openModal}>
-                    Create Team <div class="w-9"><Icon src={Add} /></div>
-                </button>
-            </div>
-           
-      <div class=" h-screen overflow-y-auto">
-        <!-- team card add -->
-      </div>
-      
+        <div class="flex flex-col items-center justify-center h-screen">
+          <button class=" flex text-2xl btn border border-surface-200 rounded opacity-30" on:click={openModal}>
+              Create Team <div class="w-9"><Icon src={Add} /></div>
+          </button>
+        </div>
+        <div class=" h-screen overflow-y-scroll scroll-smooth hide-scrollbar">
+          <div class="grid gap-2 p-2">
+              <!-- team card add -->
+          </div>
         </div>
         
 	</div>
@@ -57,7 +55,7 @@
        <div class="flex flex-col items-center justify-center h-screen">
         <p class="text-3xl border-surface-200 opacity-30 font-semibold">Please select a team</p>
        </div>
-        <!-- Team view add -->
+        <!-- teams/[slug]/+page.svelte -->
 	</div>
 </div>
 </div>
