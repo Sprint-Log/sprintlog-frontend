@@ -7,10 +7,10 @@
   import { createEventDispatcher } from 'svelte';
   import { modalStore } from '@skeletonlabs/skeleton';
   import type { ModalSettings } from '@skeletonlabs/skeleton';
-
+  import type { ModalComponent } from '@skeletonlabs/skeleton';
+  import { Modal} from '@skeletonlabs/skeleton';
   const dispatch = createEventDispatcher();
   export let user: User;
-
   function handleDelUser() {
     dispatch('delete', {
       id: user.id.toString()
@@ -25,7 +25,6 @@
     };
     modalStore.trigger(modal);
   }
-  
 </script>
 
 <!-- <Modal components={{ userUpdateForm: { ref: UserUpdateForm } }} /> -->
@@ -50,9 +49,6 @@
           {user.isSuperuser ? 'Admin' : 'User'}
         </div>
         <div class="ml-auto">
-          <button class="btn-icon hover:variant-soft w-5 " 
-            ><Icon src={View} /></button
-          >
           <button class="btn-icon hover:variant-soft w-5 mx-2" on:click={openUpdateModal}
             ><Icon src={Edit} /></button
           >
