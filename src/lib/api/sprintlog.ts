@@ -6,9 +6,9 @@ import type {
   UserUpdate,
   SprintlogCreate,
   SprintlogPagination,
-  ProjectPagination,
   Token,
-  ProjectCreate
+  ProjectCreate,
+  ActiveProjectPagination
 } from '$lib/types/sprintlog'
 import { PUBLIC_API_URL } from '$env/static/public'
 export async function authFetch(path: string, settings?: RequestInit): Promise<Response> {
@@ -251,7 +251,7 @@ export const getProjectByUser =  async (
   currentPage = 1,
   pageSize = 12,
   sortOrder = 'asc'
-  ): Promise<SprintlogPagination> =>{
+  ): Promise<ActiveProjectPagination> =>{
     currentPage = currentPage + 1
  
     const params = new URLSearchParams([
@@ -259,10 +259,30 @@ export const getProjectByUser =  async (
       ['pageSize', pageSize.toString()],
       ['sortOrder', sortOrder]
     ])
-  // "project/user/{user_id:uuid}"
-  const response = await authFetch(`api/sprintlogs/project/user/${id}?${params.toString()}`);
+ 
+  const response = await authFetch(`api/sprintlogs/projects/user/${id}?${params.toString()}`);
   if (!response.ok) throw response;
   const data = await response.json();
   return data;
 }
 
+export const getSprintlogTaskByUser =  async (
+  id:string
+  ): Promise<Sprintlog[]> =>{
+    
+  const response = await authFetch(`api/sprintlogs/tasks/user/${id}`);
+  if (!response.ok) throw response;
+  const data = await response.json();
+  return data;
+}
+
+
+export const getUserById = async(
+  user_id:string
+):Promise<User> =>{
+  const response = await authFetch(`api/users/${user_id}`);
+  if (!response.ok) throw response;
+  const data = await response.json();
+  return data;
+  
+}

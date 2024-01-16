@@ -50,7 +50,7 @@
           {user.isSuperuser ? 'Admin' : 'User'}
         </div>
         <div class="ml-auto">
-          <button class="btn-icon hover:variant-soft w-5 " 
+          <button class="btn-icon hover:variant-soft w-5 " on:click={()=>dispatch('view', {user:user})}
             ><Icon src={View} /></button
           >
           <button class="btn-icon hover:variant-soft w-5 mx-2" on:click={openUpdateModal}

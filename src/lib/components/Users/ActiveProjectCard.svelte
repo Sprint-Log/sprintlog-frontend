@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { Sprintlog, ActiveProject } from '$lib/types/sprintlog';
+    import type { ActiveProject } from '$lib/types/sprintlog';
 
     import { Icon } from '@steeze-ui/svelte-icon';
     import { Document } from '@steeze-ui/carbon-icons';
@@ -8,10 +8,11 @@
     import { Alarm } from '@steeze-ui/carbon-icons';
     
 
+    // export let project:ActiveProject;
     export let project:ActiveProject;
 </script>
-<a href="../sprintlogs/project/{project.project_name}" class="card bg-initial card-hover overflow-hidden ">
-    <h6 class="p-2 font-medium">{project.project_name}</h6>
+<a href="../sprintlogs/project/{project.project_slug}" class="card bg-initial card-hover overflow-hidden ">
+    <h6 class="p-2 font-medium">{project.project_slug}</h6>
     <div class="flex justify-between">
       <div class="flex text-xs justify-center items-end">
         <div class="w-5 mx-1"><Icon src={Document} /></div>
