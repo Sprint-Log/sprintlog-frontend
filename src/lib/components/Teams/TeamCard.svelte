@@ -3,15 +3,18 @@
     import {Add} from '@steeze-ui/carbon-icons';
     import {OverflowMenuHorizontal} from '@steeze-ui/carbon-icons';
     import { Modal, modalStore } from '@skeletonlabs/skeleton';
-  import TeamMemberAdd from './TeamMemberAdd.svelte'
-  function openViewModal() {
-		modalStore.trigger({
-			type: 'component',
-			component: 'viewForm'
-		});
-	}
+    import TeamMemberAdd from './TeamMemberAdd.svelte';
+    const teamModal = {
+        memberAddComponent: { ref: TeamMemberAdd },
+    };
+    function openViewModal() {
+        const { memberAddComponent } = teamModal;
+        modalStore.trigger({
+        type: 'component',
+        component: memberAddComponent,
+        });
+    }
 </script>
-<Modal components={{ viewForm: { ref: TeamMemberAdd } }} />
 <a href="" class="card bg-initial card-hover overflow-hidden ">
     <div class="flex justify-center items-center">
         <div class="flex justify-center items-center">

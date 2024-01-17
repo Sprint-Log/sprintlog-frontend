@@ -2,8 +2,8 @@
   import SearchBox from './SearchBox.svelte';
     
 </script>
-   <form action="" class=" left-24 card bg-surface-100 p-3 rounded-md space-y-2 max-w-3xl  max-h-[36rem]">
-       <div class="flex justify-between bg-surface-800">
+   <form action="" class=" left-24 card bg-surface-100 p-3 rounded-md space-y-3 max-w-3xl  max-h-[36rem]">
+       <div class="flex justify-between items-center bg-surface-800">
            <h4>Add Member</h4>
            <div class="">
             <SearchBox></SearchBox>

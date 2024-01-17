@@ -2,12 +2,10 @@
     import { Icon } from '@steeze-ui/svelte-icon';
     import {Add} from '@steeze-ui/carbon-icons';
     import {Search} from '@steeze-ui/carbon-icons';
-    import {OverflowMenuHorizontal} from '@steeze-ui/carbon-icons';
     import TeamForm from '$lib/components/Teams/TeamForm.svelte';
-    import TeamCard from '$lib/components/Teams/TeamCard.svelte';
-    import TeamView from '$lib/components/Teams/TeamView.svelte';
     import { Modal, modalStore } from '@skeletonlabs/skeleton';
     import BreadcrumbTeam from '$lib/components/Teams/BreadcrumbTeam.svelte';
+  import TeamCard from '$lib/components/Teams/TeamCard.svelte';
     $: breadCrumb = [{ text: 'Home', href: '/' }];
     function openModal() {
 		modalStore.trigger({
