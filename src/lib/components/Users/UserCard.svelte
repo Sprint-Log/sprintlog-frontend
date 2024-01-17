@@ -28,7 +28,11 @@
 </script>
 
 <!-- <Modal components={{ userUpdateForm: { ref: UserUpdateForm } }} /> -->
-<a href="" class="card bg-initial card-hover overflow-hidden mt-2">
+<a
+  href="/users/{user.id}"
+  class="card bg-initial card-hover overflow-hidden mt-2"
+  on:click={() => dispatch('selected', { name: user.name, id:user.id })}
+>
   <div class="flex">
     <div
       class="flex-none rounded-full bg-surface-200 flex justify-center items-center w-10 h-10 m-2 text-black"
@@ -45,6 +49,9 @@
           {user.isSuperuser ? 'Admin' : 'User'}
         </div>
         <div class="ml-auto">
+          <button class="btn-icon hover:variant-soft w-5 " 
+            ><Icon src={View} /></button
+          >
           <button class="btn-icon hover:variant-soft w-5 mx-2" on:click={openUpdateModal}
             ><Icon src={Edit} /></button
           >

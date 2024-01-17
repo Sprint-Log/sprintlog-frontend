@@ -3,6 +3,7 @@
   import { Add, Search } from '@steeze-ui/carbon-icons';
 
   import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
+  import { ProgressRadial } from '@skeletonlabs/skeleton';
   import type { User } from '$lib/types/sprintlog';
   import type { ProjectItems } from '$lib/types/sprintlog';
 
@@ -10,6 +11,7 @@
   import UserCard from '$lib/components/Users/UserCard.svelte';
   import UserUpdateForm from '$lib/components/Users/UserUpdateForm.svelte';
   import BreadcrumbUser from '$lib/components/Users/BreadcrumbUser.svelte';
+  import UserPreviewCard from '$lib/components/Users/UserPreviewCard.svelte';
 
   import { Modal, modalStore } from '@skeletonlabs/skeleton';
   import { useQueryClient, createQuery } from '@tanstack/svelte-query';
@@ -18,18 +20,19 @@
   // modals
   const userModalRegistry: Record<string, ModalComponent> = {
     updateFormComponent: { ref: UserUpdateForm },
-    createFormComponent: { ref: UserForm }
+    createFormComponent: { ref: UserForm },
+    userPreviewCard: { ref: UserPreviewCard }
   };
 
   let limit = 500;
   let page = 1;
   let order = 'desc';
-  const intervalMs = 1000000;
+  const intervalMs = 15000;
   const client = useQueryClient();
 
   $: users = createQuery<User[], Error>({
     queryKey: ['refetch-user', page, limit, order],
-    queryFn: () => getUsers(page, limit, order),
+    queryFn: async () => await getUsers(page, limit, order),
     refetchOnMount: 'always',
     refetchOnWindowFocus: true,
     refetchInterval: intervalMs
@@ -75,10 +78,20 @@
 
   $: breadCrumb = [{ text: 'Home', href: '/' }];
 
-  function handleBreadCrumb(event: CustomEvent<{ name: string, id:string }>) {
+  function handleBreadCrumb(event: CustomEvent<{ name: string; id: string }>) {
     let name = event.detail.name;
     let id = event.detail.id;
     breadCrumb[1] = { text: name, href: '/users/' + id };
+  }
+
+  function openUserProfile(event: CustomEvent<{ user: User }>) {
+    let user = event.detail.user;
+    console.log('here');
+    modalStore.trigger({
+      type: 'component',
+      component: 'userPreviewCard',
+      meta: { user }
+    });
   }
 </script>
 
@@ -107,33 +120,40 @@
           ><Icon src={Add} /></button
         >
       </div>
-        {#if !$users.data || $users.data.length === 0}
-          <div class="flex flex-col items-center justify-center h-screen">
-            <button
-              class="flex text-2xl btn border border-surface-200 rounded opacity-30"
-              on:click={openCreateFormModal}
-            >
-              Create User <div class="w-9"><Icon src={Add} /></div>
-            </button>
+
+      {#if !$users.data || $users.data.length === 0}
+        <div class="flex flex-col items-center justify-center h-screen">
+          <button
+            class="flex text-2xl btn border border-surface-200 rounded opacity-30"
+            on:click={openCreateFormModal}
+          >
+            Create User <div class="w-9"><Icon src={Add} /></div>
+          </button>
+        </div>
+      {:else}
+        {#if $users.isLoading}
+          <div class="h-full grid place-items-center">
+            <ProgressRadial width="w-12" />
           </div>
-        {:else}
-          {#if $users.isLoading}
-            Loading...
-          {/if}
-          {#if $users.error}
-            An error has occurred: {$users.error.message}
-          {/if}
-          {#if $users.isSuccess}
-            {#each $users.data as user}
-            <div class=" h-screen overflow-y-scroll scroll-smooth hide-scrollbar">
-              <div class="grid px-2">
-                <UserCard on:delete={handleDelUser} on:selected={handleBreadCrumb} {user} />
-              </div>
+        {/if}
+        {#if $users.error}
+          An error has occurred: {$users.error.message}
+        {/if}
+        {#if $users.isSuccess}
+        <div class=" h-screen overflow-y-scroll scroll-smooth hide-scrollbar">
+          {#each $users.data as user}
+            <div class="grid px-2">
+            <UserCard
+              on:delete={handleDelUser}
+              on:selected={handleBreadCrumb}
+              on:view={openUserProfile}
+              {user}
+            />
             </div>
             {/each}
-          {/if}
+          </div>
         {/if}
-      
+      {/if}
     </div>
     <div class="basis-4/5 mb-8 space-x-4 max-h-screen overflow-y-scroll">
       <!-- active pjs and tasks -->

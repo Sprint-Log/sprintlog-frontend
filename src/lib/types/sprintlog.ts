@@ -39,10 +39,18 @@ export enum TagEnum {
   analytics = '📈',
   automation = '🤖'
 }
+
+export enum BankAccEnum{
+  kpay = 'KPay',
+  AYA = 'AYA',
+  KBZ = 'KBZ'
+}
+
 export type Token = {
   rooms: string;
   token: string;
 };
+
 export type Sprintlog = {
   id: string;
   title: string;
@@ -97,6 +105,20 @@ export type SprintlogPagination = {
   items: Sprintlog[];
 };
 
+
+export type ActiveProjectPagination = {
+  total: number;
+  limit: number;
+  offset: number;
+  items: ActiveProject[];
+};
+
+export type sprintlogPagination = {
+  total: number;
+  limit: number;
+  offset: number;
+  items: Sprintlog[];
+};
 export type Project = {
   id: string;
   slug: string;
@@ -134,7 +156,7 @@ export type ProjectCreate = {
 };
 
 export type ActiveProject ={
-  project_name:string;
+  project_slug:string;
   task_assigned:number;
   completed_task:number;
   remaining_task:number;
@@ -165,6 +187,9 @@ export interface User {
   created_at: string;
   updated_at: string;
   teams?: UserTeam[];
+  address?: string;
+  position?:string;
+  bankAccount?:BankAccEnum;
 }
 
 export interface UserRegister {
@@ -180,6 +205,11 @@ export interface UserCreate {
   isSuperuser?: null | boolean;
   isActive?: null | boolean;
   isVerified?: null | boolean;
+  address?: string;
+  position?:string;
+  KPAY?:string;
+  KBZ?:string;
+  AYA?:string;
 }
 
 export interface UserUpdate {
@@ -189,6 +219,11 @@ export interface UserUpdate {
   isSuperuser?: null | boolean;
   isActive?: null | boolean;
   isVerified?: null | boolean;
+  address?: string;
+  position?:string;
+  KPAY?:string;
+  KBZ?:string;
+  AYA?:string;
 }
 
 export interface TeamCreate {
