@@ -27,6 +27,7 @@
 		sprint_checkup_day: 3,
 		repo_urls: ['']
 	};
+	$: project.slug = project.name.trim().toLowerCase().replace(/\s+/g, '_');
 	const client = useQueryClient();
 
 	const projectMutation = createMutation(
@@ -43,14 +44,20 @@
 			}
 		}
 	);
+	function onProjectCreate() {
+		const regex = /^[A-Za-z0-9 ]+$/;
+		if (!regex.test(project.name)) {
+			toastStore.trigger({message: "Project name cannot contain special characters.", background: "variant-filled-error"});
+		}
+		else {
+			$projectMutation.mutate();
+		}
+	}
 </script>
 
 <Toast />
 <form
-	on:submit={(e) => {
-		e.preventDefault();
-		$projectMutation.mutate();
-	}}
+	on:submit|preventDefault={onProjectCreate}
 	class="card bg-surface-100 p-6 rounded-md space-y-4 max-w-3xl overflow-y-scroll max-h-[36rem]"
 >
 	<h2>Create a Project</h2>
@@ -71,6 +78,7 @@
 				type="text"
 				placeholder="Enter Slug"
 				bind:value={project.slug}
+				readonly
 			/>
 		</label>
 	</div>

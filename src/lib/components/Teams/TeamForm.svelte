@@ -4,7 +4,7 @@
    </script>
    <form action="" class=" left-24 card bg-surface-100 p-3 rounded-md space-y-4 max-w-3xl overflow-y-scroll max-h-[36rem]">
        <div class="grid grid-cols-2 gap-4">
-           <h3>Create User</h3>
+           <h3>Create Team</h3>
            <!-- <button class="btn-icon hover:variant-soft ml-auto " ><Icon src={Close} /></button> -->
        </div>
        <div class="">
@@ -13,10 +13,11 @@
         </select>
        </div>
        <label class="label text-sm">
-        <span>Description</span>
-        <textarea
-            class="input variant-form-material h-24"/>
-    </label>
+            <span>Description</span>
+            <textarea class="input variant-form-material h-24"/>
+        </label>
+        <label for="#id"></label>
+        <input type="text" class="input variant-form-material w-96" id=name name="TeamName">
        <div class="flex justify-between py-2">
            <button class="text-sm">Back</button>
            <button class="btn btn-sm variant-filled-primary" type="submit"> Create </button>
