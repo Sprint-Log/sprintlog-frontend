@@ -1,4 +1,6 @@
 import { PUBLIC_API_URL } from '$env/static/public';
+import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import type { OAuth2Login, User } from '$lib/types/sprintlog';
 const createUser = async (email: string, password: string) => {
   // Check if user exists
@@ -74,3 +76,19 @@ const getCurrentUser = async (token: string): Promise<User> => {
 };
 
 export { createUser, loginUser, getCurrentUser };
+
+
+export const login = async ({ email, password }: { email: string; password: string }) => {
+	return await axios.post<User>(`${PUBLIC_API_URL}/api/access/login`, {
+		username: email,
+		password
+	});
+};
+
+export const register = async (data: { name: string; email: string; password: string }) => {
+	return (await axios.post<User>(`${PUBLIC_API_URL}/api/access/signup`, data)).data;
+};
+
+export const getUser = async () => {
+	return (await axiosInstance.get<User>('/api/me')).data;
+};

@@ -1,22 +1,57 @@
 <script lang="ts">
-	import type { ActionData } from './$types';
 	import { enhance } from '$app/forms';
 	import { onMount } from 'svelte';
 	import { Icon } from '@steeze-ui/svelte-icon';
 	import { Eye, EyeSlash } from '@steeze-ui/heroicons';
+	import { invalidate } from '$app/navigation';
+	import { createMutation } from '@tanstack/svelte-query';
+	import { login } from '$lib/api/auth';
+  	import axios, { AxiosError } from 'axios';
 
-	export let form: ActionData;
+	let email = "";
+	let password = "";
+	// export let form: ActionData;
 	let pwShow = false;
+
+	const loginMutation = createMutation({
+		mutationFn: login, 
+		onSuccess: (data) => {
+			const authHeader = data.headers['authorization'] as string;
+			if (authHeader) {
+				localStorage.setItem('accessToken', authHeader.replace('Bearer ', ''));
+				invalidate('app:auth');
+				console.log("Logged in");
+			}
+		},
+		onError: (e: Error | AxiosError) => {
+			let message = 'Login failed';
+			if (axios.isAxiosError(e) && e.response && e.response.data.detail){
+				message = e.response.data.detail;
+			}
+			console.log(message);
+		}
+	});
+
+	function loginHandler(){
+		if(!email || !password) {
+			console.log("Please fill in the valid fileds");
+			return;
+		}
+		$loginMutation.mutate({
+			email, 
+			password
+		});
+	}
 </script>
 
-<svelte:head>
+<!-- <svelte:head>
 	<title>Login</title>
-</svelte:head>
+</svelte:head> -->
 
 <main class="grid place-items-center h-full p-8">
 	<div class="bg-surface-800 p-8 rounded-lg w-full max-w-lg">
 		<h3 class="text-center mb-4">Login</h3>
-		<form class="space-y-4" method="post" use:enhance action="">
+		<form class="space-y-4" on:submit|preventDefault={loginHandler}>
 			<label class="label">
 				<span>Email</span>
 				<input
@@ -24,14 +59,15 @@
 					name="email"
 					class="input variant-form-material"
 					placeholder="Enter your email"
+					bind:value={email}
 				/>
 			</label>
 			<label class="label">
 				<span>Password</span>
 				<div class="input-group input-group-divider grid-cols-[1fr_auto] variant-form-material">
 					<input
+						bind:value={password}
 						name="password"
-						type={pwShow ? 'text' : 'password'}
 						placeholder="Enter your password"
 					/>
 					<button
@@ -47,9 +83,9 @@
 					</button>
 				</div>
 			</label>
-			{#if form?.error}
+			<!-- {#if form?.error}
 				<p class="text-error-400">{form.error}</p>
-			{/if}
+			{/if} -->
 			<button class="btn variant-filled-primary" type="submit">Login</button>
 		</form>
 	</div>

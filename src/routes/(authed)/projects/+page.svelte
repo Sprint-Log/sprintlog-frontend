@@ -7,6 +7,7 @@
 	import { Add } from '@steeze-ui/carbon-icons';
 	import { Icon } from '@steeze-ui/svelte-icon';
 	import { Modal, modalStore } from '@skeletonlabs/skeleton';
+	import { listProjects } from '$lib/api/project';
 
 	let limit = 500;
 	let page = 1;
@@ -18,7 +19,7 @@
 
 	$: projects = createQuery<Project[], Error>({
 		queryKey: ['refetch-projects', page, limit, order],
-		queryFn: async () => getProjects(page, limit, order),
+		queryFn: listProjects,
 		refetchOnMount: 'always',
 		refetchOnWindowFocus: true,
 		refetchInterval: intervalMs,
