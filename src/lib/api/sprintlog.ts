@@ -72,8 +72,7 @@ export const getUsers = async (
   return data;
 }
 export const createProject = async (project: ProjectCreate): Promise<Project> => {
-  console.log("project")
-  console.log(project)
+ 
   const response = await authFetch(`api/projects/create`, {
     method: 'POST',
     body: JSON.stringify(project),

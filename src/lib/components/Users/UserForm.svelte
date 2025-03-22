@@ -37,7 +37,7 @@
 
     onSuccess: () => {
       console.log('success');
-      client.invalidateQueries({ queryKey: ['refetch-user'] });
+      client.invalidateQueries({ queryKey: ['refetch-users'] });
       modalStore.close();
     },
     onError: () => {
@@ -78,7 +78,7 @@
       }
     }
     console.log(user.AYA);
-    // $userMutation.mutate();
+    $userMutation.mutate();
   }
 </script>
 

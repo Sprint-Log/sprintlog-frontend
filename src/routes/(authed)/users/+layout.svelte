@@ -31,7 +31,7 @@
   const client = useQueryClient();
 
   $: users = createQuery<User[], Error>({
-    queryKey: ['refetch-user', page, limit, order],
+    queryKey: ['refetch-users'],
     queryFn: async () => await getUsers(page, limit, order),
     refetchOnMount: 'always',
     refetchOnWindowFocus: true,
@@ -61,7 +61,7 @@
         title = 'Successful deletion';
         body = 'User account has been deleted';
 
-        client.invalidateQueries({ queryKey: ['refetch-user'] });
+        client.invalidateQueries({ queryKey: ['refetch-users'] });
       }
     } catch (error) {
       title = 'Fail';
