@@ -13,9 +13,14 @@ import type {
 import { PUBLIC_API_URL } from '$env/static/public'
 export async function authFetch(path: string, settings?: RequestInit): Promise<Response> {
   settings = settings || {}
+  settings.headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${localStorage.getItem('token')}`
+  }
   settings.credentials = 'include'
-  console.log("Fetch sent:")
-  console.log(`${PUBLIC_API_URL}/${path}`+"\n")
+  console.log("fetch")
+  console.log(path)
+  console.log(settings)
   return await fetch(`${PUBLIC_API_URL}/${path}`, settings)
 }
 export const getProjects = async (
@@ -26,10 +31,11 @@ export const getProjects = async (
   const response = await authFetch(
     `api/projects?currentPage=${currentPage}&pageSize=${pageSize}&sortOrder=${sortOrder}`
   )
+  console.log("Refetched completed");
+  console.log(response.ok)
   if (!response.ok) throw response
-  const data = (await response.json()) as Project[];
-  console.log("refetched projects")
-  console.log(data)
+  const data =( await response.json() as [] | Project[]);
+ 
   return data
 }
 export const getLiveToken = async (roomId: string): Promise<Token> => {
@@ -71,13 +77,11 @@ export const getUsers = async (
   return data;
 }
 export const createProject = async (project: ProjectCreate): Promise<Project> => {
-  const response = await authFetch(`api/projects/`, {
+  console.log("project")
+  console.log(project)
+  const response = await authFetch(`api/projects/create`, {
     method: 'POST',
     body: JSON.stringify(project),
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    }
   })
   const data = (await response.json()) as Project
   return data

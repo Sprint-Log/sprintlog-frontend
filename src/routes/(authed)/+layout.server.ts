@@ -12,6 +12,7 @@ export const load = (async ({ cookies, depends }) => {
   let user;
   try {
     user = await getCurrentUser(token);
+
   } catch (err: any) {
     const status = err.status;
     if (status === 401) {

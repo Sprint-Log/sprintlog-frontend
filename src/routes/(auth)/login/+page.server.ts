@@ -15,9 +15,10 @@ export const actions: Actions = {
 
     const { email, password } = formData as { email: string; password: string };
     try {
-      const token = (await loginUser(email, password)).access_token;
+      const token = (await loginUser(email, password)) as string;
       if (env.PUBLIC_COOKIE_DOMAIN) {
-        event.cookies.set('token', `Bearer ${token}`, {
+ 
+        event.cookies.set('token', token, {
           httpOnly: true,
           path: '/',
           secure: true,
@@ -26,7 +27,7 @@ export const actions: Actions = {
           domain: env.PUBLIC_COOKIE_DOMAIN
         });
       } else {
-        event.cookies.set('token', `Bearer ${token}`, {
+        event.cookies.set('token', token, {
           httpOnly: true,
           path: '/',
           secure: true,

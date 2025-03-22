@@ -31,7 +31,7 @@ const createUser = async (email: string, password: string) => {
     });
 };
 
-const loginUser = async (email: string, password: string): Promise<OAuth2Login> => {
+const loginUser = async (email: string, password: string): Promise<String> => {
   try {
     const response = await fetch(`${PUBLIC_API_URL}/api/access/login`, {
       method: 'POST',
@@ -47,9 +47,14 @@ const loginUser = async (email: string, password: string): Promise<OAuth2Login> 
     if (!response.ok) {
       throw new Error('User or Password Error');
     }
-    const data = await response.json();
-    console.log(data);
-    return data;
+ 
+    const token = response.headers.get('Authorization');
+ 
+    if (token === null) {
+      throw new Error('User or Password Error');
+    }
+ 
+    return token;
   } catch (error) {
     console.error('Error:', error);
     throw error;
