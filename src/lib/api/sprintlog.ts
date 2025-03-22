@@ -13,14 +13,9 @@ import type {
 import { PUBLIC_API_URL } from '$env/static/public'
 export async function authFetch(path: string, settings?: RequestInit): Promise<Response> {
   settings = settings || {}
-  settings.headers = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${localStorage.getItem('token')}`
-  }
+
   settings.credentials = 'include'
-  console.log("fetch")
-  console.log(path)
-  console.log(settings)
+ 
   return await fetch(`${PUBLIC_API_URL}/${path}`, settings)
 }
 export const getProjects = async (
