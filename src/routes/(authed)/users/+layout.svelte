@@ -16,6 +16,7 @@
   import { Modal, modalStore } from '@skeletonlabs/skeleton';
   import { useQueryClient, createQuery } from '@tanstack/svelte-query';
   import { deleteUser, getUsers } from '$lib/api/sprintlog';
+  import { goto } from '$app/navigation';
 
   // modals
   const userModalRegistry: Record<string, ModalComponent> = {
@@ -73,6 +74,7 @@
         title: title,
         body: body
       });
+      goto("/users");
     }
   }
 
