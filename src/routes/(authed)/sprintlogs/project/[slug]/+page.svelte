@@ -33,12 +33,12 @@
     { text: project_slug }
   ];
 
-  $: taskTotal = 200;
-  $: currentPageTask = 0;
-  $: amountTask = 200;
-  $: backlogTotal = 200;
-  $: currentPageBacklog = 0;
-  $: amountBacklog = 200;
+  let taskTotal = 200;
+  let currentPageTask = 0;
+  let amountTask = 200;
+  let backlogTotal = 200;
+  let currentPageBacklog = 0;
+  let amountBacklog = 200;
   let order = 'desc';
   // let intervalMs = 15000;
   let intervalMs = 1500000;
