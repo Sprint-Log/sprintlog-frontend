@@ -3,7 +3,7 @@
   import { createUser } from '$lib/api/sprintlog';
   import { useQueryClient, createMutation } from '@tanstack/svelte-query';
   import { Toast, modalStore, toastStore } from '@skeletonlabs/skeleton';
-  import { UserRole } from '@steeze-ui/carbon-icons';
+  import { USERS_QUERY_KEY } from '$lib/constants';
   import { BankAccEnum } from '$lib/types/sprintlog';
 
   let user: UserCreate = {
@@ -36,8 +36,7 @@
     mutationFn: () => createUser(user),
 
     onSuccess: () => {
-      console.log('success');
-      client.invalidateQueries({ queryKey: ['refetch-users'] });
+      client.invalidateQueries({ queryKey: [USERS_QUERY_KEY] });
       modalStore.close();
     },
     onError: () => {
@@ -77,7 +76,6 @@
           break;
       }
     }
-    console.log(user.AYA);
     $userMutation.mutate();
   }
 </script>

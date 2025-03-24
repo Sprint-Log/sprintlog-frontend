@@ -1,12 +1,12 @@
 <script lang="ts">
   import { Icon } from '@steeze-ui/svelte-icon';
   import { Add, Search } from '@steeze-ui/carbon-icons';
-
-  import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
   import { ProgressRadial } from '@skeletonlabs/skeleton';
+  import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
   import type { User } from '$lib/types/sprintlog';
   import type { ProjectItems } from '$lib/types/sprintlog';
 
+  import { USERS_QUERY_KEY } from '$lib/constants';
   import UserForm from '$lib/components/Users/UserForm.svelte';
   import UserCard from '$lib/components/Users/UserCard.svelte';
   import UserUpdateForm from '$lib/components/Users/UserUpdateForm.svelte';
@@ -31,19 +31,15 @@
   const intervalMs = 15000;
   const client = useQueryClient();
 
-  $: users = createQuery<User[], Error>({
-    queryKey: ['refetch-users'],
-    queryFn: async () => await getUsers(page, limit, order),
+  const users = createQuery<User[], Error>({
+    queryKey: [USERS_QUERY_KEY, page, limit, order],
+    queryFn: async () =>await getUsers(page, limit, order),
     refetchOnMount: 'always',
     refetchOnWindowFocus: true,
     refetchInterval: intervalMs
     // keepPreviousData:true
   });
-  $: {
-    console.log('This is refetch user data');
-    console.log($users.data);
-  }
-
+ 
   function openCreateFormModal() {
     modalStore.trigger({
       type: 'component',
@@ -58,11 +54,11 @@
       const response: { status: number } = await deleteUser(id);
 
       if (response.status === 204) {
-        console.log('Response status 204');
+    
         title = 'Successful deletion';
         body = 'User account has been deleted';
 
-        client.invalidateQueries({ queryKey: ['refetch-users'] });
+        client.invalidateQueries([USERS_QUERY_KEY]);
       }
     } catch (error) {
       title = 'Fail';
@@ -88,7 +84,7 @@
 
   function openUserProfile(event: CustomEvent<{ user: User }>) {
     let user = event.detail.user;
-    console.log('here');
+ 
     modalStore.trigger({
       type: 'component',
       component: 'userPreviewCard',
@@ -142,16 +138,16 @@
           An error has occurred: {$users.error.message}
         {/if}
         {#if $users.isSuccess}
-        <div class=" h-screen overflow-y-scroll scroll-smooth hide-scrollbar">
-          {#each $users.data as user}
-            <div class="grid px-2">
-            <UserCard
-              on:delete={handleDelUser}
-              on:selected={handleBreadCrumb}
-              on:view={openUserProfile}
-              {user}
-            />
-            </div>
+          <div class=" h-screen overflow-y-scroll scroll-smooth hide-scrollbar">
+            {#each $users.data as user}
+              <div class="grid px-2">
+                <UserCard
+                  on:delete={handleDelUser}
+                  on:selected={handleBreadCrumb}
+                  on:view={openUserProfile}
+                  {user}
+                />
+              </div>
             {/each}
           </div>
         {/if}

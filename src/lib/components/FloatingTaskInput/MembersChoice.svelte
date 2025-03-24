@@ -1,15 +1,15 @@
 <script lang="ts">
+ 
 	import { createQuery } from '@tanstack/svelte-query';
 	import type { User } from '$lib/types/sprintlog';
 	import { getUsers } from '$lib/api/sprintlog';
 	import { createEventDispatcher } from 'svelte';
-	import { Autocomplete } from '@skeletonlabs/skeleton';
-	import type { AutocompleteOption } from '@skeletonlabs/skeleton';
+	import {ASSIGNEE_QUERY_KEY} from '$lib/constants';
 	export let assignee: User | undefined;
 	const dispatch = createEventDispatcher();
 
-	$: assignees = createQuery<User[], Error>({
-		queryKey: ['refetch-assignee'],
+	const assignees = createQuery<User[], Error>({
+		queryKey: [ASSIGNEE_QUERY_KEY],
 		queryFn: async () => await getUsers(1, 200, 'desc'),
 		refetchOnMount: 'always',
 		refetchOnWindowFocus: true
@@ -17,7 +17,6 @@
 
 	function handleAssigneeChange(event: Event) {
 		const selectedAssignee = assignee;
-		console.log('assignee handled');
 		dispatch('assigneeSelected', selectedAssignee);
 	}
 </script>

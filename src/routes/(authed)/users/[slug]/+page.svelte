@@ -11,32 +11,36 @@
   import { page } from '$app/stores';
 
   import { ProgressRadial } from '@skeletonlabs/skeleton';
-  import { useQueryClient, createQuery } from '@tanstack/svelte-query';
+  import { createQuery } from '@tanstack/svelte-query';
+  import {
+    USER_DETAIL_QUERY_KEY,
+    PROJECT_BY_USER_QUERY_KEY,
+    TASK_BY_USER_QUERY_KEY
+  } from '$lib/constants';
+ 
+  $: pageNum = 0;
+  let intervalMs = 1500000;
 
-  $: user_id = $page.params.slug;
+  let limit = 12;
+  let order = 'asc';
+  let totalItems: number;
+  let totalPages: number;
 
-  $: currentUser = createQuery<User, Error>({
-    queryKey: ['refetch-selected-user', user_id],
-    queryFn: async () => await getUserById(user_id),
-    refetchInterval: intervalMs,
+  const currentUser = createQuery<User, Error>({
+    queryKey: [USER_DETAIL_QUERY_KEY, $page.params.slug],
+    queryFn: async () => await getUserById($page.params.slug),
     refetchOnMount: 'always',
     refetchOnWindowFocus: true,
     cacheTime: 15000
   });
 
-  let intervalMs = 1500000;
-  let limit = 12;
-  $: pageNum = 0;
-  let order = 'asc';
-  let totalItems: number, totalPages: number;
-
   const setPage = (newPage: number) => {
     pageNum = newPage;
   };
 
-  $: activeProjects = createQuery<ActiveProjectPagination, Error>({
-    queryKey: ['refetch-project-by-user', user_id, pageNum, limit, order],
-    queryFn: async () => await getProjectByUser(user_id, pageNum, limit, order),
+  const activeProjects = createQuery<ActiveProjectPagination, Error>({
+    queryKey: [PROJECT_BY_USER_QUERY_KEY, $page.params.slug, pageNum, limit, order],
+    queryFn: async () => await getProjectByUser($page.params.slug, pageNum, limit, order),
     refetchInterval: intervalMs,
     refetchOnMount: 'always',
     refetchOnWindowFocus: true,
@@ -44,9 +48,9 @@
     keepPreviousData: true
   });
 
-  $: tasks = createQuery<Sprintlog[], Error>({
-    queryKey: ['refetch-task-by-user', user_id],
-    queryFn: async () => getSprintlogTaskByUser(user_id),
+  const tasks = createQuery<Sprintlog[], Error>({
+    queryKey: [TASK_BY_USER_QUERY_KEY, $page.params.slug],
+    queryFn: async () => getSprintlogTaskByUser($page.params.slug),
     refetchInterval: intervalMs,
     refetchOnMount: 'always',
     refetchOnWindowFocus: true,

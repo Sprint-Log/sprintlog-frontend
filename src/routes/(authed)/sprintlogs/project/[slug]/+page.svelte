@@ -4,15 +4,14 @@
   import Listitem from '$lib/components/Sprintlog/ListItemEdit.svelte';
   import { page } from '$app/stores';
   import type { PageData } from '../../../sprintlogs/project/[slug]/$types';
-  import type { SprintlogPagination } from '$lib/types/sprintlog';
-  import type { ProjectItems } from '$lib/types/sprintlog';
+
   import Breadcrumb from '$lib/components/Breadcrumb.svelte';
-  import Resizable from '$lib/resizable';
-  import { onMount } from 'svelte';
+
   import { createQuery } from '@tanstack/svelte-query';
   import { getBacklogByPrjSlug, getTaskByPrjSlug } from '$lib/api/sprintlog';
   import { ProgressRadial } from '@skeletonlabs/skeleton';
-  import type { SprintlogCreate, Sprintlog } from '$lib/types/sprintlog';
+  import {TASKS_QUERY_KEY, SPRINTLOGS_BACKLOG_QUERY_KEY} from '$lib/constants';
+  import type { Sprintlog, ProjectItems, SprintlogPagination } from '$lib/types/sprintlog';
   export const load = ({ params }: { params: any }) => {
     return {
       slug: params.slug
@@ -27,7 +26,7 @@
     owner_id = user.id;
   }
   let project_slug = $page.params.slug;
-  
+
   const prjItems: ProjectItems[] = [
     { text: 'Home', href: '/' },
     { text: 'Projects', href: '/projects' },
@@ -46,8 +45,8 @@
 
   let cacheTime = 1500000;
 
-  $: tasks = createQuery<SprintlogPagination, Error>({
-    queryKey: ['refetch-tasks', currentPageTask, amountTask, order],
+  const tasks = createQuery<SprintlogPagination, Error>({
+    queryKey: [TASKS_QUERY_KEY, currentPageTask, amountTask, order],
     queryFn: async () => {
       return await getTaskByPrjSlug($page.params.slug, currentPageTask, amountTask, order).then(
         (res) => {
@@ -62,12 +61,9 @@
     // cacheTime: cacheTime
   });
 
-  $:{
-    console.log("Sprintlog tasks ")
-    console.log($tasks.data)
-  }
-  $: backlogs = createQuery<SprintlogPagination, Error>({
-    queryKey: ['refetch-backlogs', currentPageBacklog, amountBacklog, order],
+ 
+  const backlogs = createQuery<SprintlogPagination, Error>({
+    queryKey: [SPRINTLOGS_BACKLOG_QUERY_KEY, currentPageBacklog, amountBacklog, order],
     queryFn: async () => {
       return await getBacklogByPrjSlug(
         $page.params.slug,
@@ -84,10 +80,7 @@
     refetchInterval: intervalMs
     // cacheTime: cacheTime
   });
-  $:{
-    console.log("backlog tasks ")
-    console.log($backlogs.data)
-  }
+
 </script>
 
 <main id="page-content" class="w-full h-full max-h-screen">

@@ -37,7 +37,6 @@ export function getActiveProjects(data: SprintlogPagination): { projects: Active
 
     // Checking whether the task is due or not
     if (sprintlog.status !== StatusEnum.completed && new Date(sprintlog.due_date) < new Date()) {
-      // console.log(sprintlog.slug+" is due task")
       project.task_due++;
     }
   }

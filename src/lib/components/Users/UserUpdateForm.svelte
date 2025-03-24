@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { UserUpdate } from '$lib/types/sprintlog';
-
+  import { USERS_QUERY_KEY } from '$lib/constants';
   import { updateUser } from '$lib/api/sprintlog';
   import { useQueryClient, createMutation } from '@tanstack/svelte-query';
   import { Toast, modalStore, toastStore } from '@skeletonlabs/skeleton';
@@ -26,8 +26,7 @@
     mutationFn: async () => updateUser(userId, user),
 
     onSuccess: () => {
-      console.log('success');
-      client.invalidateQueries({ queryKey: ['refetch-users'] });
+      client.invalidateQueries({ queryKey: [USERS_QUERY_KEY] });
       modalStore.close();
     },
     onError: () => {

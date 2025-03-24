@@ -26,8 +26,6 @@ export const getProjects = async (
   const response = await authFetch(
     `api/projects?currentPage=${currentPage}&pageSize=${pageSize}&sortOrder=${sortOrder}`
   )
-  console.log("Refetched completed");
-  console.log(response.ok)
   if (!response.ok) throw response
   const data =( await response.json() as [] | Project[]);
  
@@ -66,9 +64,8 @@ export const getUsers = async (
   const response = await authFetch(
     `api/users?currentPage=${currentPage}&pageSize=${pageSize}&sortOrder=${sortOrder}`
   )
-   const data = (await response.json()).items as User[];
-  console.log("Refetched completed");
-  console.log(data)
+  const data = (await response.json()).items as User[];
+ 
   return data;
 }
 export const createProject = async (project: ProjectCreate): Promise<Project> => {
@@ -215,13 +212,11 @@ export const createUser = async (user: UserCreate): Promise<User> => {
     }
   })
   const data = (await response.json()) as User;
-  console.log("Created user"+ data.email)
   return data
 }
 
 export const deleteUser = async (id: string): Promise<{ status: number }> => {
   try {
-    console.log("delete user"+id)
     await authFetch(`api/users/${id}`, { method: 'DELETE' })
     return { status: 204 };
   } catch (error) {

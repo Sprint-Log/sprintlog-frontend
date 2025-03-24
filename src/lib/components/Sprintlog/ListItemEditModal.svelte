@@ -1,21 +1,22 @@
 <script lang="ts">
+	import { invalidateAll } from '$app/navigation';
   import type { Sprintlog } from '$lib/types/sprintlog';
-  import { progressDown, progressUp, progressCircle, priorityCircle } from '$lib/api/sprintlog';
-  import { useQueryClient, createQuery, createMutation } from '@tanstack/svelte-query';
+  import { progressDown,  progressCircle, priorityCircle } from '$lib/api/sprintlog';
+  import { useQueryClient, createMutation } from '@tanstack/svelte-query';
   import Field from '$lib/components/Sprintlog/Fields.svelte';
   import TimeField from './TimeField.svelte';
   import TaskActions from './TaskActions.svelte';
   import BacklogActions from './BacklogActions.svelte';
   import { marked } from 'marked';
   import FloatingTaskInput from '../FloatingTaskInput/FloatingTaskInput.svelte';
-
+  import {SPRINTLOGS_BACKLOG_QUERY_KEY, TASKS_QUERY_KEY} from "$lib/constants";
   export let item: Sprintlog;
   export let isTask = true;
   let client = useQueryClient();
   let expand = false;
   let isEdit = false;
   const handleItemClick = function (event: any, item: any) {
-    client.invalidateQueries(['refetch-backlogs']);
+    client.invalidateQueries([SPRINTLOGS_BACKLOG_QUERY_KEY]);
   };
 
   const progressDownMutation = createMutation(
@@ -24,8 +25,8 @@
     },
     {
       onSuccess: function () {
-        client.invalidateQueries(['refetch-backlogs']);
-        client.invalidateQueries(['refetch-tasks']);
+        client.invalidateQueries([SPRINTLOGS_BACKLOG_QUERY_KEY]);
+        client.invalidateQueries([TASKS_QUERY_KEY]);
       }
     }
   );
@@ -35,8 +36,8 @@
     },
     {
       onSuccess: function () {
-        client.invalidateQueries(['refetch-backlogs']);
-        client.invalidateQueries(['refetch-tasks']);
+        client.invalidateQueries([SPRINTLOGS_BACKLOG_QUERY_KEY]);
+        client.invalidateQueries([TASKS_QUERY_KEY]);
       }
     }
   );
@@ -46,12 +47,13 @@
     },
     {
       onSuccess: function () {
-        client.invalidateQueries(['refetch-backlogs']);
-        client.invalidateQueries(['refetch-tasks']);
+        client.invalidateQueries([SPRINTLOGS_BACKLOG_QUERY_KEY]);
+        client.invalidateQueries([TASKS_QUERY_KEY]);
       }
     }
   );
-
+  
+ 
   function onExpand() {
     expand = !expand;
   }

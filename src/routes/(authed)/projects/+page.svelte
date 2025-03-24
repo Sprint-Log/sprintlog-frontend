@@ -1,12 +1,13 @@
 <script lang="ts">
 	import type { Project } from '$lib/types/sprintlog';
 	import ProjectCard from '$lib/components/Project/ProjectCard.svelte';
-	import { useQueryClient, createQuery } from '@tanstack/svelte-query';
+	import { createQuery } from '@tanstack/svelte-query';
 	import { getProjects } from '$lib/api/sprintlog';
 	import ProjectForm from '$lib/components/Project/ProjectForm.svelte';
 	import { Add } from '@steeze-ui/carbon-icons';
 	import { Icon } from '@steeze-ui/svelte-icon';
 	import { Modal, modalStore } from '@skeletonlabs/skeleton';
+	import { PROJECTS_QUERY_KEY } from '$lib/constants';
 
 	let limit = 500;
 	let page = 1;
@@ -14,10 +15,8 @@
 
 	let intervalMs = 15000;
 
-	let client = useQueryClient();
-
-	$: projects = createQuery<Project[], Error>({
-		queryKey: ['refetch-projects', page, limit, order],
+	const projects = createQuery<Project[], Error>({
+		queryKey: [PROJECTS_QUERY_KEY, page, limit, order],
 		queryFn: async () => getProjects(page, limit, order),
 		refetchOnMount: 'always',
 		refetchOnWindowFocus: true,

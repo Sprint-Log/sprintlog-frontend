@@ -1,36 +1,6 @@
 import { PUBLIC_API_URL } from '$env/static/public';
 import type { OAuth2Login, User } from '$lib/types/sprintlog';
-const createUser = async (email: string, password: string) => {
-  // Check if user exists
-  fetch(`${PUBLIC_API_URL}/api/users`, {
-    method: 'POST',
-    headers: {
-      accept: 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      email: email,
-      password: password,
-      name: email.split('@')[0],
-      isSuperuser: false,
-      isActive: true,
-      isVerified: true
-    })
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then((data) => {
-      console.log(data);
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
-};
-
+ 
 const loginUser = async (email: string, password: string): Promise<String> => {
   try {
     const response = await fetch(`${PUBLIC_API_URL}/api/access/login`, {
@@ -78,4 +48,4 @@ const getCurrentUser = async (token: string): Promise<User> => {
   }
 };
 
-export { createUser, loginUser, getCurrentUser };
+export { loginUser, getCurrentUser };

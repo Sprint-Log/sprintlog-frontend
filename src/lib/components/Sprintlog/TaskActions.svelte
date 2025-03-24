@@ -1,21 +1,12 @@
 <script lang="ts">
   import type { Sprintlog } from '$lib/types/sprintlog';
-  import { useQueryClient, createMutation, createQuery } from '@tanstack/svelte-query';
-  import { toggleCompletion, switchToBacklog } from '$lib/api/sprintlog';
+  import { useQueryClient, createMutation } from '@tanstack/svelte-query';
+  import { switchToBacklog } from '$lib/api/sprintlog';
   import ClickableIcon from '$lib/components/Sprintlog/ClickableIcon.svelte';
-  import {
-    CheckmarkOutline,
-    OverflowMenuVertical,
-    UserAdmin,
-    Calendar,
-    RowExpand,
-    RowCollapse,
-    UpToTop,
-    SubtractAlt,
-    AddAlt,
-    Edit
-  } from '@steeze-ui/carbon-icons';
+  import { CheckmarkOutline, RowCollapse, Edit } from '@steeze-ui/carbon-icons';
   import { createEventDispatcher } from 'svelte';
+
+  import { SPRINTLOGS_BACKLOG_QUERY_KEY, TASKS_QUERY_KEY } from '$lib/constants';
 
   export let item: Sprintlog;
   let client = useQueryClient();
@@ -28,8 +19,8 @@
     },
     {
       onSuccess: function () {
-        client.invalidateQueries(['refetch-backlogs']);
-        client.invalidateQueries(['refetch-tasks']);
+        client.invalidateQueries([SPRINTLOGS_BACKLOG_QUERY_KEY]);
+        client.invalidateQueries([TASKS_QUERY_KEY]);
       }
     }
   );

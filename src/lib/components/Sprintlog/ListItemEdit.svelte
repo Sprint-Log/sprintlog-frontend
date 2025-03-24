@@ -1,4 +1,5 @@
 <script lang="ts">
+ 
   import {
     priorityCircle,
     progressCircle,
@@ -7,7 +8,7 @@
   } from '$lib/api/sprintlog';
   import Field from '$lib/components/Sprintlog/Fields.svelte';
   import type { Sprintlog, User } from '$lib/types/sprintlog';
-  import { StatusEnum } from '$lib/types/sprintlog';
+ 
   import { createMutation, useQueryClient } from '@tanstack/svelte-query';
   import { createEventDispatcher } from 'svelte';
   import CmEditor from '../Editors/CMEditor.svelte';
@@ -16,6 +17,8 @@
   import TaskActions from './TaskActions.svelte';
   import TimeField from './TimeField.svelte';
   import Members from '../FloatingTaskInput/MembersChoice.svelte';
+
+  import {SPRINTLOGS_BACKLOG_QUERY_KEY, TASKS_QUERY_KEY} from "$lib/constants";
   export let item: Sprintlog;
   export let isTask = true;
   export let currentUser: User;
@@ -74,8 +77,8 @@
     },
     {
       onSuccess: function () {
-        client.invalidateQueries(['refetch-backlogs']);
-        client.invalidateQueries(['refetch-tasks']);
+        client.invalidateQueries([SPRINTLOGS_BACKLOG_QUERY_KEY]);
+        client.invalidateQueries([TASKS_QUERY_KEY]);
         dispatch('completion');
       }
     }
@@ -97,8 +100,8 @@
     },
     {
       onSuccess: function () {
-        client.invalidateQueries(['refetch-backlogs']);
-        client.invalidateQueries(['refetch-tasks']);
+        client.invalidateQueries([SPRINTLOGS_BACKLOG_QUERY_KEY]);
+        client.invalidateQueries([TASKS_QUERY_KEY]);
         dispatch('completion');
       }
     }
@@ -109,8 +112,8 @@
     },
     {
       onSuccess: function () {
-        client.invalidateQueries(['refetch-backlogs']);
-        client.invalidateQueries(['refetch-tasks']);
+        client.invalidateQueries([SPRINTLOGS_BACKLOG_QUERY_KEY]);
+        client.invalidateQueries([TASKS_QUERY_KEY]);
         dispatch('completion');
       }
     }
@@ -121,8 +124,8 @@
     },
     {
       onSuccess: function () {
-        client.invalidateQueries(['refetch-backlogs']);
-        client.invalidateQueries(['refetch-tasks']);
+        client.invalidateQueries([SPRINTLOGS_BACKLOG_QUERY_KEY]);
+        client.invalidateQueries([TASKS_QUERY_KEY]);
         topic = '';
         dispatch('completion');
       }
@@ -142,10 +145,6 @@
   }
   const debouncedResetAllFlags = debouncer(3000, () => resetAllFlags());
 
-//   $:{
-    
-// console.log("project "+item.slug+" due date "+item.due_date)
-// }
 </script>
 
 <div class="hover:variant-ringed-primary py-0.5 group">
