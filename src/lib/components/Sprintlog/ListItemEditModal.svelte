@@ -10,6 +10,7 @@
   import { marked } from 'marked';
   import FloatingTaskInput from '../FloatingTaskInput/FloatingTaskInput.svelte';
   import {SPRINTLOGS_BACKLOG_QUERY_KEY, TASKS_QUERY_KEY} from "$lib/constants";
+  import { Toast, toastStore } from '@skeletonlabs/skeleton';
   export let item: Sprintlog;
   export let isTask = true;
   let client = useQueryClient();
@@ -27,6 +28,10 @@
       onSuccess: function () {
         client.invalidateQueries([SPRINTLOGS_BACKLOG_QUERY_KEY]);
         client.invalidateQueries([TASKS_QUERY_KEY]);
+      },
+      onError: function(e: any) {
+        let message = "Failed to update progress down.";
+        toastStore.trigger({ message: message, background: "variant-filled-error"});
       }
     }
   );
@@ -38,6 +43,10 @@
       onSuccess: function () {
         client.invalidateQueries([SPRINTLOGS_BACKLOG_QUERY_KEY]);
         client.invalidateQueries([TASKS_QUERY_KEY]);
+      },
+      onError: function(e: any) {
+        let message = "Failed to update progress circle.";
+        toastStore.trigger({ message: message, background: "variant-filled-error"});
       }
     }
   );
@@ -49,7 +58,11 @@
       onSuccess: function () {
         client.invalidateQueries([SPRINTLOGS_BACKLOG_QUERY_KEY]);
         client.invalidateQueries([TASKS_QUERY_KEY]);
-      }
+      },
+      onError: function(e: any) {
+        let message = "Failed to update priority circle.";
+        toastStore.trigger({ message: message, background: "variant-filled-error"});
+      }      
     }
   );
   
@@ -61,7 +74,7 @@
     isEdit = !isEdit;
   }
 </script>
-
+<Toast/>
 {#if isEdit}
   <div class="hover:variant-ringed-tertiary py-0.5 group">
     <div class="px-2 space-x-3 space-y-1">

@@ -19,6 +19,7 @@
   import Members from '../FloatingTaskInput/MembersChoice.svelte';
 
   import {SPRINTLOGS_BACKLOG_QUERY_KEY, TASKS_QUERY_KEY} from "$lib/constants";
+  import { Toast, toastStore } from '@skeletonlabs/skeleton';
   export let item: Sprintlog;
   export let isTask = true;
   export let currentUser: User;
@@ -103,6 +104,10 @@
         client.invalidateQueries([SPRINTLOGS_BACKLOG_QUERY_KEY]);
         client.invalidateQueries([TASKS_QUERY_KEY]);
         dispatch('completion');
+      },
+      onError: function(e: any) {
+        let message = "Failed to update progress circle.";
+        toastStore.trigger({ message: message, background: "variant-filled-error"});
       }
     }
   );
@@ -115,6 +120,10 @@
         client.invalidateQueries([SPRINTLOGS_BACKLOG_QUERY_KEY]);
         client.invalidateQueries([TASKS_QUERY_KEY]);
         dispatch('completion');
+      },
+      onError: function(e: any) {
+        let message = "Failed to update priority circle.";
+        toastStore.trigger({ message: message, background: "variant-filled-error"});
       }
     }
   );
@@ -128,6 +137,10 @@
         client.invalidateQueries([TASKS_QUERY_KEY]);
         topic = '';
         dispatch('completion');
+      },
+      onError: function(e: any) {
+        let message = "Failed to update sprintlog.";
+        toastStore.trigger({ message: message, background: "variant-filled-error"});
       }
     }
   );
@@ -146,7 +159,7 @@
   const debouncedResetAllFlags = debouncer(3000, () => resetAllFlags());
 
 </script>
-
+<Toast/>
 <div class="hover:variant-ringed-primary py-0.5 group">
   <div class="flex space-x-3 space-y-1">
     <div class="flex-1">

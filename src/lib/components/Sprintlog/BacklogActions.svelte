@@ -8,6 +8,7 @@
   import { createEventDispatcher } from 'svelte';
   import {SPRINTLOGS_BACKLOG_QUERY_KEY, TASKS_QUERY_KEY} from '$lib/constants';
   import { toastStore } from '@skeletonlabs/skeleton';
+  // import Error from '../../../routes/(authed)/+error.svelte';
 
   export let item: Sprintlog;
 
@@ -24,9 +25,8 @@
         client.invalidateQueries([SPRINTLOGS_BACKLOG_QUERY_KEY]);
         client.invalidateQueries([TASKS_QUERY_KEY]);
       },
-      onError: function(e) {
-        let message = "Failed to update project backlog.";
-        console.log(message);
+      onError: function(e: any) {
+        let message = "Failed to update backlog.";
         toastStore.trigger({ message: message, background: "variant-filled-error"});
       }
     }
