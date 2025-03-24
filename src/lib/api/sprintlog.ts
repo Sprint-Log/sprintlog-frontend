@@ -118,7 +118,7 @@ export const getTaskByPrjSlug = async (
   return data
 }
 export const createSprintlog = async (sprintlog: SprintlogCreate): Promise<Sprintlog> => {
-  const response = await authFetch(`api/sprintlogs/`, {
+  const response = await authFetch(`api/sprintlogs/create`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(sprintlog)
@@ -127,7 +127,7 @@ export const createSprintlog = async (sprintlog: SprintlogCreate): Promise<Sprin
   return data
 }
 export const updateSprintlog = async (sprintlog: Sprintlog): Promise<Sprintlog> => {
-  const response = await authFetch(`api/sprintlogs/detail/${sprintlog.id}`, {
+  const response = await authFetch(`api/sprintlogs/${sprintlog.id}`, {
     method: 'PUT',
     body: JSON.stringify(sprintlog)
   })
