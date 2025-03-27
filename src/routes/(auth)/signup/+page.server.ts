@@ -2,6 +2,7 @@ import type { PageServerLoad, Actions } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 import { createUser } from '$lib/api/auth';
 
+
 export const actions: Actions = {
   default: async (event) => {
     const formData = Object.fromEntries(await event.request.formData());
@@ -16,7 +17,7 @@ export const actions: Actions = {
     const { email, password } = formData as { email: string; password: string };
 
     // Create a new user
-    const { error } = await createUser(email, password);
+    const  error  = await createUser(email, password);
 
     // If there was an error, return an invalid response
     if (error) {

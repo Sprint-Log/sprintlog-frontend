@@ -48,4 +48,36 @@ const getCurrentUser = async (token: string): Promise<User> => {
   }
 };
 
-export { loginUser, getCurrentUser };
+const createUser = async (email: string, password: string): Promise<any> => {
+  // Check if user exists
+  fetch(`${PUBLIC_API_URL}/api/access/signup`, {
+    method: 'POST',
+    headers: {
+      accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      email: email,
+      password: password,
+      name: email.split('@')[0],
+      isSuperuser: false,
+      isActive: true,
+      isVerified: true
+    })
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      throw error;
+    });
+};
+
+export { loginUser, getCurrentUser, createUser };
