@@ -25,7 +25,6 @@
     };
     modalStore.trigger(modal);
   }
-  
 </script>
 
 <!-- <Modal components={{ userUpdateForm: { ref: UserUpdateForm } }} /> -->
@@ -48,6 +47,11 @@
           class="rounded-full flex justify-center items-center bg-surface-200 text-surface-800 text-sm px-2 h-4 mt-1"
         >
           {user.isSuperuser ? 'Admin' : 'User'}
+        </div>
+          <div
+          class="rounded-full flex justify-center items-center {user.isActive ? 'bg-green-400' : 'bg-red-600'} text-surface-800 text-sm px-2 mx-2 h-4 mt-1"
+        >
+          {user.isActive ? 'Active' : 'Inactive'}
         </div>
         <div class="ml-auto">
           <button class="btn-icon hover:variant-soft w-5 " on:click={()=>dispatch('view', {user:user})}
