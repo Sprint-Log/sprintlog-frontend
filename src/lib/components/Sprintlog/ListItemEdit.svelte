@@ -325,6 +325,7 @@
     <div class="p-2 [&_ul]:list-disc [&_ul]:ml-6 [&_ol]:list-decimal [&_ol]:ml-6">
       {#if item.description}
         {#if flags.descriptionEdit}
+          <span>Description</span>
           <CmEditor
             bind:description={item.description}
             readonly={false}
@@ -342,6 +343,7 @@
           <CmEditor readonly={true} bind:description={item.description} />
         {/if}
       {:else if flags.descriptionEdit}
+        <span>Description</span>
         <CmEditor
           readonly={false}
           on:save={(event) => {

@@ -20,7 +20,7 @@
   </div>
   <div class="grid grid-cols-3 gap-5">
     <span>Position</span>
-    <span class="col-span-2">UI/UX Designer</span>
+    <span class="col-span-2">{user.position}</span>
   </div>
   <div class="grid grid-cols-3 gap-5">
     <span>Role</span>
@@ -30,12 +30,16 @@
   </div>
   <div class="grid grid-cols-3 gap-5">
     <span>Address</span>
-    <span class="col-span-2">Magway</span>
+    <span class="col-span-2">{user.address}</span>
   </div>
   <div class="grid grid-cols-3 gap-5">
-    <span>Bank Account</span>
-    <span class="col-span-2">Kpay - 09798672077</span>
+    <span>Bank</span>
+    <span class="col-span-2">{user.bankAccount}</span>
   </div>
+  <!-- <div class="grid grid-cols-3 gap-5">
+    <span>Bank</span>
+    <span class="col-span-2">{user.bankAccNum}</span>
+  </div> -->
   <div class="grid grid-cols-3 gap-5">
     <span>Email</span>
     <span class="col-span-2">

@@ -53,11 +53,11 @@
   on:submit={(e) => {
     e.preventDefault();
 
-    if (confirmPassword !== newPassword) {
-      pswdMismatch = true;
-      return;
-    }
-    user.password = newPassword;
+    // if (confirmPassword !== newPassword) {
+    //   pswdMismatch = true;
+    //   return;
+    // }
+    // user.password = newPassword;
     $userUpdateMutation.mutate();
   }}
   action="?/create"
@@ -94,7 +94,7 @@
     <input
       class="input variant-form-material col-span-2 h-8"
       type="text"
-
+      bind:value={user.address}
       required
     />
   </div>
@@ -103,7 +103,7 @@
     <input
       class="input variant-form-material col-span-2 h-8"
       type="text"
-
+      bind:value={user.position}
       required
     />
   </div>
@@ -132,7 +132,7 @@
       required
     />
   </div>
-  <div class="grid grid-cols-3 gap-3">
+  <!-- <div class="grid grid-cols-3 gap-3">
     <span>Old Password</span>
     <input
       class="input variant-form-material col-span-2 h-8"
@@ -158,10 +158,10 @@
       type="password"
       bind:value={confirmPassword}
     />
-  </div>
-  {#if pswdMismatch}
+  </div> -->
+  <!-- {#if pswdMismatch}
     <p class="text-error-400">Password do not match</p>
-  {/if}
+  {/if} -->
   <div class="flex justify-between py-2">
     <button class="text-sm">Back</button>
     <button class="btn btn-sm variant-filled-primary" type="submit"> Update </button>

@@ -12,3 +12,7 @@ export const SPRINTLOGS_BACKLOG_QUERY_KEY = "sprintlogs-backlog"
 
 export const TASKS_QUERY_KEY = "tasks"
 export const TASK_BY_USER_QUERY_KEY = "tasks-by-user"
+
+export const PROFILE_QUERY_KEY = "profile"
+
+
