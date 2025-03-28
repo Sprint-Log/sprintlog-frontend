@@ -1,4 +1,4 @@
-import type { PageServerLoad, Actions } from './$types';
+import type { Actions } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 import { createUser } from '$lib/api/auth';
 

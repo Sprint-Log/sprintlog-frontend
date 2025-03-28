@@ -1,6 +1,6 @@
 import { PUBLIC_API_URL } from '$env/static/public';
-import type { OAuth2Login, User } from '$lib/types/sprintlog';
- 
+import type { User } from '$lib/types/sprintlog';
+
 const loginUser = async (email: string, password: string): Promise<String> => {
   try {
     const response = await fetch(`${PUBLIC_API_URL}/api/access/login`, {
@@ -17,13 +17,13 @@ const loginUser = async (email: string, password: string): Promise<String> => {
     if (!response.ok) {
       throw new Error('User or Password Error');
     }
- 
+
     const token = response.headers.get('Authorization');
- 
+
     if (token === null) {
       throw new Error('User or Password Error');
     }
- 
+
     return token;
   } catch (error) {
     console.error('Error:', error);
@@ -60,7 +60,7 @@ const createUser = async (email: string, password: string): Promise<any> => {
       email: email,
       password: password,
       name: email.split('@')[0],
-      isSuperuser: false,
+      isSuperuser: false
     })
   })
     .then((response) => {

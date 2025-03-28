@@ -24,7 +24,7 @@
     createFormComponent: { ref: UserForm },
     userPreviewCard: { ref: UserPreviewCard }
   };
-
+  $: breadCrumb = [{ text: 'Home', href: '/' }];
   let limit = 500;
   let page = 1;
   let order = 'desc';
@@ -74,7 +74,7 @@
     }
   }
 
-  $: breadCrumb = [{ text: 'Home', href: '/' }];
+  
 
   function handleBreadCrumb(event: CustomEvent<{ name: string; id: string }>) {
     let name = event.detail.name;
