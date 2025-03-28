@@ -26,36 +26,36 @@
   let totalItems: number;
   let totalPages: number;
 
-  const currentUser = createQuery<User, Error>({
+  $: currentUser = createQuery<User, Error>({
     queryKey: [USER_DETAIL_QUERY_KEY, $page.params.slug],
     queryFn: async () => await getUserById($page.params.slug),
     refetchOnMount: 'always',
-    refetchOnWindowFocus: true,
-    cacheTime: 15000
+    refetchOnWindowFocus: true
+    // cacheTime: 15000
   });
 
   const setPage = (newPage: number) => {
     pageNum = newPage;
   };
 
-  const activeProjects = createQuery<ActiveProjectPagination, Error>({
+  $: activeProjects = createQuery<ActiveProjectPagination, Error>({
     queryKey: [PROJECT_BY_USER_QUERY_KEY, $page.params.slug, pageNum, limit, order],
     queryFn: async () => await getProjectByUser($page.params.slug, pageNum, limit, order),
     refetchInterval: intervalMs,
     refetchOnMount: 'always',
-    refetchOnWindowFocus: true,
-    cacheTime: 100000,
-    keepPreviousData: true
+    refetchOnWindowFocus: true
+    // cacheTime: 100000,
+    // keepPreviousData: true
   });
 
-  const tasks = createQuery<Sprintlog[], Error>({
+  $: tasks = createQuery<Sprintlog[], Error>({
     queryKey: [TASK_BY_USER_QUERY_KEY, $page.params.slug],
     queryFn: async () => getSprintlogTaskByUser($page.params.slug),
     refetchInterval: intervalMs,
     refetchOnMount: 'always',
-    refetchOnWindowFocus: true,
-    cacheTime: 100000,
-    keepPreviousData: true
+    refetchOnWindowFocus: true
+    // cacheTime: 100000,
+    // keepPreviousData: true
   });
 
   $: {
