@@ -43,7 +43,7 @@
 			{user.email}</span
 		>
 	</h1>
-	<form method="POST" action="?/logout">
+	<!-- <form method="POST" action="?/logout">
 		<button type="submit" name="logout" value="true">Logout</button>
-	</form>
+	</form> -->
 </div>

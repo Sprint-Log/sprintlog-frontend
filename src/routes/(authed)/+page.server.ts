@@ -8,7 +8,7 @@ export const load: PageServerLoad = async ({ parent }) => {
 
 export const actions: Actions = {
   logout: async (event) => {
-    event.cookies.delete('token');
+    event.cookies.delete('token', {path: '/'});
 
     throw redirect(302, '/login');
   }
