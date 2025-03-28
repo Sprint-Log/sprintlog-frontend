@@ -4,7 +4,7 @@
   import { useQueryClient, createMutation } from '@tanstack/svelte-query';
   import { Toast, modalStore, toastStore } from '@skeletonlabs/skeleton';
   import { USERS_QUERY_KEY } from '$lib/constants';
-  import { BankAccEnum } from '$lib/types/sprintlog';
+  import { PaymentMethodEnum } from '$lib/types/sprintlog';
 
   let user: UserCreate = {
     email: '',
@@ -15,9 +15,7 @@
     isVerified: false,
     address: '',
     position: '',
-    KBZ: '',
-    KPAY: '',
-    AYA: ''
+    bankAccounts:  []
   };
 
   // default active button
@@ -28,7 +26,7 @@
   
   let confirmPassword: string;
   let pswdMismatch = false;
-  let selectedBank: BankAccEnum | null = Object.values(BankAccEnum)[0];
+  let selectedBank: PaymentMethodEnum | null = Object.values(PaymentMethodEnum)[0];
   $: bankAcc = '';
 
   const client = useQueryClient();
@@ -63,18 +61,13 @@
       pswdMismatch = true;
       return;
     }
-    if (bankAcc != null && bankAcc.length > 0) {
-      switch (selectedBank) {
-        case BankAccEnum.kpay:
-          user.KPAY = bankAcc;
-          break;
-        case BankAccEnum.AYA:
-          user.AYA = bankAcc;
-          break;
-        case BankAccEnum.KBZ:
-          user.KBZ = bankAcc;
-          break;
-      }
+    if (selectedBank !=null && bankAcc != null && bankAcc.length > 0) {
+      
+      user.bankAccounts?.push({
+        method: selectedBank,
+        accountNumber: bankAcc
+      });
+       
     }
     $userMutation.mutate();
   }
@@ -135,7 +128,7 @@
       bind:value={selectedBank}
       class="variant-form-material rounded h-8 text-xs focus:ring-primary-500 focus:border-surface-500"
     >
-      {#each Object.values(BankAccEnum) as method (method)}
+      {#each Object.values(PaymentMethodEnum) as method (method)}
         <option value={method} class="bg-surface-800" selected={selectedBank === method}
           >{method}</option
         >

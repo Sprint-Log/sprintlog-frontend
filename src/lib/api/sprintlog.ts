@@ -203,6 +203,9 @@ export const switchToBacklog = async (sprintlogSlug: string): Promise<Sprintlog>
 /* Functions created by Hein Min Min Maw */
 
 export const createUser = async (user: UserCreate): Promise<User> => {
+  console.log("USER create")
+  console.log(user)
+ 
   const response = await authFetch(`api/users/`, {
     method: 'POST',
     body: JSON.stringify(user),

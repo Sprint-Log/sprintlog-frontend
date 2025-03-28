@@ -40,10 +40,10 @@ export enum TagEnum {
   automation = '🤖'
 }
 
-export enum BankAccEnum{
-  kpay = 'KPay',
-  AYA = 'AYA',
-  KBZ = 'KBZ'
+export enum PaymentMethodEnum{
+  K_PAY = "k-pay",
+  AYA_PAY = "aya-pay",
+  WAVE_PAY = "wave-pay"
 }
 
 export type Token = {
@@ -189,7 +189,7 @@ export interface User {
   teams?: UserTeam[];
   address?: string;
   position?:string;
-  bankAccount?:BankAccEnum;
+  bankAccount?:PaymentMethodEnum;
 }
 
 export interface UserRegister {
@@ -207,9 +207,12 @@ export interface UserCreate {
   isVerified?: null | boolean;
   address?: string;
   position?:string;
-  KPAY?:string;
-  KBZ?:string;
-  AYA?:string;
+  bankAccounts?:BankAccount[];
+}
+
+export interface BankAccount {
+  method: string;
+  accountNumber: string;
 }
 
 export interface UserUpdate {
