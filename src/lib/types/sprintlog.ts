@@ -189,7 +189,7 @@ export interface User {
   teams?: UserTeam[];
   address?: string;
   position?:string;
-  bankAccount?:PaymentMethodEnum;
+  bankAccounts?:BankAccount[];
 }
 
 export interface UserRegister {

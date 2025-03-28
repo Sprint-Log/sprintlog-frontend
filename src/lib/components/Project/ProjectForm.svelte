@@ -2,8 +2,8 @@
 	import { createProject } from '$lib/api/sprintlog';
 	import type { ProjectCreate } from '$lib/types/sprintlog';
 	import { Icon } from '@steeze-ui/svelte-icon';
-	import { useQueryClient, createMutation } from '@tanstack/svelte-query';
 	import { XMark } from '@steeze-ui/heroicons';
+	import { useQueryClient, createMutation } from '@tanstack/svelte-query';
 	import { Add } from '@steeze-ui/carbon-icons';
 	import { Toast, modalStore, toastStore } from '@skeletonlabs/skeleton';
 	import { EditorView, basicSetup } from 'codemirror';

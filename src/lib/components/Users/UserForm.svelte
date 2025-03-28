@@ -5,7 +5,8 @@
   import { Toast, modalStore, toastStore } from '@skeletonlabs/skeleton';
   import { USERS_QUERY_KEY } from '$lib/constants';
   import { PaymentMethodEnum } from '$lib/types/sprintlog';
-  import { identity } from 'svelte/internal';
+  import { Icon } from '@steeze-ui/svelte-icon';
+  import { XMark } from '@steeze-ui/heroicons';
 
   let user: UserCreate = {
     email: '',
@@ -16,21 +17,22 @@
     isVerified: false,
     address: '',
     position: '',
-    bankAccounts:  []
+    bankAccounts: []
   };
 
   // default active button
-  let clickedAdminBtn = true;
+  const client = useQueryClient();
   const active_btn = 'bg-success-500 text-black';
   const unactive_btn = 'bg-surface-500 text-white';
 
-  
+  $: bankAcc = '';
   let confirmPassword: string;
+  let toggleAdminBtn = true;
   let pswdMismatch = false;
   let selectedBank: PaymentMethodEnum | null = Object.values(PaymentMethodEnum)[0];
-  $: bankAcc = '';
-
-  const client = useQueryClient();
+  let bankAccounts: { method: string; accountNumber: string }[] = [
+    { method: PaymentMethodEnum.K_PAY, accountNumber: '' }
+  ];
   const userMutation = createMutation({
     mutationFn: () => createUser(user),
 
@@ -46,15 +48,16 @@
 
   function handleUserType(event: MouseEvent) {
     let value = (event.target as HTMLButtonElement).value;
+    toggleAdminBtn = value === 'admin';
+    user.isSuperuser = toggleAdminBtn;
+  }
 
-    //  clicked admin button
-    if (value === 'admin') {
-      clickedAdminBtn = true;
-      user.isSuperuser = true;
-    } else {
-      clickedAdminBtn = false;
-      user.isSuperuser = false;
-    }
+  function addBankAccount() {
+    bankAccounts = [...bankAccounts, { method: PaymentMethodEnum.K_PAY, accountNumber: '' }];
+  }
+
+  function removeBankAccount(index: number) {
+    bankAccounts = bankAccounts.filter((_, i) => i !== index);
   }
 
   function handleSubmit(e: SubmitEvent) {
@@ -63,13 +66,12 @@
       pswdMismatch = true;
       return;
     }
-    if (selectedBank !=null && bankAcc != null && bankAcc.length > 0) {
-      
+    user.bankAccounts = bankAccounts.filter((b) => b.accountNumber.trim() !== '');
+    if (selectedBank != null && bankAcc != null && bankAcc.length > 0) {
       user.bankAccounts?.push({
         method: selectedBank,
         accountNumber: bankAcc
       });
-       
     }
     $userMutation.mutate();
   }
@@ -87,13 +89,13 @@
   <div class="flex justify-end">
     <button
       type="button"
-      class="btn-sm w-16 rounded {clickedAdminBtn ? active_btn : unactive_btn}"
+      class="btn-sm w-16 rounded {toggleAdminBtn ? active_btn : unactive_btn}"
       value="admin"
       on:click={handleUserType}>Admin</button
     >
     <button
       type="button"
-      class="btn-sm w-16 rounded {clickedAdminBtn ? unactive_btn : active_btn}"
+      class="btn-sm w-16 rounded {toggleAdminBtn ? unactive_btn : active_btn}"
       value="user"
       on:click={handleUserType}>User</button
     >
@@ -124,20 +126,6 @@
       required
     />
   </div>
-  <div class="grid grid-cols-3 gap-3">
-    <span>Bank Account</span>
-    <select
-      bind:value={selectedBank}
-      class="variant-form-material rounded h-8 text-xs focus:ring-primary-500 focus:border-surface-500"
-    >
-      {#each Object.values(PaymentMethodEnum) as method (method)}
-        <option value={method} class="bg-surface-800" selected={selectedBank === method}
-          >{method}</option
-        >
-      {/each}
-    </select>
-    <input class="input variant-form-material h-8" bind:value={bankAcc} type="text" required />
-  </div>
 
   <div class="grid grid-cols-3 gap-3">
     <span>Email</span>
@@ -148,6 +136,56 @@
       required
     />
   </div>
+
+  <div class="grid grid-cols-1 gap-4">
+    <div class="flex justify-between items-center">
+      <span class="text-base font-semibold">Bank Accounts</span>
+      <button
+        type="button"
+        on:click={addBankAccount}
+        class="text-xs text-primary-600 hover:underline"
+      >
+        + Add More
+      </button>
+    </div>
+    {#each bankAccounts as account, index (index)}
+      <div class="grid grid-cols-5 gap-2 items-center">
+        <!-- Payment Method Dropdown -->
+        <div class="col-span-2">
+          <select
+            bind:value={account.method}
+            class="input variant-form-material h-10 w-full text-xs"
+          >
+            {#each Object.values(PaymentMethodEnum) as method}
+              <option value={method}>{method.toUpperCase()}</option>
+            {/each}
+          </select>
+        </div>
+
+        <!-- Input + Remove Button -->
+        <div
+          class="col-span-3 input-group input-group-divider grid-cols-[1fr_auto] variant-form-material h-10"
+        >
+          <input
+            type="text"
+            placeholder="Account number"
+            bind:value={account.accountNumber}
+            class="h-full"
+            required
+          />
+          <button
+            type="button"
+            class="variant-filled-error btn-icon rounded-none h-full"
+            on:click={() => removeBankAccount(index)}
+            aria-label="Remove bank account"
+          >
+            <Icon src={XMark} />
+          </button>
+        </div>
+      </div>
+    {/each}
+  </div>
+
   <div class="grid grid-cols-3 gap-3">
     <span>Password</span>
     <input

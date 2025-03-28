@@ -4,7 +4,7 @@
   import { updateUser } from '$lib/api/sprintlog';
   import { useQueryClient, createMutation } from '@tanstack/svelte-query';
   import { Toast, modalStore, toastStore } from '@skeletonlabs/skeleton';
-  
+
   // modalStore.close();
 
   // default active button
@@ -15,10 +15,6 @@
   const userId = $modalStore[0].meta.user_id;
 
   let clickedAdminBtn = user.isSuperuser;
-
-  let pswdMismatch = false;
-  let confirmPassword: string;
-  let newPassword: string;
 
   const client = useQueryClient();
 
@@ -110,19 +106,16 @@
   </div>
   <div class="grid grid-cols-3 gap-3">
     <span>Bank Account</span>
-    <select id="countries" class="variant-form-material rounded h-8 text-xs focus:ring-primary-500 focus:border-surface-500">
+    <select
+      id="countries"
+      class="variant-form-material rounded h-8 text-xs focus:ring-primary-500 focus:border-surface-500"
+    >
       <option class="bg-surface-800" selected>Choose Bank Account</option>
       <option class="bg-surface-800" value="US">Kpay</option>
       <option class="bg-surface-800" value="CA">KBZ</option>
       <option class="bg-surface-800" value="FR">AYA</option>
     </select>
-    <input
-      class="input variant-form-material h-8"
-      type="text"
-
-      required
-    />
-
+    <input class="input variant-form-material h-8" type="text" required />
   </div>
   <div class="grid grid-cols-3 gap-3">
     <span>Email</span>
@@ -133,8 +126,8 @@
       required
     />
   </div>
-  <!-- <div class="grid grid-cols-3 gap-3">
-    <span>Old Password</span>
+  <div class="grid grid-cols-3 gap-3">
+    <span>Password</span>
     <input
       class="input variant-form-material col-span-2 h-8"
       type="password"
@@ -143,26 +136,6 @@
     />
   </div>
 
-  <div class="grid grid-cols-3 gap-3">
-    <span>New Password</span>
-    <input
-      class="input variant-form-material col-span-2 h-8"
-      type="password"
-      bind:value={newPassword}
-    />
-  </div>
-
-  <div class="grid grid-cols-3 gap-3">
-    <span>Confirm Password</span>
-    <input
-      class="input variant-form-material col-span-2 h-8"
-      type="password"
-      bind:value={confirmPassword}
-    />
-  </div> -->
-  <!-- {#if pswdMismatch}
-    <p class="text-error-400">Password do not match</p>
-  {/if} -->
   <div class="flex justify-between py-2">
     <button class="text-sm">Back</button>
     <button class="btn btn-sm variant-filled-primary" type="submit"> Update </button>
