@@ -61,8 +61,6 @@ const createUser = async (email: string, password: string): Promise<any> => {
       password: password,
       name: email.split('@')[0],
       isSuperuser: false,
-      isActive: true,
-      isVerified: true
     })
   })
     .then((response) => {
