@@ -5,33 +5,15 @@
   import { TrashCan } from '@steeze-ui/carbon-icons';
   import { View } from '@steeze-ui/carbon-icons';
   import { createEventDispatcher } from 'svelte';
-  import { modalStore } from '@skeletonlabs/skeleton';
-  import type { ModalSettings } from '@skeletonlabs/skeleton';
 
   const dispatch = createEventDispatcher();
   export let user: User;
-
-  function handleDelUser() {
-    dispatch('delete', {
-      id: user.id.toString()
-    });
-  }
-
-  function openUpdateModal() {
-    let modal: ModalSettings = {
-      type: 'component',
-      component: 'updateFormComponent',
-      meta: { user, user_id: user.id }
-    };
-    modalStore.trigger(modal);
-  }
 </script>
 
-<!-- <Modal components={{ userUpdateForm: { ref: UserUpdateForm } }} /> -->
 <a
   href="/users/{user.id}"
   class="card bg-initial card-hover overflow-hidden mt-2"
-  on:click={() => dispatch('selected', { name: user.name, id:user.id })}
+  on:click={() => dispatch('selected', { user: user })}
 >
   <div class="flex">
     <div
@@ -48,19 +30,25 @@
         >
           {user.isSuperuser ? 'Admin' : 'User'}
         </div>
-          <div
-          class="rounded-full flex justify-center items-center {user.isActive ? 'bg-green-400' : 'bg-red-600'} text-surface-800 text-sm px-2 mx-2 h-4 mt-1"
+        <div
+          class="rounded-full flex justify-center items-center {user.isActive
+            ? 'bg-green-400'
+            : 'bg-red-600'} text-surface-800 text-sm px-2 mx-2 h-4 mt-1"
         >
           {user.isActive ? 'Active' : 'Inactive'}
         </div>
         <div class="ml-auto">
-          <button class="btn-icon hover:variant-soft w-5 " on:click={()=>dispatch('view', {user:user})}
-            ><Icon src={View} /></button
+          <button
+            class="btn-icon hover:variant-soft w-5"
+            on:click={() => dispatch('view', { user: user })}><Icon src={View} /></button
           >
-          <button class="btn-icon hover:variant-soft w-5 mx-2" on:click={openUpdateModal}
-            ><Icon src={Edit} /></button
+          <button
+            class="btn-icon hover:variant-soft w-5 mx-2"
+            on:click={() => dispatch('update', { user: user })}><Icon src={Edit} /></button
           >
-          <button class="btn-icon hover:variant-soft w-5" on:click={handleDelUser}
+          <button
+            class="btn-icon hover:variant-soft w-5"
+            on:click={() => dispatch('delete', { id: user.id.toString() })}
             ><Icon src={TrashCan} /></button
           >
         </div>

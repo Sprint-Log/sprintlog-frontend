@@ -5,6 +5,7 @@
   import { Toast, modalStore, toastStore } from '@skeletonlabs/skeleton';
   import { USERS_QUERY_KEY } from '$lib/constants';
   import { PaymentMethodEnum } from '$lib/types/sprintlog';
+  import { identity } from 'svelte/internal';
 
   let user: UserCreate = {
     email: '',
@@ -33,7 +34,8 @@
   const userMutation = createMutation({
     mutationFn: () => createUser(user),
 
-    onSuccess: () => {
+    onSuccess: (data) => {
+      client.setQueriesData([USERS_QUERY_KEY, data.id], data);
       client.invalidateQueries({ queryKey: [USERS_QUERY_KEY] });
       modalStore.close();
     },

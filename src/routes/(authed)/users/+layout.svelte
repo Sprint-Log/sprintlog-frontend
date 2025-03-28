@@ -33,13 +33,13 @@
 
   const users = createQuery<User[], Error>({
     queryKey: [USERS_QUERY_KEY, page, limit, order],
-    queryFn: async () =>await getUsers(page, limit, order),
+    queryFn: async () => await getUsers(page, limit, order),
     refetchOnMount: 'always',
     refetchOnWindowFocus: true,
     refetchInterval: intervalMs
     // keepPreviousData:true
   });
- 
+
   function openCreateFormModal() {
     modalStore.trigger({
       type: 'component',
@@ -48,48 +48,53 @@
   }
 
   async function handleDelUser(event: CustomEvent<{ id: string }>) {
-    let title, body;
-    const id = event.detail.id;
-    try {
-      const response: { status: number } = await deleteUser(id);
 
-      if (response.status === 204) {
+    const id = event.detail.id.toString();
     
-        title = 'Successful deletion';
-        body = 'User account has been deleted';
+    modalStore.trigger({
+      type: 'confirm',
+      title: 'Delete User',
+      body: 'Are you sure you want to delete this user?',
 
-        client.invalidateQueries([USERS_QUERY_KEY]);
+      response: async (confirmed) => {
+        if (confirmed) {
+          await deleteUser(id);
+          client.setQueriesData([USERS_QUERY_KEY, id], (oldData) => {
+            if (oldData) {
+              return { ...oldData, isActive: false };
+            }
+            return oldData;
+          });
+          client.invalidateQueries({ queryKey: [USERS_QUERY_KEY] });
+          goto('/users');
+        }
       }
-    } catch (error) {
-      title = 'Fail';
-      body = 'Something went wrong';
-      console.error('Error handling user deletion:', error);
-    } finally {
-      modalStore.trigger({
-        type: 'alert',
-        title: title,
-        body: body
-      });
-      goto("/users");
-    }
+    });
   }
 
-  
-
-  function handleBreadCrumb(event: CustomEvent<{ name: string; id: string }>) {
-    let name = event.detail.name;
-    let id = event.detail.id;
-    breadCrumb[1] = { text: name, href: '/users/' + id };
+  function handleBreadCrumb(event: CustomEvent<{ user: User }>) {
+    let user = event.detail.user;
+    breadCrumb[1] = { text: user.name ?? '', href: '/users/' + (user.id ?? '') };
   }
 
   function openUserProfile(event: CustomEvent<{ user: User }>) {
     let user = event.detail.user;
- 
+
     modalStore.trigger({
       type: 'component',
       component: 'userPreviewCard',
       meta: { user }
     });
+  }
+
+  function openUpdateModal(event: CustomEvent<{ user: User }>) {
+    let user = event.detail.user;
+    let modal: ModalSettings = {
+      type: 'component',
+      component: 'updateFormComponent',
+      meta: { user, user_id: user.id }
+    };
+    modalStore.trigger(modal);
   }
 </script>
 
@@ -145,6 +150,7 @@
                   on:delete={handleDelUser}
                   on:selected={handleBreadCrumb}
                   on:view={openUserProfile}
+                  on:update={openUpdateModal}
                   {user}
                 />
               </div>

@@ -25,7 +25,8 @@
   const userUpdateMutation = createMutation({
     mutationFn: async () => updateUser(userId, user),
 
-    onSuccess: () => {
+    onSuccess: (data) => {
+      client.setQueriesData([USERS_QUERY_KEY, data.id], data);
       client.invalidateQueries({ queryKey: [USERS_QUERY_KEY] });
       modalStore.close();
     },
