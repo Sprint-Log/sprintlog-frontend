@@ -8,14 +8,21 @@
 	import { Icon } from '@steeze-ui/svelte-icon';
 	import { Modal, modalStore } from '@skeletonlabs/skeleton';
 	import { PROJECTS_QUERY_KEY } from '$lib/constants';
+	import { deleteProject } from '$lib/api/sprintlog';
+  	import { goto } from '$app/navigation';
+	import { useQueryClient } from '@tanstack/svelte-query';
 
-	let limit = 500;
+	let limit = 10;
 	let page = 1;
 	let order = 'desc';
 
+	$: console.log(`limit: ${limit}`)
+
 	let intervalMs = 15000;
 
-	const projects = createQuery<Project[], Error>({
+	const client = useQueryClient();
+
+	$: projects = createQuery<Project[], Error>({
 		queryKey: [PROJECTS_QUERY_KEY, page, limit, order],
 		queryFn: async () => getProjects(page, limit, order),
 		refetchOnMount: 'always',
@@ -23,6 +30,30 @@
 		refetchInterval: intervalMs,
 		cacheTime: 15000
 	});
+
+	async function handelDelProject(event: CustomEvent<{id: string}>){
+		const id = event.detail.id.toString();
+
+		modalStore.trigger({
+			type: "confirm", 
+			title: "Delete Project",
+			body: "Are you sure you want to delete this project?",
+
+			response: async (confirmed) => {
+				if (confirmed){
+					await deleteProject(id);
+					client.setQueriesData([PROJECTS_QUERY_KEY, id], (oldData) => {
+						if (oldData) {
+							return {...oldData, isActive: false};
+						}
+						return oldData;
+					});
+					client.invalidateQueries({queryKey: [PROJECTS_QUERY_KEY, page, limit, order]});
+					goto('/projects');
+				}
+			}
+		});
+	}
 
 	function openModal() {
 		modalStore.trigger({
@@ -48,7 +79,10 @@
 		{/if}
 		{#if $projects.isSuccess}
 			{#each $projects.data as project}
-				<ProjectCard {project} />
+				<ProjectCard 
+					on:delete={handelDelProject}
+					{project} 
+				/>
 			{/each}
 		{/if}
 	</div>

@@ -7,7 +7,7 @@
 
   import Breadcrumb from '$lib/components/Breadcrumb.svelte';
 
-  import { createQuery } from '@tanstack/svelte-query';
+  import { createQuery, QueryFunctionContext, useQueryClient } from '@tanstack/svelte-query';
   import { getBacklogByPrjSlug, getTaskByPrjSlug } from '$lib/api/sprintlog';
   import { ProgressRadial } from '@skeletonlabs/skeleton';
   import {TASKS_QUERY_KEY, SPRINTLOGS_BACKLOG_QUERY_KEY} from '$lib/constants';
@@ -44,11 +44,15 @@
   let intervalMs = 1500000;
 
   let cacheTime = 1500000;
+  const client = useQueryClient()
 
-  const tasks = createQuery<SprintlogPagination, Error>({
-    queryKey: [TASKS_QUERY_KEY, currentPageTask, amountTask, order],
-    queryFn: async () => {
-      return await getTaskByPrjSlug($page.params.slug, currentPageTask, amountTask, order).then(
+  client.invalidateQueries()
+
+  $: tasks = createQuery<SprintlogPagination, Error>({
+    queryKey: [TASKS_QUERY_KEY, currentPageTask, amountTask, order, $page.params.slug],
+    queryFn: async (context: QueryFunctionContext) => {
+      const slug = context.queryKey[4] as string
+      return await getTaskByPrjSlug(slug, currentPageTask, amountTask, order).then(
         (res) => {
           taskTotal = res.total;
           return res;
@@ -62,7 +66,7 @@
   });
 
  
-  const backlogs = createQuery<SprintlogPagination, Error>({
+  $: backlogs = createQuery<SprintlogPagination, Error>({
     queryKey: [SPRINTLOGS_BACKLOG_QUERY_KEY, currentPageBacklog, amountBacklog, order],
     queryFn: async () => {
       return await getBacklogByPrjSlug(

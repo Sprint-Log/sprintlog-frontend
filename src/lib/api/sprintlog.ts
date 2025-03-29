@@ -77,6 +77,17 @@ export const createProject = async (project: ProjectCreate): Promise<Project> =>
   const data = (await response.json()) as Project
   return data
 }
+
+export const deleteProject = async (id: string): Promise<{status: number}> => {
+  try {
+    await authFetch(`api/projects/${id}`, { method: 'DELETE' })
+    return { status: 204 };
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    throw error; 
+  }
+}
+
 export const getBacklogByPrjSlug = async (
   prjSlug: string,
   currentPage = 1,

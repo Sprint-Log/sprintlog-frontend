@@ -10,6 +10,7 @@
 	import { markdown } from '@codemirror/lang-markdown';
 	import { onMount } from 'svelte';
 	import CMEditor from '../Editors/CMEditor.svelte';
+	import { PROJECTS_QUERY_KEY } from '$lib/constants';
 
 
 
@@ -35,8 +36,9 @@
 			return createProject(project);
 		},
 		{
-			onSuccess: function () {
-				client.invalidateQueries({ queryKey:['refetch-projects']});
+			onSuccess: function (data) {
+				client.setQueriesData([PROJECTS_QUERY_KEY, data.id], data);
+				client.invalidateQueries({ queryKey:[PROJECTS_QUERY_KEY]});
 				modalStore.close();
 			},
 			onError: function (err) {
@@ -148,7 +150,12 @@
 			>
 		</div>
 	</label>
-    <CMEditor bind:description={project.description} on:save={() =>$projectMutation.mutate()} />
+    <CMEditor 
+	bind:description={project.description} 
+	on:save={(event) => {
+		project.description = event.detail.text;
+		$projectMutation.mutate()
+		}} />
 	<div class="text-right pt-4">
 		<button class="btn variant-filled-primary" type="submit"> Create </button>
 	</div>
