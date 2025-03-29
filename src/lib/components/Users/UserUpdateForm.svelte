@@ -8,6 +8,7 @@
   import { PaymentMethodEnum } from '$lib/types/sprintlog';
   import { Icon } from '@steeze-ui/svelte-icon';
   import { XMark } from '@steeze-ui/heroicons';
+  import { page } from '$app/stores';
 
   const client = useQueryClient();
   const user: UserUpdate = $modalStore[0].meta.user;
@@ -52,7 +53,6 @@
     user.bankAccounts  =bankAccounts;
   }
 </script>
-
 <Toast />
 
 <form
@@ -60,7 +60,8 @@
   class="card bg-surface-100 p-3 rounded-md space-y-4 max-w-xl overflow-y-auto max-h-[36rem]"
 >
   <h3 class="text-lg font-bold">Update User</h3>
- 
+  {#if $page.data.user?.isSuperuser}
+
   <div class="flex justify-end">
     <button
       type="button"
@@ -75,6 +76,8 @@
       on:click={ToggleUserType}>User</button
     >
   </div>
+
+ {/if}
   <!-- Basic Info -->
   <div class="grid grid-cols-3 gap-3"> 
     <span>Name</span>
