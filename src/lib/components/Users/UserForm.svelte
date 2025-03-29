@@ -87,7 +87,6 @@
     <h3>Create User</h3>
   </div>
 
-  
   <div class="flex justify-end">
     <button
       type="button"
@@ -110,16 +109,14 @@
       bind:value={user.name}
       required
     />
-  </div>
-  <div class="grid grid-cols-3 gap-3">
+
     <span>Address</span>
     <input
       class="input variant-form-material col-span-2 h-8"
       type="text"
       bind:value={user.address}
     />
-  </div>
-  <div class="grid grid-cols-3 gap-3">
+
     <span>Position</span>
     <input
       class="input variant-form-material col-span-2 h-8"
@@ -127,9 +124,7 @@
       bind:value={user.position}
       required
     />
-  </div>
 
-  <div class="grid grid-cols-3 gap-3">
     <span>Email</span>
     <input
       class="input variant-form-material col-span-2 h-8"
@@ -196,8 +191,6 @@
       bind:value={user.password}
       required
     />
-  </div>
-  <div class="grid grid-cols-3 gap-3">
     <span>Confirm Password</span>
     <input
       class="input variant-form-material col-span-2 h-8"

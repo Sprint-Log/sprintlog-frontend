@@ -78,13 +78,13 @@
   <!-- Basic Info -->
   <div class="grid grid-cols-3 gap-3"> 
     <span>Name</span>
-    <input class="input col-span-2 h-8" type="text" bind:value={user.name} required />
+    <input  class="input variant-form-material col-span-2 h-8" type="text" bind:value={user.name} required />
 
     <span>Position</span>
-    <input class="input col-span-2 h-8" type="text" bind:value={user.position} required />
+    <input  class="input variant-form-material col-span-2 h-8" type="text" bind:value={user.position} required />
  
     <span>Address</span>
-    <input class="input col-span-2 h-8" type="text" bind:value={user.address} />
+    <input  class="input variant-form-material col-span-2 h-8" type="text" bind:value={user.address} />
   </div>
 
   <!-- Bank Accounts -->
@@ -140,10 +140,9 @@
   <!-- Credentials -->
   <div class="grid grid-cols-3 gap-3">
     <span>Email</span>
-    <input class="input col-span-2 h-8" type="email" bind:value={user.email} required />
- 
-    <span>Enter Your Password</span>
-    <input class="input col-span-2 h-8" type="password" bind:value={user.password} required />
+    <input  class="input variant-form-material col-span-2 h-8" type="email" bind:value={user.email} required />
+    <span>Enter Admin Password</span>
+    <input  class="input variant-form-material col-span-2 h-8" type="password" bind:value={user.password} required />
   </div>
  
   <div class="flex justify-end pt-4">
