@@ -224,9 +224,7 @@ export interface UserUpdate {
   isVerified?: null | boolean;
   address?: string;
   position?:string;
-  KPAY?:string;
-  KBZ?:string;
-  AYA?:string;
+  bankAccounts?:BankAccount[];
 }
 
 export interface TeamCreate {

@@ -1,26 +1,22 @@
 <script lang="ts">
   import type { UserUpdate } from '$lib/types/sprintlog';
+
   import { USERS_QUERY_KEY } from '$lib/constants';
   import { updateUser } from '$lib/api/sprintlog';
   import { useQueryClient, createMutation } from '@tanstack/svelte-query';
   import { Toast, modalStore, toastStore } from '@skeletonlabs/skeleton';
-
-  // modalStore.close();
-
-  // default active button
-  const active_btn = 'bg-success-500 text-black';
-  const unactive_btn = 'bg-surface-500 text-white';
-
-  const user: UserUpdate = $modalStore[0].meta.user;
-  const userId = $modalStore[0].meta.user_id;
-
-  let clickedAdminBtn = user.isSuperuser;
+  import { PaymentMethodEnum } from '$lib/types/sprintlog';
+  import { Icon } from '@steeze-ui/svelte-icon';
+  import { XMark } from '@steeze-ui/heroicons';
 
   const client = useQueryClient();
-
+  const user: UserUpdate = $modalStore[0].meta.user;
+  const userId = $modalStore[0].meta.user_id;
+  const active_btn = 'bg-success-500 text-black';
+  const unactive_btn = 'bg-surface-500 text-white';
   const userUpdateMutation = createMutation({
     mutationFn: async () => updateUser(userId, user),
-
+    
     onSuccess: (data) => {
       client.setQueriesData([USERS_QUERY_KEY, data.id], data);
       client.invalidateQueries({ queryKey: [USERS_QUERY_KEY] });
@@ -30,114 +26,127 @@
       toastStore.trigger({ message: 'Something went wrong', background: 'variant-filled-error' });
     }
   });
-
-  function handleUserType(event: MouseEvent) {
+  
+  let toggleAdminBtn = user.isSuperuser;
+  let bankAccounts: { method: string; accountNumber: string }[] = user.bankAccounts ?? [];
+  
+  function ToggleUserType(event: MouseEvent) {
     let value = (event.target as HTMLButtonElement).value;
+    toggleAdminBtn = value === 'admin';
+    user.isSuperuser = toggleAdminBtn;
+  }
 
-    //  clicked admin button
-    if (value === 'admin') {
-      clickedAdminBtn = true;
-      user.isSuperuser = true;
-    } else {
-      clickedAdminBtn = false;
-      user.isSuperuser = false;
-    }
+  function handleSubmit(e: SubmitEvent) {
+    e.preventDefault();
+    $userUpdateMutation.mutate();
+  }
+
+
+  function addBankAccount() {
+    bankAccounts = [...bankAccounts, { method: PaymentMethodEnum.K_PAY, accountNumber: '' }];
+    user.bankAccounts  =bankAccounts;
+  }
+
+  function removeBankAccount(index: number) {
+    bankAccounts = bankAccounts.filter((_, i) => i !== index);
+    user.bankAccounts  =bankAccounts;
   }
 </script>
 
 <Toast />
-<form
-  on:submit={(e) => {
-    e.preventDefault();
 
-    // if (confirmPassword !== newPassword) {
-    //   pswdMismatch = true;
-    //   return;
-    // }
-    // user.password = newPassword;
-    $userUpdateMutation.mutate();
-  }}
-  action="?/create"
-  class="left-24 card bg-surface-100 p-3 rounded-md space-y-4 max-w-xl overflow-y-scroll max-h-[36rem]"
+<form
+  on:submit={handleSubmit}
+  class="card bg-surface-100 p-3 rounded-md space-y-4 max-w-xl overflow-y-auto max-h-[36rem]"
 >
-  <div class="grid grid-cols-2 gap-4">
-    <h3>Update User</h3>
-  </div>
+  <h3 class="text-lg font-bold">Update User</h3>
+ 
   <div class="flex justify-end">
     <button
       type="button"
-      class="btn-sm w-16 rounded {clickedAdminBtn ? active_btn : unactive_btn}"
+      class="btn-sm w-16 rounded {toggleAdminBtn ? active_btn : unactive_btn}"
       value="admin"
-      on:click={handleUserType}>Admin</button
+      on:click={ToggleUserType}>Admin</button
     >
     <button
       type="button"
-      class="btn-sm w-16 rounded {clickedAdminBtn ? unactive_btn : active_btn}"
+      class="btn-sm w-16 rounded {toggleAdminBtn ? unactive_btn : active_btn}"
       value="user"
-      on:click={handleUserType}>User</button
+      on:click={ToggleUserType}>User</button
     >
   </div>
-  <div class="grid grid-cols-3 gap-3">
+  <!-- Basic Info -->
+  <div class="grid grid-cols-3 gap-3"> 
     <span>Name</span>
-    <input
-      class="input variant-form-material col-span-2 h-8"
-      type="text"
-      bind:value={user.name}
-      required
-    />
-  </div>
-  <div class="grid grid-cols-3 gap-3">
-    <span>Address</span>
-    <input
-      class="input variant-form-material col-span-2 h-8"
-      type="text"
-      bind:value={user.address}
-      required
-    />
-  </div>
-  <div class="grid grid-cols-3 gap-3">
+    <input class="input col-span-2 h-8" type="text" bind:value={user.name} required />
+
     <span>Position</span>
-    <input
-      class="input variant-form-material col-span-2 h-8"
-      type="text"
-      bind:value={user.position}
-      required
-    />
-  </div>
-  <div class="grid grid-cols-3 gap-3">
-    <span>Bank Account</span>
-    <select
-      id="countries"
-      class="variant-form-material rounded h-8 text-xs focus:ring-primary-500 focus:border-surface-500"
-    >
-      <option class="bg-surface-800" selected>Choose Bank Account</option>
-      <option class="bg-surface-800" value="US">Kpay</option>
-      <option class="bg-surface-800" value="CA">KBZ</option>
-      <option class="bg-surface-800" value="FR">AYA</option>
-    </select>
-    <input class="input variant-form-material h-8" type="text" required />
-  </div>
-  <div class="grid grid-cols-3 gap-3">
-    <span>Email</span>
-    <input
-      class="input variant-form-material col-span-2 h-8"
-      type="email"
-      bind:value={user.email}
-      required
-    />
-  </div>
-  <div class="grid grid-cols-3 gap-3">
-    <span>Password</span>
-    <input
-      class="input variant-form-material col-span-2 h-8"
-      type="password"
-      bind:value={user.password}
-      required
-    />
+    <input class="input col-span-2 h-8" type="text" bind:value={user.position} required />
+ 
+    <span>Address</span>
+    <input class="input col-span-2 h-8" type="text" bind:value={user.address} />
   </div>
 
-  <div class="flex justify-between py-2">
-    <button class="text-sm">Back</button>
-    <button class="btn btn-sm variant-filled-primary" type="submit"> Update </button>
+  <!-- Bank Accounts -->
+  <div class="grid grid-cols-1 gap-4">
+    <div class="flex justify-between items-center">
+      <span class="text-base font-semibold">Bank Accounts</span>
+      <button
+        type="button"
+        on:click={addBankAccount}
+        class="text-xs text-primary-600 hover:underline"
+      >
+        + Add More
+      </button>
+    </div>
+    {#each user.bankAccounts ?? [] as account, index (index)}
+      <div class="grid grid-cols-5 gap-2 items-center">
+        <!-- Payment Method Dropdown -->
+        <div class="col-span-2">
+          <select
+            bind:value={account.method}
+            class="input variant-form-material h-10 w-full text-xs"
+          >
+            {#each Object.values(PaymentMethodEnum) as method}
+              <option value={method}>{method.toUpperCase()} ({index})</option>
+            {/each}
+          </select>
+        </div>
+
+        <!-- Input + Remove Button -->
+        <div
+          class="col-span-3 input-group input-group-divider grid-cols-[1fr_auto] variant-form-material h-10"
+        >
+          <input
+            type="text"
+            placeholder="Account number"
+            bind:value={account.accountNumber}
+            class="h-full"
+            required
+          />
+          <button
+            type="button"
+            class="variant-filled-error btn-icon rounded-none h-full"
+            on:click={() => removeBankAccount(index)}
+            aria-label="Remove bank account"
+          >
+            <Icon src={XMark} />
+          </button>
+        </div>
+      </div>
+    {/each}
+  </div>
+
+  <!-- Credentials -->
+  <div class="grid grid-cols-3 gap-3">
+    <span>Email</span>
+    <input class="input col-span-2 h-8" type="email" bind:value={user.email} required />
+ 
+    <span>Enter Your Password</span>
+    <input class="input col-span-2 h-8" type="password" bind:value={user.password} required />
+  </div>
+ 
+  <div class="flex justify-end pt-4">
+    <button class="btn btn-sm variant-filled-primary" type="submit">Update</button>
   </div>
 </form>
