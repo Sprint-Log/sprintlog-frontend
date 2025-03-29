@@ -19,7 +19,6 @@
     {
       key: 'Mod-s',
       run() {
-        console.log(view.state.doc.toString());
         dispatch('save', { text: view.state.doc.toString() });
         return true;
       }

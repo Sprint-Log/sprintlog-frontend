@@ -15,13 +15,9 @@
 	let limit = 10;
 	let page = 1;
 	let order = 'desc';
-
-	$: console.log(`limit: ${limit}`)
+    let client = useQueryClient();
 
 	let intervalMs = 15000;
-
-	const client = useQueryClient();
-
 	$: projects = createQuery<Project[], Error>({
 		queryKey: [PROJECTS_QUERY_KEY, page, limit, order],
 		queryFn: async () => getProjects(page, limit, order),

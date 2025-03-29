@@ -69,9 +69,6 @@ const createUser = async (email: string, password: string): Promise<any> => {
       }
       return response.json();
     })
-    .then((data) => {
-      console.log(data);
-    })
     .catch((error) => {
       console.error('Error:', error);
       throw error;

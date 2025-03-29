@@ -118,9 +118,7 @@
                   response: (confirmed) => {
                     if (confirmed && delForm) {
                       delForm.submit();
-                    } else {
-                      console.log('Cancelled');
-                    }
+                    } 
                   }
                 });
               }}

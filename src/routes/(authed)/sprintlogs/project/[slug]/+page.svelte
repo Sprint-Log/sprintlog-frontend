@@ -1,17 +1,18 @@
 <script lang="ts">
+  import type { Sprintlog, ProjectItems, SprintlogPagination } from '$lib/types/sprintlog';
+  import type { PageData } from '../../../sprintlogs/project/[slug]/$types';
+
   import FloatingTask from '$lib/components/FloatingTaskInput/FloatingTaskInput.svelte';
   import TaskBox from '$lib/components/Sprintlog/TaskListBox.svelte';
   import Listitem from '$lib/components/Sprintlog/ListItemEdit.svelte';
   import { page } from '$app/stores';
-  import type { PageData } from '../../../sprintlogs/project/[slug]/$types';
 
   import Breadcrumb from '$lib/components/Breadcrumb.svelte';
 
-  import { createQuery, QueryFunctionContext, useQueryClient } from '@tanstack/svelte-query';
+  import { createQuery } from '@tanstack/svelte-query';
   import { getBacklogByPrjSlug, getTaskByPrjSlug } from '$lib/api/sprintlog';
   import { ProgressRadial } from '@skeletonlabs/skeleton';
   import {TASKS_QUERY_KEY, SPRINTLOGS_BACKLOG_QUERY_KEY} from '$lib/constants';
-  import type { Sprintlog, ProjectItems, SprintlogPagination } from '$lib/types/sprintlog';
   export const load = ({ params }: { params: any }) => {
     return {
       slug: params.slug
@@ -40,19 +41,14 @@
   let currentPageBacklog = 0;
   let amountBacklog = 200;
   let order = 'desc';
-  // let intervalMs = 15000;
+ 
   let intervalMs = 1500000;
-
-  let cacheTime = 1500000;
-  const client = useQueryClient()
-
-  client.invalidateQueries()
+ 
 
   $: tasks = createQuery<SprintlogPagination, Error>({
-    queryKey: [TASKS_QUERY_KEY, currentPageTask, amountTask, order, $page.params.slug],
-    queryFn: async (context: QueryFunctionContext) => {
-      const slug = context.queryKey[4] as string
-      return await getTaskByPrjSlug(slug, currentPageTask, amountTask, order).then(
+    queryKey: [TASKS_QUERY_KEY, currentPageTask, amountTask, order],
+    queryFn: async () => {
+      return await getTaskByPrjSlug($page.params.slug, currentPageTask, amountTask, order).then(
         (res) => {
           taskTotal = res.total;
           return res;

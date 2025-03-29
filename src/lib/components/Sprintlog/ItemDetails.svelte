@@ -75,7 +75,7 @@
   
     function handleItemClick(value) {
       // Handle the item click event
-      console.log('Item clicked:', value);
+  
     }
   </script>
   

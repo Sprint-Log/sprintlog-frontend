@@ -7,9 +7,8 @@
     import { Calendar } from '@steeze-ui/carbon-icons';
     import { Alarm } from '@steeze-ui/carbon-icons';
     
-
-    // export let project:ActiveProject;
     export let project:ActiveProject;
+    
 </script>
 <a href="../sprintlogs/project/{project.project_slug}" class="card bg-initial card-hover overflow-hidden ">
     <h6 class="p-2 font-medium">{project.project_slug}</h6>

@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { ActiveProjectPagination, Sprintlog, User } from '$lib/types/sprintlog';
+  import type { QueryFunctionContext } from '@tanstack/svelte-query';
 
   import TaskListBox from '$lib/components/Sprintlog/TaskListBox.svelte';
   import TaskBox from '$lib/components/Sprintlog/TaskListBox.svelte';
@@ -17,53 +18,57 @@
     PROJECT_BY_USER_QUERY_KEY,
     TASK_BY_USER_QUERY_KEY
   } from '$lib/constants';
- 
-  $: pageNum = 0;
-  let intervalMs = 1500000;
 
-  let limit = 12;
+  let pageNum = 0;
+  let limit = 2;
   let order = 'asc';
   let totalItems: number;
   let totalPages: number;
 
   $: currentUser = createQuery<User, Error>({
     queryKey: [USER_DETAIL_QUERY_KEY, $page.params.slug],
-    queryFn: async () => await getUserById($page.params.slug),
+    queryFn: async (context: QueryFunctionContext) => {
+      const slug = context.queryKey[1] as string;
+      return await getUserById(slug);
+    },
     refetchOnMount: 'always',
-    refetchOnWindowFocus: true
-    // cacheTime: 15000
+    refetchOnWindowFocus: true,
+    cacheTime: 15000
   });
 
   const setPage = (newPage: number) => {
     pageNum = newPage;
   };
+  
+  $:if($page.params.slug){
+    pageNum = 0;
+  }
 
   $: activeProjects = createQuery<ActiveProjectPagination, Error>({
-    queryKey: [PROJECT_BY_USER_QUERY_KEY, $page.params.slug, pageNum, limit, order],
-    queryFn: async () => await getProjectByUser($page.params.slug, pageNum, limit, order),
-    refetchInterval: intervalMs,
-    refetchOnMount: 'always',
+    queryKey: [PROJECT_BY_USER_QUERY_KEY, pageNum, limit, order, $page.params.slug],
+    queryFn: async (context: QueryFunctionContext) => {
+      const slug = context.queryKey[4] as string;
+      return await getProjectByUser(slug, pageNum, limit, order);
+    },
+    onSuccess: (data) => {
+      if (data) {
+        totalItems = data.total;
+        totalPages = Math.ceil(totalItems / limit);
+      }
+    },
+    refetchOnMount: true,
     refetchOnWindowFocus: true
-    // cacheTime: 100000,
-    // keepPreviousData: true
   });
 
   $: tasks = createQuery<Sprintlog[], Error>({
     queryKey: [TASK_BY_USER_QUERY_KEY, $page.params.slug],
-    queryFn: async () => getSprintlogTaskByUser($page.params.slug),
-    refetchInterval: intervalMs,
-    refetchOnMount: 'always',
+    queryFn: async (context: QueryFunctionContext) => {
+      const slug = context.queryKey[1] as string;
+      return await getSprintlogTaskByUser(slug);
+    },
+    refetchOnMount: true,
     refetchOnWindowFocus: true
-    // cacheTime: 100000,
-    // keepPreviousData: true
   });
-
-  $: {
-    if ($activeProjects.data != null) {
-      totalItems = $activeProjects.data?.total;
-      totalPages = Math.ceil(totalItems / limit);
-    }
-  }
 </script>
 
 <div class="flex flex-col mt-2 px-4">

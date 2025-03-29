@@ -31,7 +31,7 @@
   const intervalMs = 15000;
   const client = useQueryClient();
 
-  const users = createQuery<User[], Error>({
+  $: users = createQuery<User[], Error>({
     queryKey: [USERS_QUERY_KEY, page, limit, order],
     queryFn: async () => await getUsers(page, limit, order),
     refetchOnMount: 'always',

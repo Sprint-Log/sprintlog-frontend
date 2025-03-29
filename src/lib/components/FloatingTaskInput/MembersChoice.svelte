@@ -8,7 +8,7 @@
 	export let assignee: User | undefined;
 	const dispatch = createEventDispatcher();
 
-	const assignees = createQuery<User[], Error>({
+	$: assignees = createQuery<User[], Error>({
 		queryKey: [ASSIGNEE_QUERY_KEY],
 		queryFn: async () => await getUsers(1, 200, 'desc'),
 		refetchOnMount: 'always',
