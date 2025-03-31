@@ -22,7 +22,7 @@
   let intervalMs = 15000;
   $: projects = createQuery<Project[], Error>({
     queryKey: [PROJECTS_QUERY_KEY, page, limit, order],
-    queryFn:  () => getProjects(page, limit, order),
+    queryFn: () => getProjects(page, limit, order),
     refetchOnMount: 'always',
     refetchOnWindowFocus: true,
     refetchInterval: intervalMs,
@@ -70,55 +70,26 @@
       component: 'form'
     });
   }
-
-	const allowedStatuses = new Set(["not_started", "active", "on_hold"]);
-
-	$: groupedProjects = ($projects.data ?? []).reduce((acc, project) => {
-    if (allowedStatuses.has(project.status)) {
-        if (!acc[project.status]) {
-            acc[project.status] = [];
-        }
-        acc[project.status].push(project);
-    }
-    return acc;
-}, {} as Record<string, Project[]>);
 </script>
 
 <Modal components={{ form: { ref: ProjectForm } }} />
 <section class="p-8 flex-grow overflow-y-auto max-h-screen">
-	<div class="flex items-center mb-8 space-x-4">
-		<h2 class="font-semibold">Projects</h2>
-		<button class="btn-icon hover:variant-soft" on:click={openModal}><Icon src={Add} /></button>
-	</div>
-	<div class="grid grid-cols-4 gap-3">
-		{#if $projects.isLoading}
-			Loading...
-		{/if}
-		{#if $projects.error}
-			An error has occurred:
-			{$projects.error.message}
-		{/if}
-		{#if $projects.isSuccess}
-			{#each Object.entries(groupedProjects) as  [status, projects]}
-				<div class="flex flex-col">
-					<h2 class="mb-5">{status.toUpperCase().replace("_", " ")}</h2>
-					<div class="flex flex-col gap-5">
-						{#each projects as project}
-							<ProjectCard 
-							on:archive={handelDelProject}
-							on:update={handleUpdateProject}
-							{project}
-							/>
-						{/each}
-					</div>
-				</div>
-				
-				
-				
-				
-				
-			{/each}
-		{/if}
-		
-	</div>
+  <div class="flex items-center mb-8 space-x-4">
+    <h2 class="font-semibold">Projects</h2>
+    <button class="btn-icon hover:variant-soft" on:click={openModal}><Icon src={Add} /></button>
+  </div>
+  <div class="grid grid-cols-4 gap-3">
+    {#if $projects.isLoading}
+      Loading...
+    {/if}
+    {#if $projects.error}
+      An error has occurred:
+      {$projects.error.message}
+    {/if}
+    {#if $projects.isSuccess}
+      {#each $projects.data as project}
+        <ProjectCard on:archive={handelDelProject} on:update={handleUpdateProject} {project} />
+      {/each}
+    {/if}
+  </div>
 </section>
