@@ -1,74 +1,75 @@
 <script lang="ts">
-	import type { Project } from '$lib/types/sprintlog';
-	import ProjectCard from '$lib/components/Project/ProjectCard.svelte';
-	import { createQuery } from '@tanstack/svelte-query';
-	import { getProjects } from '$lib/api/sprintlog';
-	import ProjectForm from '$lib/components/Project/ProjectForm.svelte';
-	import { Add } from '@steeze-ui/carbon-icons';
-	import { Icon } from '@steeze-ui/svelte-icon';
-	import { Modal, modalStore } from '@skeletonlabs/skeleton';
-	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
-	import { PROJECTS_QUERY_KEY } from '$lib/constants';
-	import { deleteProject } from '$lib/api/sprintlog';
-  	import { goto } from '$app/navigation';
-	import { useQueryClient } from '@tanstack/svelte-query';
+  import type { Project } from '$lib/types/sprintlog';
+  import type { ModalSettings } from '@skeletonlabs/skeleton';
 
-	let limit = 20;
-	let page = 1;
-	let order = 'desc';
-    let client = useQueryClient();
+  import { Add } from '@steeze-ui/carbon-icons';
+  import { Icon } from '@steeze-ui/svelte-icon';
+  import { createQuery } from '@tanstack/svelte-query';
+  import { useQueryClient } from '@tanstack/svelte-query';
+  import { Modal, modalStore } from '@skeletonlabs/skeleton';
+  import { PROJECTS_QUERY_KEY } from '$lib/constants';
+  import { deleteProject, getProjects } from '$lib/api/sprintlog';
+  import { goto } from '$app/navigation';
 
-	let intervalMs = 15000;
-	$: projects = createQuery<Project[], Error>({
-		queryKey: [PROJECTS_QUERY_KEY, page, limit, order],
-		queryFn: async () => getProjects(page, limit, order),
-		refetchOnMount: 'always',
-		refetchOnWindowFocus: true,
-		refetchInterval: intervalMs,
-		cacheTime: 15000
-	});
+  import ProjectCard from '$lib/components/Project/ProjectCard.svelte';
+  import ProjectForm from '$lib/components/Project/ProjectForm.svelte';
 
-	async function handelDelProject(event: CustomEvent<{id: string}>){
-		const id = event.detail.id.toString();
+  let limit = 20;
+  let page = 1;
+  let order = 'desc';
+  let client = useQueryClient();
 
-		modalStore.trigger({
-			type: "confirm", 
-			title: "Delete Project",
-			body: "Are you sure you want to delete this project?",
+  let intervalMs = 15000;
+  $: projects = createQuery<Project[], Error>({
+    queryKey: [PROJECTS_QUERY_KEY, page, limit, order],
+    queryFn:  () => getProjects(page, limit, order),
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: true,
+    refetchInterval: intervalMs,
+    cacheTime: 15000
+  });
 
-			response: async (confirmed) => {
-				if (confirmed){
-					await deleteProject(id);
-					client.setQueriesData([PROJECTS_QUERY_KEY, id], (oldData) => {
-						if (oldData) {
-							return {...oldData, isActive: false};
-						}
-						return oldData;
-					});
-					client.invalidateQueries({queryKey: [PROJECTS_QUERY_KEY, page, limit, order]});
-					goto('/projects');
-				}
-			}
-		});
-	}
+  async function handelDelProject(event: CustomEvent<{ id: string }>) {
+    const id = event.detail.id.toString();
 
-	async function handleUpdateProject (event: CustomEvent<{project: Project}>){
-		const project = event.detail.project;
-		
-		let modal: ModalSettings = {
-			type: 'component',
-			component: 'form',
-			meta: {project, project_id: project.id}
-		};
-		modalStore.trigger(modal);
-	}
+    modalStore.trigger({
+      type: 'confirm',
+      title: 'Delete Project',
+      body: 'Are you sure you want to delete this project?',
 
-	function openModal() {
-		modalStore.trigger({
-			type: 'component',
-			component: 'form'
-		});
-	}
+      response: async (confirmed) => {
+        if (confirmed) {
+          await deleteProject(id);
+          client.setQueriesData([PROJECTS_QUERY_KEY, id], (oldData) => {
+            if (oldData) {
+              return { ...oldData, isActive: false };
+            }
+            return oldData;
+          });
+          client.invalidateQueries({ queryKey: [PROJECTS_QUERY_KEY, page, limit, order] });
+          goto('/projects');
+        }
+      }
+    });
+  }
+
+  async function handleUpdateProject(event: CustomEvent<{ project: Project }>) {
+    const project = event.detail.project;
+
+    let modal: ModalSettings = {
+      type: 'component',
+      component: 'form',
+      meta: { project, project_id: project.id }
+    };
+    modalStore.trigger(modal);
+  }
+
+  function openModal() {
+    modalStore.trigger({
+      type: 'component',
+      component: 'form'
+    });
+  }
 
 	const allowedStatuses = new Set(["not_started", "active", "on_hold"]);
 

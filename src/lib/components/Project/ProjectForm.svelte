@@ -69,7 +69,7 @@
 <Toast />
 <form
 	on:submit|preventDefault={onProjectCreate}
-	class="card bg-surface-100 p-6 rounded-md space-y-4 max-w-3xl overflow-y-scroll max-h-[36rem]"
+	class="card bg-surface-100 p-6 rounded-md space-y-4 max-w-3xl overflow-y-scroll max-h-[46rem]"
 >
 	<h2>{is_update ? "Update Project" : "Create Project"}</h2>
 	<div class="grid grid-cols-2 gap-4">
@@ -87,7 +87,7 @@
 			<input
 				class="input variant-form-material"
 				type="text"
-				placeholder="Enter Slug"
+				placeholder="Slug"
 				bind:value={project.slug}
 				readonly
 			/>
@@ -142,7 +142,7 @@
 				class="input variant-form-material h-10 w-full text-xs"
 			>
 				{#each Object.values(ProjectStatus) as status}
-				<option value={status}>{status.toUpperCase()}</option>
+					<option value={status}>{status.replaceAll("_", " ").toUpperCase()}</option>
 				{/each}
 			</select>
 		</label>

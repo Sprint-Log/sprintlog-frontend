@@ -33,7 +33,7 @@
   <div class="flex items-center gap-3 mb-6">
     <h2 class="text-xl font-semibold">Profile</h2>
     <button class="btn-icon hover:variant-soft" on:click={() => openModal('updateFormComponent')}>
-      <Icon src={Edit} size=30 />
+      <Icon src={Edit} size="30" />
     </button>
   </div>
 
