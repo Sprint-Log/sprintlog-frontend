@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createProject } from '$lib/api/sprintlog';
+	import { createProject, updateProject } from '$lib/api/sprintlog';
 	import type { ProjectCreate } from '$lib/types/sprintlog';
 	import { Icon } from '@steeze-ui/svelte-icon';
 	import { XMark } from '@steeze-ui/heroicons';
@@ -11,8 +11,11 @@
 	import { onMount } from 'svelte';
 	import CMEditor from '../Editors/CMEditor.svelte';
 	import { PROJECTS_QUERY_KEY } from '$lib/constants';
+	import { ProjectStatus } from '$lib/types/sprintlog';
 
-
+	let is_update = false;
+	
+	let projectId = "";
 
 	let project: ProjectCreate = {
 		slug: '',
@@ -28,14 +31,19 @@
 		sprint_checkup_day: 3,
 		repo_urls: ['']
 	};
+
+	if ($modalStore[0].meta) {
+		project = $modalStore[0].meta.project;
+		is_update = true;
+		projectId = $modalStore[0].meta.project_id;
+	}
+
 	$: project.slug = project.name.trim().toLowerCase().replace(/\s+/g, '_');
 	const client = useQueryClient();
 
 	const projectMutation = createMutation(
-		async function () {
-			return createProject(project);
-		},
 		{
+			mutationFn: async() => (is_update ? updateProject(project, projectId) : createProject(project)),
 			onSuccess: function (data) {
 				client.setQueriesData([PROJECTS_QUERY_KEY, data.id], data);
 				client.invalidateQueries({ queryKey:[PROJECTS_QUERY_KEY]});
@@ -62,7 +70,7 @@
 	on:submit|preventDefault={onProjectCreate}
 	class="card bg-surface-100 p-6 rounded-md space-y-4 max-w-3xl overflow-y-scroll max-h-[36rem]"
 >
-	<h2>Create a Project</h2>
+	<h2>{is_update ? "Update Project" : "Create Project"}</h2>
 	<div class="grid grid-cols-2 gap-4">
 		<label class="label">
 			<span>Name</span>
@@ -96,7 +104,7 @@
 		</label>
 	</div>
 
-	<div class="grid grid-cols-3 gap-4">
+	<div class="grid grid-cols-2 gap-4">
 		<label class="label">
 			<span>Sprint Weeks</span>
 			<input
@@ -115,6 +123,8 @@
 				bind:value={project.sprint_amount}
 			/>
 		</label>
+	</div>
+	<div class="grid grid-cols-2 gap-4">
 		<label class="label">
 			<span>Sprint Checkup Day</span>
 			<input
@@ -123,6 +133,17 @@
 				placeholder="Enter Sprint Checkup day"
 				bind:value={project.sprint_checkup_day}
 			/>
+		</label>
+		<label class="label">
+			<span>Project Status</span>
+			<select
+				bind:value={project.status}
+				class="input variant-form-material h-10 w-full text-xs"
+			>
+				{#each Object.values(ProjectStatus) as status}
+				<option value={status}>{status.toUpperCase()}</option>
+				{/each}
+			</select>
 		</label>
 	</div>
 	<label class="label">
@@ -150,13 +171,21 @@
 			>
 		</div>
 	</label>
-    <CMEditor 
+    <!-- <CMEditor 
 	bind:description={project.description} 
 	on:save={(event) => {
 		project.description = event.detail.text;
 		$projectMutation.mutate()
-		}} />
+		}} /> -->
+	<label class="label">
+		<span>Project Description</span>
+		<textarea
+			class="input variant-form-material"
+			placeholder="Enter Description"
+			bind:value={project.description}
+		/>
+	</label>
 	<div class="text-right pt-4">
-		<button class="btn variant-filled-primary" type="submit"> Create </button>
+		<button class="btn variant-filled-primary" type="submit"> {is_update ? "Update" : "Create"}</button>
 	</div>
 </form>

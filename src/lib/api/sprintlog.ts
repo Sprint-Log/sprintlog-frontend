@@ -8,6 +8,7 @@ import type {
   SprintlogPagination,
   Token,
   ProjectCreate,
+  ProjectUpdate,
   ActiveProjectPagination
 } from '$lib/types/sprintlog';
 import { PUBLIC_API_URL } from '$env/static/public';
@@ -86,6 +87,15 @@ export const deleteProject = async (id: string): Promise<{ status: number }> => 
     throw error;
   }
 };
+
+export const updateProject = async (project: ProjectUpdate, id: string): Promise<Project> => {
+  const response = await authFetch(`api/projects/${id}`, {
+    method: 'PUT', 
+    body: JSON.stringify(project),
+  })
+  const data = (await response.json()) as Project
+  return data
+}
 
 export const getBacklogByPrjSlug = async (
   prjSlug: string,

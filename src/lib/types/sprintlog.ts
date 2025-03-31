@@ -46,6 +46,14 @@ export enum PaymentMethodEnum{
   WAVE_PAY = "wave-pay"
 }
 
+export enum ProjectStatus{
+    NOT_STARTED = "not_started",
+    ACTIVE = "active", 
+    COMPLETED = "completed", 
+    ON_HOLD = "on_hold",  
+    CANCELLED = "cancelled"
+}
+
 export type Token = {
   rooms: string;
   token: string;
@@ -138,6 +146,7 @@ export type Project = {
   owner_id: string | null;
   created_at: Date;
   updated_at: Date;
+  status: ProjectStatus;
 };
 export type ProjectCreate = {
   slug: string;
@@ -153,7 +162,10 @@ export type ProjectCreate = {
   sprint_checkup_day: number | null;
   repo_urls: string[];
   owner_id?: string | null;
+  status?: ProjectStatus;
 };
+
+export type ProjectUpdate = Partial<ProjectCreate>;
 
 export type ActiveProject ={
   project_slug:string;

@@ -2,6 +2,7 @@
 	import type { Project } from '$lib/types/sprintlog';
 	import { marked } from 'marked';
 	import { Icon } from '@steeze-ui/svelte-icon';
+	import { Edit } from '@steeze-ui/carbon-icons';
 	import { TrashCan } from '@steeze-ui/carbon-icons';
 	import { createEventDispatcher } from 'svelte';
 
@@ -14,15 +15,27 @@
 	
 	<div class="flex justify-between p-5">
 		<h3 class="font-semibold">{project.name}</h3>
-		<button
-            class="btn-icon hover:variant-soft w-5"
-            on:click={(event) => {
-				event.stopPropagation();
-				event.preventDefault();
-				dispatch('delete', { id: project.id.toString() });
-			}}>
-			<Icon src={TrashCan}/>
-		</button>
+		<div class="flex justify-around gap-3">
+			<button
+				class="btn-icon hover:variant-soft w-5"
+				on:click={(event) => {
+					event.stopPropagation();
+					event.preventDefault();
+					dispatch('update', { project: project });
+				}}>
+				<Icon src={Edit}/>
+			</button>
+			<button
+				class="btn-icon hover:variant-soft w-5"
+				on:click={(event) => {
+					event.stopPropagation();
+					event.preventDefault();
+					dispatch('delete', { id: project.id.toString() });
+				}}>
+				<Icon src={TrashCan}/>
+			</button>
+		</div>
+		
 	</div>
 
 	<hr class="opacity-50" />

@@ -7,12 +7,13 @@
 	import { Add } from '@steeze-ui/carbon-icons';
 	import { Icon } from '@steeze-ui/svelte-icon';
 	import { Modal, modalStore } from '@skeletonlabs/skeleton';
+	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
 	import { PROJECTS_QUERY_KEY } from '$lib/constants';
 	import { deleteProject } from '$lib/api/sprintlog';
   	import { goto } from '$app/navigation';
 	import { useQueryClient } from '@tanstack/svelte-query';
 
-	let limit = 10;
+	let limit = 20;
 	let page = 1;
 	let order = 'desc';
     let client = useQueryClient();
@@ -51,12 +52,32 @@
 		});
 	}
 
+	async function handleUpdateProject (event: CustomEvent<{project: Project}>){
+		const project = event.detail.project;
+		
+		let modal: ModalSettings = {
+			type: 'component',
+			component: 'form',
+			meta: {project, project_id: project.id}
+		};
+		modalStore.trigger(modal);
+	}
+
 	function openModal() {
 		modalStore.trigger({
 			type: 'component',
 			component: 'form'
 		});
 	}
+
+	$: groupedProjects = $projects.data?.reduce((acc, project) => {
+		if (!acc[project.status]) {
+			acc[project.status] = [];
+		}
+		acc[project.status].push(project);
+		return acc;
+	}, {} as Record<string, Project[]>);
+	$: console.log(groupedProjects)
 </script>
 
 <Modal components={{ form: { ref: ProjectForm } }} />
@@ -77,6 +98,7 @@
 			{#each $projects.data as project}
 				<ProjectCard 
 					on:delete={handelDelProject}
+					on:update={handleUpdateProject}
 					{project} 
 				/>
 			{/each}
