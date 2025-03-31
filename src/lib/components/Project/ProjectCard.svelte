@@ -34,12 +34,13 @@
   <div class="flex justify-between p-5 items-start">
     <div>
       <div
-        class="rounded-sm flex justify-center items-center ${statusColorMap[
+        class="inline-flex items-center gap-1 rounded-lg font-medium text-surface-800 text-xs px-3 py-1 mb-2${statusColorMap[
           project.status
-        ]} text-surface-800 text-sm px-2 py-3 h-4 mb-2 w-fit"
+        ]} "
       >
         {project.status.replace('_', ' ').toUpperCase()}
       </div>
+
       <h3 class="font-semibold text-lg">{project.name}</h3>
     </div>
 
