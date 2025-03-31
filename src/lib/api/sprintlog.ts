@@ -71,21 +71,21 @@ export const getUsers = async (
 export const createProject = async (project: ProjectCreate): Promise<Project> => {
   const response = await authFetch(`api/projects/create`, {
     method: 'POST',
-    body: JSON.stringify(project),
-  })
-  const data = (await response.json()) as Project
-  return data
-}
+    body: JSON.stringify(project)
+  });
+  const data = (await response.json()) as Project;
+  return data;
+};
 
-export const deleteProject = async (id: string): Promise<{status: number}> => {
+export const deleteProject = async (id: string): Promise<{ status: number }> => {
   try {
-    await authFetch(`api/projects/${id}`, { method: 'DELETE' })
+    await authFetch(`api/projects/${id}`, { method: 'DELETE' });
     return { status: 204 };
   } catch (error) {
     console.error('Error deleting user:', error);
-    throw error; 
+    throw error;
   }
-}
+};
 
 export const getBacklogByPrjSlug = async (
   prjSlug: string,
@@ -221,6 +221,33 @@ export const createUser = async (user: UserCreate): Promise<User> => {
     }
   });
   return (await response.json()) as User;
+};
+
+export const updateUserPassword = async (
+  id: string,
+  newPassword: string,
+  oldPassword: string
+): Promise<Boolean> => {
+  const response = await authFetch(`api/users/update/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify({
+      newPassword,
+      currentPassword: oldPassword
+    }),
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    }
+  });
+  if (response.ok) {
+    return true;
+  }
+  let error = await response.json();
+ 
+  if (error.detail) {
+    throw new Error(error.detail);
+  }
+  throw new Error('Error updating user password');
 };
 
 export const deleteUser = async (id: string): Promise<{ status: number }> => {
