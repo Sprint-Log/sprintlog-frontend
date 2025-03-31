@@ -1,56 +1,74 @@
 <script lang="ts">
-	import type { Project } from '$lib/types/sprintlog';
-	import { marked } from 'marked';
-	import { Icon } from '@steeze-ui/svelte-icon';
-	import { Edit } from '@steeze-ui/carbon-icons';
-	import { TrashCan } from '@steeze-ui/carbon-icons';
-	import { createEventDispatcher } from 'svelte';
+  import type { Project } from '$lib/types/sprintlog';
 
-	const dispatch = createEventDispatcher();
+  import { Icon } from '@steeze-ui/svelte-icon';
+  import { Edit, Archive } from '@steeze-ui/carbon-icons';
+  import { EllipsisHorizontal } from '@steeze-ui/heroicons';
+  import { createEventDispatcher } from 'svelte';
+  import { popup } from '@skeletonlabs/skeleton';
+  import type { PopupSettings } from '@skeletonlabs/skeleton';
 
-	export let project: Project;
+  export let project: Project;
+  const dispatch = createEventDispatcher();
+
+  const popupClick: PopupSettings = {
+    event: 'click',
+    target: `popup-${project.id}`,
+    placement: 'bottom-end'
+  };
 </script>
 
-<a class="card bg-initial card-hover overflow-hidden" href={`/sprintlogs/project/${project.slug}`}>
-	
-	<div class="flex justify-between p-5">
-		<h3 class="font-semibold">{project.name}</h3>
-		<div class="flex justify-around gap-3">
-			<button
-				class="btn-icon hover:variant-soft w-5"
-				on:click={(event) => {
-					event.stopPropagation();
-					event.preventDefault();
-					dispatch('update', { project: project });
-				}}>
-				<Icon src={Edit}/>
-			</button>
-			<button
-				class="btn-icon hover:variant-soft w-5"
-				on:click={(event) => {
-					event.stopPropagation();
-					event.preventDefault();
-					dispatch('delete', { id: project.id.toString() });
-				}}>
-				<Icon src={TrashCan}/>
-			</button>
-		</div>
-		
-	</div>
+<a
+  class="card bg-initial card-hover overflow-hidden relative"
+  href={`/sprintlogs/project/${project.slug}`}
+>
+  <div class="flex justify-between p-5 items-start">
+    <h3 class="font-semibold text-lg">{project.name}</h3>
 
-	<hr class="opacity-50" />
-	<div class="p-4 space-y-4 overflow-auto">
-		<article>
-			{@html marked(project.description)}
-		</article>
-	</div>
+    <button
+      class="btn-icon hover:variant-soft"
+      use:popup={popupClick}
+      on:click|preventDefault|stopPropagation
+    >
+      <Icon src={EllipsisHorizontal} />
+    </button>
 
-	<footer class="p-4 flex justify-start items-center ">
-		<div class="flex-auto flex justify-between items-center">
-			<small>Started On {project.start_date}</small>
-		</div>
-		<div class="flex-auto flex justify-between items-center">
-			<small>Due On {project.end_date}</small>
-		</div>
-	</footer>
+    <div
+      class="card bg-surface-100 border shadow w-44 p-2 text-sm z-10"
+      data-popup={`popup-${project.id}`}
+    >
+      <button
+        class="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-surface-700
+ rounded"
+        on:click={(e) => {
+          e.preventDefault();
+          dispatch('update', { project });
+        }}
+      >
+        <Icon src={Edit} size="20" class="inline mr-2" /> Update Project
+      </button>
+      <button
+        class="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-surface-700
+ rounded"
+        on:click={(e) => {
+          e.preventDefault();
+          dispatch('archive', { id: project.id.toString() });
+        }}
+      >
+        <Icon src={Archive} size="20" class="inline mr-2" /> Archive Project
+      </button>
+
+      <div class="arrow variant-filled-primary" />
+    </div>
+  </div>
+
+  <hr class="opacity-50" />
+  <div class="p-4 space-y-4 overflow-auto">
+    <article>{@html project.description}</article>
+  </div>
+
+  <footer class="p-4 flex justify-between items-center text-sm text-gray-500">
+    <span>Started On {project.start_date}</span>
+    <span>Due On {project.end_date}</span>
+  </footer>
 </a>

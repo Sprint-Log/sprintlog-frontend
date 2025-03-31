@@ -90,25 +90,6 @@
 		<h2 class="font-semibold">Projects</h2>
 		<button class="btn-icon hover:variant-soft" on:click={openModal}><Icon src={Add} /></button>
 	</div>
-	<!-- <div class="grid grid-cols-4 gap-3">
-		{#if $projects.isLoading}
-			Loading...
-		{/if}
-		{#if $projects.error}
-			An error has occurred:
-			{$projects.error.message}
-		{/if}
-		{#if $projects.isSuccess}
-			{#each $projects.data as project}
-				<ProjectCard 
-					on:delete={handelDelProject}
-					on:update={handleUpdateProject}
-					{project} 
-				/>
-			{/each}
-		{/if}
-	</div> -->
-
 	<div class="grid grid-cols-4 gap-3">
 		{#if $projects.isLoading}
 			Loading...
@@ -124,7 +105,7 @@
 					<div class="flex flex-col gap-5">
 						{#each projects as project}
 							<ProjectCard 
-							on:delete={handelDelProject}
+							on:archive={handelDelProject}
 							on:update={handleUpdateProject}
 							{project}
 							/>

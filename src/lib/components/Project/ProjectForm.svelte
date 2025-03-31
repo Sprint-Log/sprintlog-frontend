@@ -6,10 +6,6 @@
 	import { useQueryClient, createMutation } from '@tanstack/svelte-query';
 	import { Add } from '@steeze-ui/carbon-icons';
 	import { Toast, modalStore, toastStore } from '@skeletonlabs/skeleton';
-	import { EditorView, basicSetup } from 'codemirror';
-	import { markdown } from '@codemirror/lang-markdown';
-	import { onMount } from 'svelte';
-	import CMEditor from '../Editors/CMEditor.svelte';
 	import { PROJECTS_QUERY_KEY } from '$lib/constants';
 	import { ProjectStatus } from '$lib/types/sprintlog';
 
