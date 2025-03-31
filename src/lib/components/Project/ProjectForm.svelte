@@ -49,8 +49,9 @@
 				client.invalidateQueries({ queryKey:[PROJECTS_QUERY_KEY]});
 				modalStore.close();
 			},
-			onError: function (err) {
-				toastStore.trigger({ message: 'Something went wrong', background: 'variant-filled-error' });
+			onError: function (err: Error) {
+				let errorMessage = err.message;
+				toastStore.trigger({ message: errorMessage, background: 'variant-filled-error' });
 			}
 		}
 	);

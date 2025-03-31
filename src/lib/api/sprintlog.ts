@@ -74,6 +74,8 @@ export const createProject = async (project: ProjectCreate): Promise<Project> =>
     method: 'POST',
     body: JSON.stringify(project)
   });
+
+  if(!response.ok) throw response;
   const data = (await response.json()) as Project;
   return data;
 };

@@ -70,14 +70,17 @@
 		});
 	}
 
-	$: groupedProjects = $projects.data?.reduce((acc, project) => {
-		if (!acc[project.status]) {
-			acc[project.status] = [];
-		}
-		acc[project.status].push(project);
-		return acc;
-	}, {} as Record<string, Project[]>);
-	$: console.log(groupedProjects)
+	const allowedStatuses = new Set(["not_started", "active", "on_hold"]);
+
+	$: groupedProjects = ($projects.data ?? []).reduce((acc, project) => {
+    if (allowedStatuses.has(project.status)) {
+        if (!acc[project.status]) {
+            acc[project.status] = [];
+        }
+        acc[project.status].push(project);
+    }
+    return acc;
+}, {} as Record<string, Project[]>);
 </script>
 
 <Modal components={{ form: { ref: ProjectForm } }} />
@@ -86,7 +89,7 @@
 		<h2 class="font-semibold">Projects</h2>
 		<button class="btn-icon hover:variant-soft" on:click={openModal}><Icon src={Add} /></button>
 	</div>
-	<div class="grid grid-cols-4 gap-3">
+	<!-- <div class="grid grid-cols-4 gap-3">
 		{#if $projects.isLoading}
 			Loading...
 		{/if}
@@ -103,5 +106,37 @@
 				/>
 			{/each}
 		{/if}
+	</div> -->
+
+	<div class="grid grid-cols-4 gap-3">
+		{#if $projects.isLoading}
+			Loading...
+		{/if}
+		{#if $projects.error}
+			An error has occurred:
+			{$projects.error.message}
+		{/if}
+		{#if $projects.isSuccess}
+			{#each Object.entries(groupedProjects) as  [status, projects]}
+				<div class="flex flex-col">
+					<h2 class="mb-5">{status.toUpperCase().replace("_", " ")}</h2>
+					<div class="flex flex-col gap-5">
+						{#each projects as project}
+							<ProjectCard 
+							on:delete={handelDelProject}
+							on:update={handleUpdateProject}
+							{project}
+							/>
+						{/each}
+					</div>
+				</div>
+				
+				
+				
+				
+				
+			{/each}
+		{/if}
+		
 	</div>
 </section>
