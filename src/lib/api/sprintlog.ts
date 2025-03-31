@@ -318,3 +318,29 @@ export const getUserById = async (user_id: string): Promise<User> => {
   const data = await response.json();
   return data;
 };
+
+
+export const upProjectStatus = async (project_id: string): Promise<Project> => {
+  const response = await authFetch(`api/projects/status/up/${project_id}`, {
+    method: 'PATCH',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    }
+  });
+  const data = (await response.json()) as Project;
+  return data;
+}
+
+
+export const downProjectStatus = async (project_id: string): Promise<Project> => {
+  const response = await authFetch(`api/projects/status/down/${project_id}`, {
+    method: 'PATCH',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    }
+  });
+  const data = (await response.json()) as Project;
+  return data;
+}

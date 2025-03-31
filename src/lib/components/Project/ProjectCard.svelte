@@ -1,30 +1,62 @@
 <script lang="ts">
   import type { Project } from '$lib/types/sprintlog';
+  import type { PopupSettings } from '@skeletonlabs/skeleton';
+
+  import { ProjectStatus } from '$lib/types/sprintlog';
+  import { upProjectStatus, downProjectStatus } from '$lib/api/sprintlog';
 
   import { Icon } from '@steeze-ui/svelte-icon';
   import { Edit, Archive } from '@steeze-ui/carbon-icons';
   import { EllipsisHorizontal } from '@steeze-ui/heroicons';
   import { createEventDispatcher } from 'svelte';
   import { popup } from '@skeletonlabs/skeleton';
-  import type { PopupSettings } from '@skeletonlabs/skeleton';
-  import type { ProjectStatus } from '$lib/types/sprintlog';
 
   export let project: Project;
   const dispatch = createEventDispatcher();
-
-  const statusColorMap: Record<ProjectStatus, string> = {
-    not_started: 'text-gray-600 bg-gray-400',
-    active: 'text-green-600 bg-green-400',
-    completed: 'text-blue-600 bg-blue-400',
-    on_hold: 'text-yellow-600 bg-yellow-400',
-    cancelled: 'text-red-600 bg-red-400'
-  };
 
   const popupClick: PopupSettings = {
     event: 'click',
     target: `popup-${project.id}`,
     placement: 'bottom-end'
   };
+
+  const statusEmojiMap: Record<ProjectStatus, string> = {
+    not_started: '🟩⬜⬜',
+    active: '🟩🟩⬜',
+    completed: '🟩🟩🟩',
+    on_hold: '🟨🟨⬜',
+    cancelled: '🟥🟥🟥'
+  };
+
+  const statusOrder: ProjectStatus[] = [
+    ProjectStatus.NOT_STARTED,
+    ProjectStatus.ACTIVE,
+    ProjectStatus.COMPLETED
+  ];
+
+  function increaseStatus(current: ProjectStatus): ProjectStatus {
+    const index = statusOrder.indexOf(current);
+    return statusOrder[Math.min(index + 1, statusOrder.length - 1)];
+  }
+
+  function decreaseStatus(current: ProjectStatus): ProjectStatus {
+    const index = statusOrder.indexOf(current);
+    return statusOrder[Math.max(index - 1, 0)];
+  }
+
+  async function handleStatusChange(direction: 'increase' | 'decrease') {
+    const nextStatus =
+      direction === 'increase' ? increaseStatus(project.status) : decreaseStatus(project.status);
+
+    if (nextStatus !== project.status) {
+      project.status = nextStatus;
+      if (direction === 'increase') {
+        await upProjectStatus(project.id);
+      } else {
+        await downProjectStatus(project.id);
+      }
+    }
+  }
 </script>
 
 <a
@@ -32,33 +64,34 @@
   href={`/sprintlogs/project/${project.slug}`}
 >
   <div class="flex justify-between p-5 items-start">
-    <div>
-      <div
-        class="inline-flex items-center gap-1 rounded-lg font-medium text-surface-800 text-xs px-3 py-1 mb-2${statusColorMap[
-          project.status
-        ]} "
-      >
-        {project.status.replace('_', ' ').toUpperCase()}
-      </div>
-
+    <div class="flex-1 flex items-center">
       <h3 class="font-semibold text-lg">{project.name}</h3>
     </div>
 
-    <button
-      class="btn-icon hover:variant-soft"
-      use:popup={popupClick}
-      on:click|preventDefault|stopPropagation
-    >
-      <Icon src={EllipsisHorizontal} />
-    </button>
+    <div class="flex flex-col items-end gap-2">
+      <button
+        class="btn-icon hover:variant-soft"
+        use:popup={popupClick}
+        on:click|preventDefault|stopPropagation
+      >
+        <Icon src={EllipsisHorizontal} />
+      </button>
+
+      <span
+        class="text-xl font-mono tracking-wider cursor-pointer select-none transition duration-300 hover:scale-110 active:scale-95"
+        on:click|stopPropagation|preventDefault={() => handleStatusChange('increase')}
+        title="Click to update status"
+      >
+        {statusEmojiMap[project.status]}
+      </span>
+    </div>
 
     <div
       class="card bg-surface-100 border shadow w-44 p-2 text-sm z-10"
       data-popup={`popup-${project.id}`}
     >
       <button
-        class="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-surface-700
- rounded"
+        class="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-surface-700 rounded"
         on:click={(e) => {
           e.preventDefault();
           dispatch('update', { project });
@@ -67,8 +100,7 @@
         <Icon src={Edit} size="20" class="inline mr-2" /> Update Project
       </button>
       <button
-        class="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-surface-700
- rounded"
+        class="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-surface-700 rounded"
         on:click={(e) => {
           e.preventDefault();
           dispatch('archive', { id: project.id.toString() });
@@ -76,12 +108,13 @@
       >
         <Icon src={Archive} size="20" class="inline mr-2" /> Archive Project
       </button>
-
       <div class="arrow variant-filled-primary" />
     </div>
   </div>
 
+  <!-- Divider -->
   <hr class="opacity-50" />
+
   <div class="p-4 space-y-4 overflow-auto">
     <article>{@html project.description}</article>
   </div>
