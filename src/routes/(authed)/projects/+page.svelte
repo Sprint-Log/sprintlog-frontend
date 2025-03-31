@@ -71,17 +71,17 @@
     });
   }
 
-	const allowedStatuses = new Set(["not_started", "active", "on_hold"]);
+// 	const allowedStatuses = new Set(["not_started", "active", "on_hold"]);
 
-	$: groupedProjects = ($projects.data ?? []).reduce((acc, project) => {
-    if (allowedStatuses.has(project.status)) {
-        if (!acc[project.status]) {
-            acc[project.status] = [];
-        }
-        acc[project.status].push(project);
-    }
-    return acc;
-}, {} as Record<string, Project[]>);
+// 	$: groupedProjects = ($projects.data ?? []).reduce((acc, project) => {
+//     if (allowedStatuses.has(project.status)) {
+//         if (!acc[project.status]) {
+//             acc[project.status] = [];
+//         }
+//         acc[project.status].push(project);
+//     }
+//     return acc;
+// }, {} as Record<string, Project[]>);
 </script>
 
 <Modal components={{ form: { ref: ProjectForm } }} />
@@ -90,7 +90,7 @@
 		<h2 class="font-semibold">Projects</h2>
 		<button class="btn-icon hover:variant-soft" on:click={openModal}><Icon src={Add} /></button>
 	</div>
-	<!-- <div class="grid grid-cols-4 gap-3">
+	<div class="grid grid-cols-4 gap-3">
 		{#if $projects.isLoading}
 			Loading...
 		{/if}
@@ -107,9 +107,11 @@
 				/>
 			{/each}
 		{/if}
-	</div> -->
+	</div>
 
-	<div class="grid grid-cols-4 gap-3">
+
+	<!-- Column based status -->
+	<!-- <div class="grid grid-cols-4 gap-3">
 		{#if $projects.isLoading}
 			Loading...
 		{/if}
@@ -131,13 +133,8 @@
 						{/each}
 					</div>
 				</div>
-				
-				
-				
-				
-				
 			{/each}
 		{/if}
 		
-	</div>
+	</div> -->
 </section>
