@@ -5,7 +5,7 @@
 
   import { ProjectStatus } from '$lib/types/sprintlog';
   import { updateProjectStatus } from '$lib/api/sprintlog';
-
+  import { debouncer } from '$lib/utils/debounce';
   import { Icon } from '@steeze-ui/svelte-icon';
   import { Edit, Archive } from '@steeze-ui/carbon-icons';
   import { EllipsisHorizontal } from '@steeze-ui/heroicons';
@@ -47,6 +47,9 @@
     const index = statusOrder.indexOf(current);
     return statusOrder[Math.max(index - 1, 0)];
   }
+  const debouncedUpdate = debouncer(1000, async () => {
+    await updateProjectStatus(project.id, project.status);
+  });
 
   async function handleStatusChange(direction: 'increase' | 'decrease') {
     const nextStatus =
@@ -54,7 +57,7 @@
 
     if (nextStatus !== project.status) {
       project.status = nextStatus;
-      await updateProjectStatus(project.id, project.status);
+      debouncedUpdate();
     }
   }
 </script>
