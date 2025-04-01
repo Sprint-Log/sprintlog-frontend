@@ -60,6 +60,13 @@ export type Token = {
   token: string;
 };
 
+export type PaginatedResponse <T> ={
+  items: T[];
+  total: number;
+  offset:number;
+  limit: number;
+}
+
 export type Sprintlog = {
   id: string;
   title: string;
@@ -243,8 +250,10 @@ export interface UserUpdate {
 export interface TeamCreate {
   name: string;
   description?: null | string;
+  tags?: string[];
 }
 
+ 
 export interface TeamMember {
   id: string;
   userId: string;
@@ -259,7 +268,7 @@ export interface Team {
   slug: string;
   name: string;
   description?: null | string;
-  members?: TeamMember[];
+  members: TeamMember[];
 }
 
 export interface TeamUpdate {

@@ -15,4 +15,6 @@ export const TASK_BY_USER_QUERY_KEY = "tasks-by-user"
 
 export const PROFILE_QUERY_KEY = "profile"
 
+export const TEAM_DETAIL_QUERY_KEY = "team-detail"
+export const TEAM_QUERY_KEY = "teams"
 
