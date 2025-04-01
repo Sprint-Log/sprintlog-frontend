@@ -5,6 +5,8 @@
   import { OverflowMenuHorizontal } from '@steeze-ui/carbon-icons';
 
   export let team: Team;
+  console.log("team member")
+  console.log(team.members[0])
 </script>
 
 <a href="/teams/{team.id}" class="card bg-initial card-hover overflow-hidden mt-2">

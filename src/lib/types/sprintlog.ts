@@ -257,8 +257,8 @@ export interface TeamCreate {
 export interface TeamMember {
   id: string;
   userId: string;
-  userEmail: string;
-  userName?: null | string;
+  email: string;
+  name?: null | string;
   role?: 'ADMIN' | 'MEMBER';
   isOwner?: boolean;
 }
