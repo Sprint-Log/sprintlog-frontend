@@ -5,8 +5,8 @@
   import { OverflowMenuHorizontal } from '@steeze-ui/carbon-icons';
 
   export let team: Team;
-  console.log("team member")
-  console.log(team.members[0])
+  export let openModal: CallableFunction;
+ 
 </script>
 
 <a href="/teams/{team.id}" class="card bg-initial card-hover overflow-hidden mt-2">
@@ -19,8 +19,8 @@
     </div>
     <span>{team.name}</span>
     <div class="ml-auto px-2">
-      <button class="btn-icon hover:variant-soft w-8"><Icon src={Add} /></button>
-      <button class="btn-icon hover:variant-soft w-8"><Icon src={OverflowMenuHorizontal} /></button>
+      <button class="btn-icon hover:variant-soft w-8" on:click={()=>openModal('teamMemberCard', team)}><Icon src={Add} /></button>
+      <button class="btn-icon hover:variant-soft w-8" on:click={()=>openModal('teamPreviewCard', team)}><Icon src={OverflowMenuHorizontal} /></button>
     </div>
   </div>
   <hr class="opacity-50" />

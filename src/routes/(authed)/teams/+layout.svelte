@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
   import type { Team, PaginatedResponse } from '$lib/types/sprintlog';
 
   import { Icon } from '@steeze-ui/svelte-icon';
@@ -13,22 +14,33 @@
   import { TEAM_QUERY_KEY } from '$lib/constants';
   import { toastStore } from '@skeletonlabs/skeleton';
   import { getTeams } from '$lib/api/team';
-  import TeamForm from '$lib/components/Teams/TeamForm.svelte';
+
   import TeamCard from '$lib/components/Teams/TeamCard.svelte';
+
+  import TeamForm from '$lib/components/Teams/TeamForm.svelte';
+
+  import TeamMember from '$lib/components/Teams/TeamMember.svelte';
+  import TeamPreview from '$lib/components/Teams/TeamPreview.svelte';
+
+  import { goto } from '$app/navigation';
+
+  // modals
+  const userModalRegistry: Record<string, ModalComponent> = {
+    teamCreateForm: { ref: TeamForm },
+    teamPreviewCard: { ref: TeamPreview },
+    teamMemberCard: { ref: TeamMember }
+  };
 
   let limit = 20;
   let page = 1;
   let order = 'desc';
   let total = 0;
   let offset = 0;
-  const client = useQueryClient();
 
   $: teams = createQuery<Team[], Error>({
     queryKey: [TEAM_QUERY_KEY, page, limit, order],
     queryFn: async () => {
       let response = await getTeams(page, limit, order);
-      console.log('items');
-      console.log(response.items);
       total = response.total;
       offset = response.offset;
       return response.items;
@@ -38,21 +50,27 @@
     cacheTime: 15000
   });
 
-  function openModal() {
-    modalStore.trigger({
+  function openModal(modelName: string, team: Team | null = null) {
+    let modelSetting: ModalSettings = {
       type: 'component',
-      component: 'form'
-    });
+      component: modelName
+    };
+    if (team) {
+      modelSetting.meta = { team };
+    }
+    modalStore.trigger(modelSetting);
   }
 </script>
 
-<Modal components={{ form: { ref: TeamForm } }} />
+<Modal components={userModalRegistry} />
 <div
   class="basis-1/3 space-x-4 p-4 bg-surface-800 border-r h-screen border-surface-200 border-opacity-25"
 >
   <div class="flex items-center">
     <h2 class="font-semibold">Teams</h2>
-    <button class="btn-icon hover:variant-soft" on:click={openModal}><Icon src={Add} /></button>
+    <button class="btn-icon hover:variant-soft" on:click={() => openModal('teamCreateForm')}
+      ><Icon src={Add} /></button
+    >
   </div>
   <div class="grid gap-3">
     <!-- team card add -->
@@ -62,13 +80,13 @@
       error occurred
     {:else if $teams.isSuccess}
       {#each $teams.data as team}
-        <TeamCard {team} />
+        <TeamCard {team} {openModal} />
       {/each}
     {:else}
       <div class="flex flex-col items-center my-64">
         <button
           class=" flex text-2xl btn border border-surface-200 rounded opacity-30"
-          on:click={openModal}
+          on:click={() => openModal('teamCreateForm')}
         >
           Create Team <div class="w-9"><Icon src={Add} /></div>
         </button>
