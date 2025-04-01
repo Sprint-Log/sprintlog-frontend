@@ -11,7 +11,6 @@ export const getTeams = async (
     );
     if (!response.ok) throw response;
     const data = (await response.json()) as PaginatedResponse<Team>;
-    console.log("data", data)
     return data;
   };
 export const createTeam = async (team: TeamCreate): Promise<Team> => {

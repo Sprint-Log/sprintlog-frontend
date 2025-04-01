@@ -3,10 +3,13 @@
   import { Icon } from '@steeze-ui/svelte-icon';
   import { Add } from '@steeze-ui/carbon-icons';
   import { OverflowMenuHorizontal } from '@steeze-ui/carbon-icons';
+  import {formatDate} from "$lib/utils";
 
   export let team: Team;
   export let openModal: CallableFunction;
  
+
+
 </script>
 
 <a href="/teams/{team.id}" class="card bg-initial card-hover overflow-hidden mt-2">
@@ -35,6 +38,6 @@
 
     {/each}
   
-    <span class="text-xs p-2">8 August 2023</span>
+    <span class="text-xs p-2">{formatDate(team.createdAt)}</span>
   </div>
 </a>

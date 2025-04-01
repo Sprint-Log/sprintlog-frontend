@@ -267,6 +267,8 @@ export interface Team {
   name: string;
   description?: null | string;
   members: TeamMember[];
+  createdAt:string;
+  updatedAt: string; 
 }
 
 export interface TeamUpdate {
