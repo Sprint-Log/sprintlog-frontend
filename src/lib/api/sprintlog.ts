@@ -54,8 +54,15 @@ export const getProjectsBySLug = async (
   ]);
 
   const response = await authFetch(`api/projects?${params.toString()}`);
-  const data = (await response.json()) as Project;
-  return data;
+  if (response.ok){
+    const data = (await response.json()) as Project;
+    return data;
+  }
+  let error = await response.json();
+    if (error.message || error.detail) {
+      throw new Error(error.detail || error.message);
+    } 
+  throw new Error('Error getting project details.');
 };
 export const getUsers = async (
   currentPage = 1,
@@ -66,31 +73,30 @@ export const getUsers = async (
   const response = await authFetch(
     `api/users?currentPage=${currentPage}&pageSize=${pageSize}&sortOrder=${sortOrder}`
   );
-  const data = (await response.json()).items as User[];
-
-  return data;
+  if (response.ok) {
+    const data = (await response.json()).items as User[];
+    return data;
+  }
+  let error = await response.json();
+    if (error.message || error.detail) {
+      throw new Error(error.detail || error.message);
+    } 
+  throw new Error('Error listing users.');
 };
 export const createProject = async (project: ProjectCreate): Promise<Project> => {
-  let response
-  try{
-    response = await authFetch(`api/projects/create`, {
+    const response = await authFetch(`api/projects/create`, {
       method: 'POST',
       body: JSON.stringify(project)
     });
-  
-    if(!response.ok) throw new Error();
-    const data = (await response.json()) as Project;
-    return data;
-  } catch (_){
-    if (response){
-      let error = await response.json();
-      if (error.message) {
-        throw new Error(error.message);
-      }
-      throw new Error('Error creating project.');
+    if (response.ok) {
+      const data = (await response.json()) as Project;
+      return data;
     }
-  }
-  
+    let error = await response.json();
+    if (error.message || error.detail) {
+      throw new Error(error.detail || error.message);
+    } 
+    throw new Error('Error creating project.');
 };
 
 export const deleteProject = async (id: string): Promise<{ status: number }> => {

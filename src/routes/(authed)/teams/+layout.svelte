@@ -50,7 +50,7 @@
     cacheTime: 15000
   });
 
-  function openModal(modelName: string, meta: any | null = null) {
+  export function openModal(modelName: string, meta: any | null = null) {
     let modelSetting: ModalSettings = {
       type: 'component',
       component: modelName
@@ -108,6 +108,7 @@
   </nav>
   <section class="space-y-4 mt-3">
     <!-- Team view add -->
+    <slot {openModal} />
   </section>
-  <slot />
+  
 </div>

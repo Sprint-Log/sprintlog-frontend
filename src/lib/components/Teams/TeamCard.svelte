@@ -7,12 +7,9 @@
 
   export let team: Team;
   export let openModal: CallableFunction;
- 
-
-
 </script>
 
-<a href="/teams/{team.id}" class="card bg-initial card-hover overflow-hidden mt-2">
+<a href="/teams/{team.slug}" class="card bg-initial card-hover overflow-hidden mt-2">
   <div class="flex items-center">
     <div
       class="flex-none rounded-full bg-surface-200 flex justify-center items-center w-9 h-9 m-2 text-surface-800"

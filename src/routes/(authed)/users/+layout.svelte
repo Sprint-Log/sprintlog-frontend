@@ -31,7 +31,7 @@
   let page = 1;
   let order = 'desc';
   
-  $: breadCrumb = [{ text: 'Home', href: '/' }];
+  $: breadCrumb = [{ text: 'Home', href: '/' }];  
   $: users = createQuery<User[], Error>({
     queryKey: [USERS_QUERY_KEY, page, limit, order],
     queryFn: () => getUsers(page, limit, order),

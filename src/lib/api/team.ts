@@ -13,6 +13,19 @@ export const getTeams = async (
     const data = (await response.json()) as PaginatedResponse<Team>;
     return data;
   };
+
+
+export const getTeamBySlug = async(
+  slug: string,
+): Promise<Team> => {
+  const response = await authFetch(
+    `api/teams/${slug}`
+  );
+  if (!response.ok) throw response;
+  const data = (await response.json()) as Team;
+  return data;
+}
+
 export const createTeam = async (team: TeamCreate): Promise<Team> => {
   let response = await authFetch(`api/teams`, {
     method: 'POST',

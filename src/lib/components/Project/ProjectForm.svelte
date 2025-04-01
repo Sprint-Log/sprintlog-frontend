@@ -52,7 +52,7 @@
 		}
 	);
 	function onProjectCreate() {
-		const regex = /^[A-Za-z0-9 ]+$/;
+		const regex = /^[A-Za-z0-9 _-]+$/;
 		if (!regex.test(project.name)) {
 			toastStore.trigger({message: "Project name cannot contain special characters.", background: "variant-filled-error"});
 		}
