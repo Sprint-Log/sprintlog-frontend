@@ -320,27 +320,16 @@ export const getUserById = async (user_id: string): Promise<User> => {
 };
 
 
-export const upProjectStatus = async (project_id: string): Promise<Project> => {
-  const response = await authFetch(`api/projects/status/up/${project_id}`, {
+export const updateProjectStatus = async (project_id: string, status: string): Promise<Project> => {
+  const response = await authFetch(`api/projects/status/${project_id}`, {
     method: 'PATCH',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json'
-    }
+    },
+    body: JSON.stringify({ status })
   });
   const data = (await response.json()) as Project;
   return data;
 }
-
-
-export const downProjectStatus = async (project_id: string): Promise<Project> => {
-  const response = await authFetch(`api/projects/status/down/${project_id}`, {
-    method: 'PATCH',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    }
-  });
-  const data = (await response.json()) as Project;
-  return data;
-}
+ 

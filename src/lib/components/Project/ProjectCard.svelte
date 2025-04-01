@@ -1,9 +1,10 @@
 <script lang="ts">
+ 
   import type { Project } from '$lib/types/sprintlog';
   import type { PopupSettings } from '@skeletonlabs/skeleton';
 
   import { ProjectStatus } from '$lib/types/sprintlog';
-  import { upProjectStatus, downProjectStatus } from '$lib/api/sprintlog';
+  import { updateProjectStatus } from '$lib/api/sprintlog';
 
   import { Icon } from '@steeze-ui/svelte-icon';
   import { Edit, Archive } from '@steeze-ui/carbon-icons';
@@ -21,7 +22,8 @@
   };
 
   const statusEmojiMap: Record<ProjectStatus, string> = {
-    not_started: '🟩⬜⬜',
+    not_started: '⬜⬜⬜',
+    initiated: '🟩⬜⬜',
     active: '🟩🟩⬜',
     completed: '🟩🟩🟩',
     on_hold: '🟨🟨⬜',
@@ -30,13 +32,15 @@
 
   const statusOrder: ProjectStatus[] = [
     ProjectStatus.NOT_STARTED,
+    ProjectStatus.INITIATED,
     ProjectStatus.ACTIVE,
     ProjectStatus.COMPLETED
   ];
 
   function increaseStatus(current: ProjectStatus): ProjectStatus {
+  
     const index = statusOrder.indexOf(current);
-    return statusOrder[Math.min(index + 1, statusOrder.length - 1)];
+    return statusOrder[(index + 1) % (statusOrder.indexOf(ProjectStatus.COMPLETED) +1) ];
   }
 
   function decreaseStatus(current: ProjectStatus): ProjectStatus {
@@ -50,11 +54,7 @@
 
     if (nextStatus !== project.status) {
       project.status = nextStatus;
-      if (direction === 'increase') {
-        await upProjectStatus(project.id);
-      } else {
-        await downProjectStatus(project.id);
-      }
+      await updateProjectStatus(project.id, project.status);
     }
   }
 </script>

@@ -48,6 +48,7 @@ export enum PaymentMethodEnum{
 
 export enum ProjectStatus{
     NOT_STARTED = "not_started",
+    INITIATED = "initiated",
     ACTIVE = "active", 
     COMPLETED = "completed", 
     ON_HOLD = "on_hold",  
