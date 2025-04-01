@@ -8,6 +8,7 @@
 
   const dispatch = createEventDispatcher();
   export let user: User;
+  export let openModel: CallableFunction;
 </script>
 
 <a
@@ -40,11 +41,11 @@
         <div class="ml-auto">
           <button
             class="btn-icon hover:variant-soft w-5"
-            on:click={() => dispatch('view', { user: user })}><Icon src={View} /></button
+            on:click={() => openModel('userPreviewCard', { user })}><Icon src={View} /></button
           >
           <button
             class="btn-icon hover:variant-soft w-5 mx-2"
-            on:click={() => dispatch('update', { user: user })}><Icon src={Edit} /></button
+            on:click={() => openModel('updateFormComponent', { user })}><Icon src={Edit} /></button
           >
           <button
             class="btn-icon hover:variant-soft w-5"

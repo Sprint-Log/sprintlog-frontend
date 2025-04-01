@@ -24,33 +24,37 @@
     createFormComponent: { ref: UserForm },
     userPreviewCard: { ref: UserPreviewCard }
   };
-  $: breadCrumb = [{ text: 'Home', href: '/' }];
+  const intervalMs = 15000;
+  const client = useQueryClient();
+  
   let limit = 500;
   let page = 1;
   let order = 'desc';
-  const intervalMs = 15000;
-  const client = useQueryClient();
-
+  
+  $: breadCrumb = [{ text: 'Home', href: '/' }];
   $: users = createQuery<User[], Error>({
     queryKey: [USERS_QUERY_KEY, page, limit, order],
-    queryFn:  () => getUsers(page, limit, order),
+    queryFn: () => getUsers(page, limit, order),
     refetchOnMount: 'always',
     refetchOnWindowFocus: true,
     refetchInterval: intervalMs
     // keepPreviousData:true
   });
 
-  function openCreateFormModal() {
-    modalStore.trigger({
+  function openModel(modelName: string, meta: any | null = null) {
+    let modelSetting: ModalSettings = {
       type: 'component',
-      component: 'createFormComponent'
-    });
+      component: modelName
+    };
+    if (meta) {
+      modelSetting.meta = meta;
+    }
+    modalStore.trigger(modelSetting);
   }
 
   async function handleDelUser(event: CustomEvent<{ id: string }>) {
-
     const id = event.detail.id.toString();
-    
+
     modalStore.trigger({
       type: 'confirm',
       title: 'Delete User',
@@ -76,26 +80,6 @@
     let user = event.detail.user;
     breadCrumb[1] = { text: user.name ?? '', href: '/users/' + (user.id ?? '') };
   }
-
-  function openUserProfile(event: CustomEvent<{ user: User }>) {
-    let user = event.detail.user;
-
-    modalStore.trigger({
-      type: 'component',
-      component: 'userPreviewCard',
-      meta: { user }
-    });
-  }
-
-  function openUpdateModal(event: CustomEvent<{ user: User }>) {
-    let user = event.detail.user;
-    let modal: ModalSettings = {
-      type: 'component',
-      component: 'updateFormComponent',
-      meta: { user, user_id: user.id }
-    };
-    modalStore.trigger(modal);
-  }
 </script>
 
 <Modal components={userModalRegistry} />
@@ -119,8 +103,9 @@
     >
       <div class="flex items-center">
         <h3 class="font-semibold">Users</h3>
-        <button class="btn-icon hover:variant-soft" on:click={openCreateFormModal}
-          ><Icon src={Add} /></button
+        <button
+          class="btn-icon hover:variant-soft"
+          on:click={() => openModel('createFormComponent')}><Icon src={Add} /></button
         >
       </div>
 
@@ -128,7 +113,7 @@
         <div class="flex flex-col items-center justify-center h-screen">
           <button
             class="flex text-2xl btn border border-surface-200 rounded opacity-30"
-            on:click={openCreateFormModal}
+            on:click={() => openModel('createFormComponent')}
           >
             Create User <div class="w-9"><Icon src={Add} /></div>
           </button>
@@ -147,10 +132,9 @@
             {#each $users.data as user}
               <div class="grid px-2">
                 <UserCard
-                  on:delete={handleDelUser}
                   on:selected={handleBreadCrumb}
-                  on:view={openUserProfile}
-                  on:update={openUpdateModal}
+                  on:delete={handleDelUser}
+                  {openModel}
                   {user}
                 />
               </div>

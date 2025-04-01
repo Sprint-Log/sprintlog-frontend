@@ -50,13 +50,13 @@
     cacheTime: 15000
   });
 
-  function openModal(modelName: string, team: Team | null = null) {
+  function openModal(modelName: string, meta: any | null = null) {
     let modelSetting: ModalSettings = {
       type: 'component',
       component: modelName
     };
-    if (team) {
-      modelSetting.meta = { team };
+    if (meta) {
+      modelSetting.meta = meta;
     }
     modalStore.trigger(modelSetting);
   }
