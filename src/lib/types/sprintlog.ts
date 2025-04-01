@@ -193,7 +193,6 @@ export interface OAuth2Login {
 export interface UserTeam {
   teamId: string;
   teamName: string;
-  isOwner?: boolean;
   role?: 'ADMIN' | 'MEMBER';
 }
 
@@ -256,10 +255,9 @@ export interface TeamCreate {
  
 export interface TeamMember {
   id: string;
-  userId: string;
-  email: string;
-  name?: null | string;
-  role?: 'ADMIN' | 'MEMBER';
+  name?: string;
+  email?: string;
+  role: 'ADMIN' | 'MEMBER';
   isOwner?: boolean;
 }
 

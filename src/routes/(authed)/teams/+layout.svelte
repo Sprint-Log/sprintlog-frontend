@@ -12,7 +12,7 @@
   import { useQueryClient } from '@tanstack/svelte-query';
 
   import { TEAM_QUERY_KEY } from '$lib/constants';
-  import { toastStore } from '@skeletonlabs/skeleton';
+  import {Toast ,toastStore } from '@skeletonlabs/skeleton';
   import { getTeams } from '$lib/api/team';
 
   import TeamCard from '$lib/components/Teams/TeamCard.svelte';
@@ -61,7 +61,7 @@
     modalStore.trigger(modelSetting);
   }
 </script>
-
+<Toast/>
 <Modal components={userModalRegistry} />
 <div
   class="basis-1/3 space-x-4 p-4 bg-surface-800 border-r h-screen border-surface-200 border-opacity-25"

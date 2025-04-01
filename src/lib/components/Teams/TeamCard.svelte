@@ -24,14 +24,14 @@
     </div>
   </div>
   <hr class="opacity-50" />
-  <div class="flex justify-between items-center">
+  <div class="flex justify-left items-center">
  
     {#each team.members as member}
-    <div
-      class="flex-none rounded-full bg-surface-200 flex justify-center items-center w-5 h-5 m-2 text-xs text-surface-800"
-    >
-      {member.name?.charAt(0).toUpperCase()}
-    </div>
+      <div
+        class="flex-none rounded-full bg-surface-200 flex justify-center items-center w-5 h-5 m-2 text-xs text-surface-800"
+      >
+        {member.name?.charAt(0).toUpperCase()}
+      </div>
 
     {/each}
   
