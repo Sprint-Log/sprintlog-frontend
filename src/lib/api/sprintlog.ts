@@ -11,6 +11,7 @@ import type {
   ProjectUpdate,
   ActiveProjectPagination
 } from '$lib/types/sprintlog';
+import { error } from '@sveltejs/kit';
 import { PUBLIC_API_URL } from '$env/static/public';
 export async function authFetch(path: string, settings?: RequestInit): Promise<Response> {
   settings = settings || {};
@@ -70,14 +71,26 @@ export const getUsers = async (
   return data;
 };
 export const createProject = async (project: ProjectCreate): Promise<Project> => {
-  const response = await authFetch(`api/projects/create`, {
-    method: 'POST',
-    body: JSON.stringify(project)
-  });
-
-  if(!response.ok) throw response;
-  const data = (await response.json()) as Project;
-  return data;
+  let response
+  try{
+    response = await authFetch(`api/projects/create`, {
+      method: 'POST',
+      body: JSON.stringify(project)
+    });
+  
+    if(!response.ok) throw new Error();
+    const data = (await response.json()) as Project;
+    return data;
+  } catch (_){
+    if (response){
+      let error = await response.json();
+      if (error.message) {
+        throw new Error(error.message);
+      }
+      throw new Error('Error creating project.');
+    }
+  }
+  
 };
 
 export const deleteProject = async (id: string): Promise<{ status: number }> => {
