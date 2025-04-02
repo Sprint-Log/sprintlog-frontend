@@ -1,13 +1,13 @@
 <script lang="ts">
   import type { Project, TeamCreate } from '$lib/types/sprintlog';
   import type { ModalSettings } from '@skeletonlabs/skeleton';
-
+ 
   import { Icon } from '@steeze-ui/svelte-icon';
   import { Close } from '@steeze-ui/carbon-icons';
   import { createMutation } from '@tanstack/svelte-query';
   import { createQuery } from '@tanstack/svelte-query';
   import { useQueryClient } from '@tanstack/svelte-query';
-  import { Modal, modalStore } from '@skeletonlabs/skeleton';
+  import { Modal, modalStore, ProgressRadial } from '@skeletonlabs/skeleton';
   import { PROJECTS_QUERY_KEY } from '$lib/constants';
   import { Toast, toastStore } from '@skeletonlabs/skeleton';
   import { deleteProject, getProjects } from '$lib/api/sprintlog';
@@ -54,7 +54,9 @@
     <select  class="input variant-form-material col-span-2 h-8">
       <option class="text-surface-100" value="" selected />
       {#if $projects.isLoading}
-        Loading...
+      <div class="h-full grid place-items-center">
+        <ProgressRadial width="w-12" />
+      </div>
       {/if}
       {#if $projects.error}
         An error has occurred:

@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { User, Team, TeamMember } from '$lib/types/sprintlog';
 
-  import { addMembers } from '$lib/api/team';
+  import { modifyMembers } from '$lib/api/team';
   import { getUsers } from '$lib/api/sprintlog';
   import { USERS_QUERY_KEY, TEAM_QUERY_KEY } from '$lib/constants';
 
@@ -10,24 +10,24 @@
   import { createQuery, useQueryClient, createMutation } from '@tanstack/svelte-query';
   import { modalStore, toastStore } from '@skeletonlabs/skeleton';
 
-  const team: Team = $modalStore[0].meta.team;
   const client = useQueryClient();
+  const team: Team = $modalStore[0].meta.team;
+  let memberSelections: Record<string, { checked: boolean; role: string }> = {};
 
   let page = 1;
   let limit = 20;
   let order = 'desc';
   let teamMembers = [] as TeamMember[];
-  let addMemberForm: HTMLFormElement;
 
   $: users = createQuery<User[], Error>({
     queryKey: [USERS_QUERY_KEY, page, limit, order],
-    queryFn: () => getUsers(page, limit, order),
+    queryFn: async () => getUsers(page, limit, order),
     refetchOnMount: 'always',
     refetchOnWindowFocus: true
   });
 
   const addMemberMutation = createMutation({
-    mutationFn: () => addMembers(team.id, teamMembers),
+    mutationFn: () => modifyMembers(team.id, teamMembers),
 
     onSuccess: () => {
       toastStore.trigger({
@@ -36,10 +36,7 @@
         timeout: 1000
       });
       client.invalidateQueries([TEAM_QUERY_KEY]);
-      addMemberForm.style.display = 'none';
-      setTimeout(() => {
-        modalStore.close();
-      }, 1000);
+      modalStore.close();
     },
     onError: (error: any) => {
       let errorMessage = error.message || 'Something went wrong';
@@ -53,36 +50,55 @@
     $addMemberMutation.mutate();
   }
 
-  let memberSelections: Record<string, { checked: boolean; role: string }> = {};
-
-  function toggleUserSelection(user: User, checked: boolean) {
+  async function toggleUserSelection(user: User, checked: boolean) {
     memberSelections[user.id] = {
       ...(memberSelections[user.id] || { role: '' }),
       checked
     };
-    updateTeamMembers();
+    await updateTeamMembers(memberSelections);
   }
 
-  function updateUserRole(user: User, role: string) {
+  async function updateUserRole(user: User, role: string) {
     memberSelections[user.id] = {
       ...(memberSelections[user.id] || { checked: false }),
       role
     };
-    updateTeamMembers();
+    await updateTeamMembers(memberSelections);
   }
 
-  function updateTeamMembers() {
-    teamMembers = Object.entries(memberSelections)
-      .filter(([_, data]) => data.checked && data.role)
-      .map(([userId, data]) => ({
-        id: userId,
-        role: data.role.toUpperCase() as 'ADMIN' | 'MEMBER'
-      }));
+ 
+
+async function updateTeamMembers(
+  selections: Record<string, { checked: boolean; role: string }> = {}
+) {
+  teamMembers = Object.entries(selections)
+    .filter(([_, data]) => data.checked)
+    .map(([userId, data]) => ({
+      userId,
+      role: (data.role || "MEMBER") as "MEMBER" | "ADMIN"
+    }));
+
+}
+
+
+  function getMemberData(userId: string) {
+    return team.members.find((member) => member.userId === userId);
   }
+
+  async function initSelections() {
+    for (const member of team.members) {
+      memberSelections[member.userId] = {
+        checked: true,
+        role: member.role
+      };
+    }
+    await updateTeamMembers(memberSelections);
+  }
+
+  initSelections();
 </script>
 
 <form
-  bind:this={addMemberForm}
   on:submit={handleSubmit}
   action=""
   class="left-24 card bg-surface-100 p-4 rounded-md space-y-6 w-[521px] overflow-y-auto max-h-[36rem]"
@@ -96,7 +112,7 @@
         <input
           type="text"
           placeholder="Search"
-          class="bg-transparent text-surface-400 text-white text-sm outline-none w-full border-0 focus:ring-0"
+          class="bg-transparent text-surface-400 text-sm outline-none w-full border-0 focus:ring-0"
         />
       </div>
     </form>
@@ -104,6 +120,7 @@
 
   <div class="space-y-3">
     {#each $users.data || [] as user}
+      {@const memberData = getMemberData(user.id)}
       <div class="grid grid-cols-[auto_10rem_auto_auto] gap-3 items-center px-2 py-2">
         <div class="flex items-center gap-2 w-[14rem]">
           <span
@@ -118,14 +135,16 @@
           class="variant-form-material h-8 w-[144px] text-white bg-[#3C374A] rounded text-xs"
           on:change={(e) => updateUserRole(user, e.target.value)}
         >
-          <option selected value="MEMBER">Member</option>
-          <option value="ADMIN">Admin</option>
+          <option disabled value="">Choose Role</option>
+          <option selected={memberData?.role === 'MEMBER'} value="MEMBER">Member</option>
+          <option selected={memberData?.role === 'ADMIN'} value="ADMIN">Admin</option>
         </select>
 
         <input
           type="checkbox"
           class="w-5 h-5 accent-[#3C374A]"
           on:change={(e) => toggleUserSelection(user, e.target.checked)}
+          checked={memberData ? true : false}
         />
       </div>
     {/each}

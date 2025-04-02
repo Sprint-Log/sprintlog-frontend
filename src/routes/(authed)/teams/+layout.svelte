@@ -6,25 +6,19 @@
   import { Add } from '@steeze-ui/carbon-icons';
   import { Search } from '@steeze-ui/carbon-icons';
 
-  import { Modal, modalStore } from '@skeletonlabs/skeleton';
+  import { Modal, modalStore, ProgressRadial } from '@skeletonlabs/skeleton';
 
   import { createQuery } from '@tanstack/svelte-query';
-  import { useQueryClient } from '@tanstack/svelte-query';
   import BreadcrumbUser from '$lib/components/Users/BreadcrumbUser.svelte';
   import { TEAM_QUERY_KEY } from '$lib/constants';
-  import {Toast ,toastStore } from '@skeletonlabs/skeleton';
+  import { Toast, toastStore } from '@skeletonlabs/skeleton';
   import { getTeams } from '$lib/api/team';
 
   import TeamCard from '$lib/components/Teams/TeamCard.svelte';
-
   import TeamForm from '$lib/components/Teams/TeamForm.svelte';
-
   import TeamMember from '$lib/components/Teams/TeamMember.svelte';
   import TeamPreview from '$lib/components/Teams/TeamPreview.svelte';
 
-  import { goto } from '$app/navigation';
-
-  // modals
   const userModalRegistry: Record<string, ModalComponent> = {
     teamCreateForm: { ref: TeamForm },
     teamPreviewCard: { ref: TeamPreview },
@@ -64,7 +58,8 @@
     modalStore.trigger(modelSetting);
   }
 </script>
-<Toast/>
+
+<Toast />
 <Modal components={userModalRegistry} />
 <div
   class="basis-1/3 space-x-4 p-4 bg-surface-800 border-r h-screen border-surface-200 border-opacity-25"
@@ -78,15 +73,14 @@
   <div class="grid gap-3">
     <!-- team card add -->
     {#if $teams.isLoading}
-      ...loading
+      <div class="h-full grid place-items-center">
+        <ProgressRadial width="w-12" />
+      </div>
     {:else if $teams.isError}
       error occurred
     {:else if $teams.isSuccess}
       {#each $teams.data as team}
-        <TeamCard
-        on:selected={handleBreadCrumb}
-        {team}
-        {openModal} />
+        <TeamCard on:selected={handleBreadCrumb} {team} {openModal} />
       {/each}
     {:else}
       <div class="flex flex-col items-center my-64">
@@ -116,7 +110,6 @@
   </nav>
   <section class="space-y-4 mt-3">
     <!-- Team view add -->
-    <slot/>
+    <slot />
   </section>
-  
 </div>

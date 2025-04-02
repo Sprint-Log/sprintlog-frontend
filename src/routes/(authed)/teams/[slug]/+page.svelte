@@ -25,7 +25,6 @@
     onSuccess: () => {
       client.invalidateQueries([TEAM_QUERY_KEY]);
     },
-    refetchOnMount: 'always',
     refetchOnWindowFocus: true,
     cacheTime: 15000
   });
@@ -36,7 +35,6 @@
       const slug = context.queryKey[1] as string;
       return await getTeamStatistics(slug);
     },
-    refetchOnMount: 'always',
     refetchOnWindowFocus: true,
     cacheTime: 15000
   });
@@ -56,8 +54,8 @@
 
 <div class="flex flex-col mt-2 px-4">
   {#if $currentTeam.isLoading}
-    <div class="h-full grid place-items-center">
-      <ProgressRadial width="w-12" />
+    <div class="h-screen  place-items-center">
+      <ProgressRadial fill="white"   width="w-12" />
     </div>
   {:else if $currentTeam.isSuccess}
     <section class="">

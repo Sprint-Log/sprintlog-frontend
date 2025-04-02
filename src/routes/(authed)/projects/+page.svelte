@@ -6,7 +6,7 @@
   import { Icon } from '@steeze-ui/svelte-icon';
   import { createQuery } from '@tanstack/svelte-query';
   import { useQueryClient } from '@tanstack/svelte-query';
-  import { Modal, modalStore } from '@skeletonlabs/skeleton';
+  import { Modal, modalStore, ProgressRadial } from '@skeletonlabs/skeleton';
   import { PROJECTS_QUERY_KEY } from '$lib/constants';
   import { deleteProject, getProjects } from '$lib/api/sprintlog';
   import { goto } from '$app/navigation';
@@ -80,7 +80,9 @@
   </div>
   <div class="grid grid-cols-4 gap-3">
     {#if $projects.isLoading}
-      Loading...
+      <div class="h-full grid place-items-center">
+        <ProgressRadial width="w-12" />
+      </div>
     {/if}
     {#if $projects.error}
       An error has occurred:

@@ -254,11 +254,11 @@ export interface TeamCreate {
 
  
 export interface TeamMember {
-  id: string;
   name?: string;
   email?: string;
   role: 'ADMIN' | 'MEMBER';
   isOwner?: boolean;
+  userId: string;
 }
 
 export interface Team {
