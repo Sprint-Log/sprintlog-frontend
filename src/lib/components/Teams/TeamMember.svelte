@@ -3,7 +3,7 @@
 
   import { modifyMembers } from '$lib/api/team';
   import { getUsers } from '$lib/api/sprintlog';
-  import { USERS_QUERY_KEY, TEAM_QUERY_KEY } from '$lib/constants';
+  import { USERS_QUERY_KEY, TEAM_QUERY_KEY, TEAM_DETAIL_QUERY_KEY } from '$lib/constants';
 
   import { Icon } from '@steeze-ui/svelte-icon';
   import { Search } from '@steeze-ui/carbon-icons';
@@ -36,6 +36,7 @@
         timeout: 1000
       });
       client.invalidateQueries([TEAM_QUERY_KEY]);
+      client.invalidateQueries([TEAM_DETAIL_QUERY_KEY, team.slug], {exact: true});
       modalStore.close();
     },
     onError: (error: any) => {

@@ -5,7 +5,7 @@
   import { createQuery } from '@tanstack/svelte-query';
   import { TEAM_DETAIL_QUERY_KEY, TEAM_QUERY_KEY, TEAM_STATISTICS_QUERY_KEY } from '$lib/constants';
   import { page } from '$app/stores';
-  import { getTeamBySlug, getTeamStatistics } from '$lib/api/team';
+  import { getTeamBySlug, getTeamStatistics, removeMember } from '$lib/api/team';
   import { ProgressRadial } from '@skeletonlabs/skeleton';
   import { SubtractAlt } from '@steeze-ui/carbon-icons';
   import { Icon } from '@steeze-ui/svelte-icon';
@@ -15,6 +15,8 @@
   import { useQueryClient } from '@tanstack/svelte-query';
 
   const client = useQueryClient();
+  export let data;
+  let currentUser = data.user;
 
   $: currentTeam = createQuery<Team, Error>({
     queryKey: [TEAM_DETAIL_QUERY_KEY, $page.params.slug],
@@ -28,7 +30,7 @@
     refetchOnWindowFocus: true,
     cacheTime: 15000
   });
-
+  $: teamID = $currentTeam.data?.id ?? "";
   $: currentTeamStatistics = createQuery<TeamStatistics, Error>({
     queryKey: [TEAM_STATISTICS_QUERY_KEY, $page.params.slug],
     queryFn: async (context: QueryFunctionContext) => {
@@ -50,6 +52,36 @@
       }
     });
   }
+  function isTeamAdmin() {
+        if($currentTeam.data?.members.some(member => member.userId == currentUser.id && (member.role == "ADMIN" || member.isOwner == true))){
+            return true
+        }
+        else {
+            return false
+        }
+    }
+  async function handleDelMember(username: string) {
+        modalStore.trigger({
+            type: 'confirm',
+            title: 'Remove Member',
+            body: 'Are you sure you want to remove this member?',
+
+            response: async(confirmed) => {
+                if(confirmed){
+                    await removeMember(teamID, username);
+                    client.setQueriesData([TEAM_DETAIL_QUERY_KEY, teamID], (oldData) => {
+                        if (oldData) {
+                            return {...oldData, isActive: false};
+                        }
+                        return oldData;
+                    });
+                    client.invalidateQueries({queryKey: [TEAM_DETAIL_QUERY_KEY, $page.params.slug]});
+                }
+            }
+        });
+    }
+
+
 </script>
 
 <div class="flex flex-col mt-2 px-4">
