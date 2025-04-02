@@ -18,11 +18,13 @@
   import TeamForm from '$lib/components/Teams/TeamForm.svelte';
   import TeamMember from '$lib/components/Teams/TeamMember.svelte';
   import TeamPreview from '$lib/components/Teams/TeamPreview.svelte';
+  import UserPreviewCard from '$lib/components/Users/UserPreviewCard.svelte';
 
   const userModalRegistry: Record<string, ModalComponent> = {
     teamCreateForm: { ref: TeamForm },
     teamPreviewCard: { ref: TeamPreview },
-    teamMemberCard: { ref: TeamMember }
+    teamMemberCard: { ref: TeamMember },
+    userPreviewCard: { ref: UserPreviewCard }
   };
 
   let limit = 20;

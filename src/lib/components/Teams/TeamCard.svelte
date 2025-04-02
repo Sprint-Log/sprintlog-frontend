@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Team } from '$lib/types/sprintlog';
+  import { getUserById } from '$lib/api/sprintlog';
   import { Icon } from '@steeze-ui/svelte-icon';
   import { Add } from '@steeze-ui/carbon-icons';
   import { OverflowMenuHorizontal } from '@steeze-ui/carbon-icons';
@@ -38,15 +39,25 @@
     </div>
   </div>
   <hr class="opacity-50" />
-  <div class="flex justify-left items-center">
-    {#each team.members as member}
-      <div
-        class="flex-none rounded-full bg-surface-200 flex justify-center items-center w-5 h-5 m-2 text-xs text-surface-800"
-      >
-        {member.name?.charAt(0).toUpperCase()}
-      </div>
-    {/each}
+  <div class="flex items-center">
+    <div class="flex -space-x-2">
+      {#each team.members as member, i}
+        <button
+          on:click={async () => {
+            let user = await getUserById(member.userId);
+            openModal('userPreviewCard', { user });
+          }}
+          on:click|preventDefault|stopPropagation
+          class="flex-none w-7 h-7 rounded-full bg-surface-200 border-2 border-white
+                 text-xs text-surface-800 flex items-center justify-center
+                 hover:z-10 hover:scale-105 transition-transform cursor-pointer"
+          title={member.name}
+        >
+          {member.name?.charAt(0).toUpperCase()}
+        </button>
+      {/each}
+    </div>
 
-    <span class="text-xs p-2">{formatDate(team.createdAt)}</span>
+    <span class="text-xs pl-4">{formatDate(team.createdAt)}</span>
   </div>
 </a>
