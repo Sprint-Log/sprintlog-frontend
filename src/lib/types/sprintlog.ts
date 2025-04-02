@@ -235,6 +235,7 @@ export interface BankAccount {
 }
 
 export interface UserUpdate {
+  id: string;
   email?: null | string;
   name?: null | string;
   password?: null | string;

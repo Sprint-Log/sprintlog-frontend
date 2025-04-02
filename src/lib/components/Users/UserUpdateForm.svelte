@@ -4,7 +4,7 @@
   import { USERS_QUERY_KEY } from '$lib/constants';
   import { updateUser } from '$lib/api/sprintlog';
   import { useQueryClient, createMutation } from '@tanstack/svelte-query';
-  import { Toast, modalStore, toastStore } from '@skeletonlabs/skeleton';
+  import { modalStore, toastStore } from '@skeletonlabs/skeleton';
   import { PaymentMethodEnum } from '$lib/types/sprintlog';
   import { Icon } from '@steeze-ui/svelte-icon';
   import { XMark } from '@steeze-ui/heroicons';
@@ -12,25 +12,33 @@
 
   const client = useQueryClient();
   const user: UserUpdate = $modalStore[0].meta.user;
-  const userId = $modalStore[0].meta.user_id;
+
   const active_btn = 'bg-success-500 text-black';
   const unactive_btn = 'bg-surface-500 text-white';
   const userUpdateMutation = createMutation({
-    mutationFn: async () => updateUser(userId, user),
-    
+    mutationFn: async () => updateUser(user.id, user),
+
     onSuccess: (data) => {
       client.setQueriesData([USERS_QUERY_KEY, data.id], data);
       client.invalidateQueries({ queryKey: [USERS_QUERY_KEY] });
+      toastStore.trigger({
+        message: 'Successfully update!',
+        background: 'variant-filled-success',
+        timeout: 1500
+      });
       modalStore.close();
     },
-    onError: () => {
-      toastStore.trigger({ message: 'Something went wrong', background: 'variant-filled-error' });
+    onError: (error:any) => {
+      let errorMessage = error.message || 'Something went wrong';
+      modalStore.close();
+
+      toastStore.trigger({ message: errorMessage, background: 'variant-filled-error' });
     }
   });
-  
+
   let toggleAdminBtn = user.isSuperuser;
   let bankAccounts: { method: string; accountNumber: string }[] = user.bankAccounts ?? [];
-  
+
   function ToggleUserType(event: MouseEvent) {
     let value = (event.target as HTMLButtonElement).value;
     toggleAdminBtn = value === 'admin';
@@ -42,18 +50,16 @@
     $userUpdateMutation.mutate();
   }
 
-
   function addBankAccount() {
     bankAccounts = [...bankAccounts, { method: PaymentMethodEnum.K_PAY, accountNumber: '' }];
-    user.bankAccounts  =bankAccounts;
+    user.bankAccounts = bankAccounts;
   }
 
   function removeBankAccount(index: number) {
     bankAccounts = bankAccounts.filter((_, i) => i !== index);
-    user.bankAccounts  =bankAccounts;
+    user.bankAccounts = bankAccounts;
   }
 </script>
-<Toast />
 
 <form
   on:submit={handleSubmit}
@@ -61,33 +67,45 @@
 >
   <h3 class="text-lg font-bold">Update User</h3>
   {#if $page.data.user?.isSuperuser}
-
-  <div class="flex justify-end">
-    <button
-      type="button"
-      class="btn-sm w-16 rounded {toggleAdminBtn ? active_btn : unactive_btn}"
-      value="admin"
-      on:click={ToggleUserType}>Admin</button
-    >
-    <button
-      type="button"
-      class="btn-sm w-16 rounded {toggleAdminBtn ? unactive_btn : active_btn}"
-      value="user"
-      on:click={ToggleUserType}>User</button
-    >
-  </div>
-
- {/if}
+    <div class="flex justify-end">
+      <button
+        type="button"
+        class="btn-sm w-16 rounded {toggleAdminBtn ? active_btn : unactive_btn}"
+        value="admin"
+        on:click={ToggleUserType}>Admin</button
+      >
+      <button
+        type="button"
+        class="btn-sm w-16 rounded {toggleAdminBtn ? unactive_btn : active_btn}"
+        value="user"
+        on:click={ToggleUserType}>User</button
+      >
+    </div>
+  {/if}
   <!-- Basic Info -->
-  <div class="grid grid-cols-3 gap-3"> 
+  <div class="grid grid-cols-3 gap-3">
     <span>Name</span>
-    <input  class="input variant-form-material col-span-2 h-8" type="text" bind:value={user.name} required />
+    <input
+      class="input variant-form-material col-span-2 h-8"
+      type="text"
+      bind:value={user.name}
+      required
+    />
 
     <span>Position</span>
-    <input  class="input variant-form-material col-span-2 h-8" type="text" bind:value={user.position} required />
- 
+    <input
+      class="input variant-form-material col-span-2 h-8"
+      type="text"
+      bind:value={user.position}
+      required
+    />
+
     <span>Address</span>
-    <input  class="input variant-form-material col-span-2 h-8" type="text" bind:value={user.address} />
+    <input
+      class="input variant-form-material col-span-2 h-8"
+      type="text"
+      bind:value={user.address}
+    />
   </div>
 
   <!-- Bank Accounts -->
@@ -143,11 +161,21 @@
   <!-- Credentials -->
   <div class="grid grid-cols-3 gap-3">
     <span>Email</span>
-    <input  class="input variant-form-material col-span-2 h-8" type="email" bind:value={user.email} required />
+    <input
+      class="input variant-form-material col-span-2 h-8"
+      type="email"
+      bind:value={user.email}
+      required
+    />
     <span>Enter Admin Password</span>
-    <input  class="input variant-form-material col-span-2 h-8" type="password" bind:value={user.password} required />
+    <input
+      class="input variant-form-material col-span-2 h-8"
+      type="password"
+      bind:value={user.password}
+      required
+    />
   </div>
- 
+
   <div class="flex justify-end pt-4">
     <button class="btn btn-sm variant-filled-primary" type="submit">Update</button>
   </div>

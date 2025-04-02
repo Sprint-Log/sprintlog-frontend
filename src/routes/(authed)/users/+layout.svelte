@@ -13,7 +13,8 @@
   import BreadcrumbUser from '$lib/components/Users/BreadcrumbUser.svelte';
   import UserPreviewCard from '$lib/components/Users/UserPreviewCard.svelte';
 
-  import { Modal, modalStore } from '@skeletonlabs/skeleton';
+  import { Toast, Modal, modalStore } from '@skeletonlabs/skeleton';
+
   import { useQueryClient, createQuery } from '@tanstack/svelte-query';
   import { deleteUser, getUsers } from '$lib/api/sprintlog';
   import { goto } from '$app/navigation';
@@ -82,6 +83,7 @@
   }
 </script>
 
+<Toast />
 <Modal components={userModalRegistry} />
 <div class="w-full">
   <div class="flex">

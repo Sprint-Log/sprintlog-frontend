@@ -300,8 +300,16 @@ export const updateUser = async (id: string, user: UserUpdate): Promise<User> =>
       'Content-Type': 'application/json'
     }
   });
-  const data = (await response.json()) as User;
-  return data;
+  if (response.ok) {
+    return (await response.json()) as User;
+  }
+  let error = await response.json();
+ 
+  if (error.detail) {
+    throw new Error(error.detail);
+  }
+  throw new Error('Error updating user password');
+
 };
 
 export const getProjectByUser = async (
