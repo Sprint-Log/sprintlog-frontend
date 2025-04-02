@@ -80,13 +80,13 @@
         <Icon src={EllipsisHorizontal} />
       </button>
 
-      <span
+      <button
         class="text-xl font-mono tracking-wider cursor-pointer select-none transition duration-300 hover:scale-110 active:scale-95"
         on:click|stopPropagation|preventDefault={() => handleStatusChange('increase')}
         title="Click to update status"
       >
         {statusEmojiMap[project.status]}
-      </span>
+      </button>
     </div>
 
     <div

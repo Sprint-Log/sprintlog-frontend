@@ -254,6 +254,15 @@ export interface TeamCreate {
   tags?: string[];
 }
 
+export interface TeamMemberRead {
+  id: string;
+  name?: string;
+  email?: string;
+  role: 'ADMIN' | 'MEMBER';
+  isOwner?: boolean;
+  userId: string;
+  avatarUrl?: string | null;
+}
  
 export interface TeamMember {
   name?: string;
@@ -269,13 +278,13 @@ export interface Team {
   slug: string;
   name: string;
   description?: null | string;
-  members: TeamMember[];
+  members: TeamMemberRead[];
   createdAt:string;
   updatedAt: string; 
 }
 
-export interface UserName{
-  userName: string;
+export interface UserId{
+  userId: string;
 }
 
 export interface TeamUpdate {

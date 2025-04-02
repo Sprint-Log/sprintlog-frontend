@@ -2,8 +2,9 @@ import type {
   TeamCreate,
   Team,
   PaginatedResponse,
-  TeamMember, UserName,
-  TeamStatistics
+  TeamMember, UserId,
+  TeamStatistics,
+  TeamMemberRead
 } from '$lib/types/sprintlog';
 import { authFetch } from './sprintlog';
 
@@ -59,9 +60,9 @@ export const modifyMembers = async (teamId: string, members: TeamMember[]): Prom
   return data;
 };
 
-export const removeMember = async (teamId: string, username: string): Promise<Team> => {
-  let member: UserName = {
-    userName: username
+export const removeMember = async (teamId: string, userId: string): Promise<Team> => {
+  let member: UserId = {
+    userId: userId
   };
   let response = await authFetch(`api/teams/${teamId}/members/remove`, {
     method: 'POST',
@@ -69,5 +70,18 @@ export const removeMember = async (teamId: string, username: string): Promise<Te
   });
   if(!response.ok) throw response;
   const data = (await response.json()) as Team;
+  return data;
+}
+
+export const updateMemberRole = async(memberId: string, role:string): Promise<TeamMemberRead> =>{
+  let roleObj = {
+    role: role
+  };
+  let response = await authFetch(`api/teams/members/${memberId}`, {
+    method: 'POST',
+    body: JSON.stringify(roleObj)
+  });
+  if (!response.ok) throw response;
+  const data = (await response.json()) as TeamMemberRead;
   return data;
 }

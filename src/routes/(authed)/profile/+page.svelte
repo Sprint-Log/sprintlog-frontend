@@ -7,7 +7,7 @@
   import { Modal, modalStore, toastStore } from '@skeletonlabs/skeleton';
   
   import { createMutation, useQueryClient } from '@tanstack/svelte-query';
-  import { TEAM_QUERY_KEY, USER_DETAIL_QUERY_KEY } from '$lib/constants';
+  import { TEAM_DETAIL_QUERY_KEY, TEAM_QUERY_KEY, USER_DETAIL_QUERY_KEY } from '$lib/constants';
   import { uploadProfile, getProfileFile } from '$lib/api/sprintlog';
 
   import UserUpdateForm from '$lib/components/Users/UserUpdateForm.svelte';
@@ -59,6 +59,7 @@
     onSuccess: function (data) {
       client.setQueriesData([USER_DETAIL_QUERY_KEY], data);
       client.invalidateQueries([TEAM_QUERY_KEY]);
+      client.invalidateQueries([TEAM_DETAIL_QUERY_KEY]);
       toastStore.trigger({
         message: 'Profile image updated!',
         background: 'variant-filled-success'

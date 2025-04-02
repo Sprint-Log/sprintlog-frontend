@@ -6,9 +6,9 @@
   import { TEAM_DETAIL_QUERY_KEY, TEAM_QUERY_KEY, TEAM_STATISTICS_QUERY_KEY } from '$lib/constants';
 
   import { getProfileFile } from '$lib/api/sprintlog.js';
-  import { getTeamBySlug, getTeamStatistics, removeMember } from '$lib/api/team';
+  import { getTeamBySlug, getTeamStatistics, removeMember, updateMemberRole } from '$lib/api/team';
 
-  import { ProgressRadial } from '@skeletonlabs/skeleton';
+  import { popup, ProgressRadial } from '@skeletonlabs/skeleton';
   import { SubtractAlt } from '@steeze-ui/carbon-icons';
   import { Icon } from '@steeze-ui/svelte-icon';
   import { page } from '$app/stores';
@@ -18,6 +18,7 @@
   import { useQueryClient } from '@tanstack/svelte-query';
 
   export let data;
+  import type { PopupSettings } from '@skeletonlabs/skeleton';
 
   const client = useQueryClient();
   let currentUser = data.user;
@@ -85,26 +86,47 @@
       return false;
     }
   }
-  async function handleDelMember(username: string) {
+  async function handleDelMember(userId: string) {
     modalStore.trigger({
       type: 'confirm',
       title: 'Remove Member',
       body: 'Are you sure you want to remove this member?',
 
-      response: async (confirmed) => {
-        if (confirmed) {
-          await removeMember(teamID, username);
-          client.setQueriesData([TEAM_DETAIL_QUERY_KEY, teamID], (oldData) => {
-            if (oldData) {
-              return { ...oldData, isActive: false };
+            response: async(confirmed) => {
+                if(confirmed){
+                    await removeMember(teamID, userId);
+                    client.setQueriesData([TEAM_DETAIL_QUERY_KEY, teamID], (oldData) => {
+                        if (oldData) {
+                            return {...oldData, isActive: false};
+                        }
+                        return oldData;
+                    });
+                    client.invalidateQueries({queryKey: [TEAM_DETAIL_QUERY_KEY, $page.params.slug]});
+                }
             }
-            return oldData;
-          });
-          client.invalidateQueries({ queryKey: [TEAM_DETAIL_QUERY_KEY, $page.params.slug] });
-        }
-      }
-    });
-  }
+        });
+    }
+
+    $: memberId = "";
+    $: memberRole = "";
+
+    let popupClick: PopupSettings = {
+        event:'click',
+        target: `popup`,
+        placement: 'bottom-end'
+    };
+
+    const active_btn = 'bg-success-500 text-black';
+    const unactive_btn = 'bg-surface-500 text-white';
+    $: toggleAdminBtn = memberRole == "ADMIN";
+
+    async function handleUserType(event: MouseEvent) {
+        let value = (event.target as HTMLButtonElement).value;
+        toggleAdminBtn = value === 'ADMIN';
+        await updateMemberRole(memberId, value)
+        client.invalidateQueries({queryKey: [TEAM_DETAIL_QUERY_KEY, $page.params.slug]})
+    }
+
 </script>
 
 <div class="flex flex-col mt-2 px-4">
@@ -140,6 +162,7 @@
       </div>
       <div class="flex flex-wrap gap-4">
         {#each $currentTeam.data.members as member}
+
           <div class="flex items-center gap-3 p-1 border rounded-md border-gray-300">
             <div
               class="flex-none rounded-full bg-surface-200 flex justify-center items-center w-10 h-10 m-2 text-surface-800 text-lg"
@@ -156,16 +179,40 @@
             </div>
             <div class="text-sm">
               <div class="mb-1 font-bold">{member.name}</div>
-              <div class="text-xs underline">{member.role}</div>
+              <button 
+              use:popup={popupClick}
+              on:click|preventDefault|stopPropagation={() => {
+                memberId = member.id
+                memberRole = member.role
+                console.log(member.role)
+                console.log(member.id)
+              }}
+              class="text-xs underline">
+                {member.role}
+            </button>
             </div>
-            {#if isTeamAdmin()}
-              <button
-                class="btn-icon hover:variant-soft w-6"
-                on:click={() => handleDelMember(member.email ?? '')}
-              >
-                <Icon src={SubtractAlt} />
-              </button>
-            {/if}
+                        {#if isTeamAdmin()}
+                <button class="btn-icon hover:variant-soft w-6" on:click={()=> handleDelMember(member.userId ?? "")}>
+                  <Icon src={SubtractAlt} />
+                </button>
+                        {/if}
+          </div>
+          <div data-popup={`popup`} class="p-3 border border-white shadow z-10 bg-surface-900 rounded-lg card">
+            <div class="flex justify-end">
+                <button
+                  type="button"
+                  class="btn-sm w-16 rounded {toggleAdminBtn ? active_btn : unactive_btn}"
+                  value="ADMIN"
+                  on:click={handleUserType}>Admin</button
+                >
+                <button
+                  type="button"
+                  class="btn-sm w-16 rounded {toggleAdminBtn ? unactive_btn : active_btn}"
+                  value="MEMBER"
+                  on:click={handleUserType}>Member</button
+                >
+              </div>
+            <div class="arrow variant-filled-primary" />
           </div>
         {/each}
         <button
