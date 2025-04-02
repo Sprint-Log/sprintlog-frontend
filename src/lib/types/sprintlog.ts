@@ -259,6 +259,7 @@ export interface TeamMember {
   email?: string;
   role: 'ADMIN' | 'MEMBER';
   isOwner?: boolean;
+  userId?: string;
 }
 
 export interface Team {
@@ -269,6 +270,10 @@ export interface Team {
   members: TeamMember[];
   createdAt:string;
   updatedAt: string; 
+}
+
+export interface UserName{
+  userName: string;
 }
 
 export interface TeamUpdate {

@@ -3,12 +3,15 @@
     import { TEAM_DETAIL_QUERY_KEY, TEAM_QUERY_KEY } from "$lib/constants";
     import  type { Team } from "$lib/types/sprintlog";
     import { page } from "$app/stores";
-    import { getTeamBySlug } from "$lib/api/team";
+    import { getTeamBySlug, removeMember } from "$lib/api/team";
     import type { QueryFunctionContext } from "@tanstack/svelte-query";
-    import { ProgressRadial } from "@skeletonlabs/skeleton";
+    import { modalStore, ProgressRadial } from "@skeletonlabs/skeleton";
     import { SubtractAlt } from "@steeze-ui/carbon-icons";
     import { Icon } from "@steeze-ui/svelte-icon";
     import { UserFollow } from "@steeze-ui/carbon-icons";
+    import { useQueryClient } from "@tanstack/svelte-query";
+
+    let client = useQueryClient();
 
     export let openModal: CallableFunction;
     $: currentTeam = createQuery<Team, Error>({
@@ -22,6 +25,38 @@
         cacheTime: 15000
     });
     $: memberCount = $currentTeam.data?.members.length;
+    $: teamID = $currentTeam.data?.id ?? "";
+    export let data;
+    let currentUser = data.user;
+    function isTeamAdmin() {
+        if($currentTeam.data?.members.some(member => member.userId == currentUser.id && (member.role == "ADMIN" || member.isOwner == true))){
+            return true
+        }
+        else {
+            return false
+        }
+    }
+    async function handleDelMember(username: string) {
+        modalStore.trigger({
+            type: 'confirm',
+            title: 'Remove Member',
+            body: 'Are you sure you want to remove this member?',
+
+            response: async(confirmed) => {
+                if(confirmed){
+                    await removeMember(teamID, username);
+                    client.setQueriesData([TEAM_DETAIL_QUERY_KEY, teamID], (oldData) => {
+                        if (oldData) {
+                            return {...oldData, isActive: false};
+                        }
+                        return oldData;
+                    });
+                    client.invalidateQueries({queryKey: [TEAM_DETAIL_QUERY_KEY, $page.params.slug]});
+                }
+            }
+        });
+    }
+    
 </script>
 
 <div class="flex flex-col mt-2 px-4">
@@ -65,18 +100,20 @@
                             <div class="mb-1 font-bold">{member.name}</div>
                             <div class="text-xs text-gray-500 underline">{member.role}</div>
                         </div>
-                        <button class="btn-icon hover:variant-soft w-6">
-                            <Icon src={SubtractAlt}/>
-                        </button>
+                        {#if isTeamAdmin()}
+                            <button class="btn-icon hover:variant-soft w-6" on:click={()=> handleDelMember(member.email ?? "")}>
+                                <Icon src={SubtractAlt}/>
+                            </button>
+                        {/if}
                     </div>
                 {/each}
                 <button class="flex items-center gap-2 p-1 no-underline" on:click={()=> openModal('teamMemberCard')} style="text-decoration: none !important;" >
                     <div>
-                        <div
+                        <button
                             class="flex-none rounded-full flex justify-center items-center w-10 h-10 m-2 text-lg border-white border border-dashed p-2 text-white "
                             >
-                            <Icon src={UserFollow}/>
-                        </div>
+                            <Icon  src={UserFollow}/>
+                        </button>
                     </div>
                     <div class="text-white">
                         Add Member

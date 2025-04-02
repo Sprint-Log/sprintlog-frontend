@@ -19,7 +19,7 @@
   let teamMembers = [] as TeamMember[];
   let addMemberForm: HTMLFormElement;
 
-  $: users = createQuery<User[], Error>({
+  $: usersQuery = createQuery<User[], Error>({
     queryKey: [USERS_QUERY_KEY, page, limit, order],
     queryFn: () => getUsers(page, limit, order),
     refetchOnMount: 'always',
@@ -43,7 +43,6 @@
     },
     onError: (error: any) => {
       let errorMessage = error.message || 'Something went wrong';
-
       toastStore.trigger({ message: errorMessage, background: 'variant-filled-error' });
     }
   });
@@ -79,6 +78,9 @@
         role: data.role.toUpperCase() as 'ADMIN' | 'MEMBER'
       }));
   }
+
+  let searchTerm = "";
+  $: users = $usersQuery.data?.filter(user => user.name?.toLowerCase().includes(searchTerm.toLowerCase())) || [];
 </script>
 
 <form
@@ -93,7 +95,7 @@
     <form action="" class="w-56">
       <div class="flex items-center gap-2 border border-surface-300 rounded-xl px-2">
         <Icon src={Search} size="32" />
-        <input
+        <input bind:value={searchTerm}
           type="text"
           placeholder="Search"
           class="bg-transparent text-surface-400 text-white text-sm outline-none w-full border-0 focus:ring-0"
@@ -103,7 +105,7 @@
   </div>
 
   <div class="space-y-3">
-    {#each $users.data || [] as user}
+    {#each users || [] as user}
       <div class="grid grid-cols-[auto_10rem_auto_auto] gap-3 items-center px-2 py-2">
         <div class="flex items-center gap-2 w-[14rem]">
           <span
