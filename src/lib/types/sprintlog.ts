@@ -292,3 +292,11 @@ export interface ProjectItems {
   text: string;
   href?: string;
 }
+
+export interface TeamStatistics{
+  taskCount: number;
+  memberCount: number;
+  inProgressTaskCount: number;
+  idleTaskCount: number;
+  completedTaskCount: number;
+}

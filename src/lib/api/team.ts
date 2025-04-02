@@ -1,4 +1,4 @@
-import type { TeamCreate, Team, PaginatedResponse, TeamMember } from '$lib/types/sprintlog';
+import type { TeamCreate, Team, PaginatedResponse, TeamMember, TeamStatistics } from '$lib/types/sprintlog';
 import { authFetch } from './sprintlog';
 
 export const getTeams = async (
@@ -23,6 +23,16 @@ export const getTeamBySlug = async(
   );
   if (!response.ok) throw response;
   const data = (await response.json()) as Team;
+  return data;
+}
+export const getTeamStatistics = async(
+  slug: string,
+): Promise<TeamStatistics> => {
+  const response = await authFetch(
+    `api/teams/statistics/${slug}`
+  );
+  if (!response.ok) throw response;
+  const data = (await response.json()) as TeamStatistics;
   return data;
 }
 

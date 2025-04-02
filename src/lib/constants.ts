@@ -18,3 +18,4 @@ export const PROFILE_QUERY_KEY = "profile"
 export const TEAM_DETAIL_QUERY_KEY = "team-detail"
 export const TEAM_QUERY_KEY = "teams"
 
+export const TEAM_STATISTICS_QUERY_KEY = "team-statistics"
