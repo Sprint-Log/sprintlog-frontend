@@ -26,12 +26,12 @@
   };
   const intervalMs = 15000;
   const client = useQueryClient();
-  
+
   let limit = 500;
   let page = 1;
   let order = 'desc';
-  
-  $: breadCrumb = [{ text: 'Home', href: '/' }];  
+
+  $: breadCrumb = [{ text: 'Home', href: '/' }];
   $: users = createQuery<User[], Error>({
     queryKey: [USERS_QUERY_KEY, page, limit, order],
     queryFn: () => getUsers(page, limit, order),
@@ -84,19 +84,6 @@
 
 <Modal components={userModalRegistry} />
 <div class="w-full">
-  <nav class="px-6 py-2 bg-surface-100-800-token flex justify-between">
-    <BreadcrumbUser items={breadCrumb} />
-    <form action="" class="">
-      <div class="relative">
-        <input type="text" class="input block h-7 ps-8" placeholder="Search" required />
-        <div class="absolute inset-y-0 start-0 flex items-center pointer-events-none">
-          <div class="w-4 mx-2">
-            <Icon src={Search} />
-          </div>
-        </div>
-      </div>
-    </form>
-  </nav>
   <div class="flex">
     <div
       class="basis-1/3 px-1 bg-surface-800 border-r h-screen border-surface-200 border-opacity-25"
@@ -145,6 +132,19 @@
     </div>
     <div class="basis-4/5 mb-8 space-x-4 max-h-screen overflow-y-scroll">
       <!-- active pjs and tasks -->
+      <nav class="px-6 py-2 bg-surface-100-800-token flex justify-between">
+        <BreadcrumbUser items={breadCrumb} />
+        <form action="" class="">
+          <div class="relative">
+            <input type="text" class="input block h-7 ps-8" placeholder="Search" required />
+            <div class="absolute inset-y-0 start-0 flex items-center pointer-events-none">
+              <div class="w-4 mx-2">
+                <Icon src={Search} />
+              </div>
+            </div>
+          </div>
+        </form>
+      </nav>
       <slot />
     </div>
   </div>

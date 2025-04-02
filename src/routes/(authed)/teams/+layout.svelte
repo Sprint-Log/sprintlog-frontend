@@ -10,7 +10,7 @@
 
   import { createQuery } from '@tanstack/svelte-query';
   import { useQueryClient } from '@tanstack/svelte-query';
-
+  import BreadcrumbUser from '$lib/components/Users/BreadcrumbUser.svelte';
   import { TEAM_QUERY_KEY } from '$lib/constants';
   import {Toast ,toastStore } from '@skeletonlabs/skeleton';
   import { getTeams } from '$lib/api/team';
@@ -36,7 +36,7 @@
   let order = 'desc';
   let total = 0;
   let offset = 0;
-
+  $: breadCrumb = [{ text: 'Home', href: '/' }];
   $: teams = createQuery<Team[], Error>({
     queryKey: [TEAM_QUERY_KEY, page, limit, order],
     queryFn: async () => {
@@ -49,7 +49,10 @@
     refetchOnWindowFocus: true,
     cacheTime: 15000
   });
-
+  function handleBreadCrumb(event: CustomEvent<{ team: Team }>) {
+    let team = event.detail.team;
+    breadCrumb[1] = { text: team.name ?? team.slug, href: '/teams/' + (team.slug ?? '') };
+  }
   export function openModal(modelName: string, meta: any | null = null) {
     let modelSetting: ModalSettings = {
       type: 'component',
@@ -80,7 +83,10 @@
       error occurred
     {:else if $teams.isSuccess}
       {#each $teams.data as team}
-        <TeamCard {team} {openModal} />
+        <TeamCard
+        on:selected={handleBreadCrumb}
+        {team}
+        {openModal} />
       {/each}
     {:else}
       <div class="flex flex-col items-center my-64">
@@ -95,20 +101,22 @@
   </div>
 </div>
 <div class="basis-4/5 mb-8 space-x-4">
-  <nav class="flex justify-between bg-surface-800 px-6 py-2">
-    <div class=""><button class="hover:underline">Home</button></div>
-    <div class="">
-      <form action="" class="flex w-56 border border-surface-200 items-center rounded">
-        <div class="w-4 mx-2">
-          <Icon src={Search} />
+  <nav class="px-6 py-2 bg-surface-100-800-token flex justify-between">
+    <BreadcrumbUser items={breadCrumb} />
+    <form action="" class="">
+      <div class="relative">
+        <input type="text" class="input block h-7 ps-8" placeholder="Search" required />
+        <div class="absolute inset-y-0 start-0 flex items-center pointer-events-none">
+          <div class="w-4 mx-2">
+            <Icon src={Search} />
+          </div>
         </div>
-        <label for="" class="text-sm">Search</label>
-      </form>
-    </div>
+      </div>
+    </form>
   </nav>
   <section class="space-y-4 mt-3">
     <!-- Team view add -->
-    <slot {openModal} />
+    <slot/>
   </section>
   
 </div>

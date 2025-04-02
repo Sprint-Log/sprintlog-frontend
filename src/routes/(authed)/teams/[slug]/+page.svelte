@@ -1,16 +1,18 @@
 <script lang="ts">
+    import type { QueryFunctionContext } from "@tanstack/svelte-query";
+    import  type { Team } from "$lib/types/sprintlog";
+
     import { createQuery } from "@tanstack/svelte-query";
     import { TEAM_DETAIL_QUERY_KEY, TEAM_QUERY_KEY } from "$lib/constants";
-    import  type { Team } from "$lib/types/sprintlog";
     import { page } from "$app/stores";
     import { getTeamBySlug } from "$lib/api/team";
-    import type { QueryFunctionContext } from "@tanstack/svelte-query";
     import { ProgressRadial } from "@skeletonlabs/skeleton";
     import { SubtractAlt } from "@steeze-ui/carbon-icons";
     import { Icon } from "@steeze-ui/svelte-icon";
     import { UserFollow } from "@steeze-ui/carbon-icons";
 
-    export let openModal: CallableFunction;
+    import { modalStore } from '@skeletonlabs/skeleton';
+
     $: currentTeam = createQuery<Team, Error>({
         queryKey: [TEAM_DETAIL_QUERY_KEY , $page.params.slug],
         queryFn: async (context: QueryFunctionContext) => {
@@ -22,6 +24,16 @@
         cacheTime: 15000
     });
     $: memberCount = $currentTeam.data?.members.length;
+
+    function openAddMemberModal() {
+        modalStore.trigger({
+            type: 'component',
+            component: 'teamMemberCard',
+            meta: {
+                team: $currentTeam.data
+            }
+        });
+    }
 </script>
 
 <div class="flex flex-col mt-2 px-4">
@@ -63,14 +75,14 @@
                         </div>
                         <div class="text-sm">
                             <div class="mb-1 font-bold">{member.name}</div>
-                            <div class="text-xs text-gray-500 underline">{member.role}</div>
+                            <div class="text-xs  underline">{member.role}</div>
                         </div>
                         <button class="btn-icon hover:variant-soft w-6">
                             <Icon src={SubtractAlt}/>
                         </button>
                     </div>
                 {/each}
-                <button class="flex items-center gap-2 p-1 no-underline" on:click={()=> openModal('teamMemberCard')} style="text-decoration: none !important;" >
+                <button class="flex items-center gap-2 p-1 no-underline" on:click={()=> openAddMemberModal()} style="text-decoration: none !important;" >
                     <div>
                         <div
                             class="flex-none rounded-full flex justify-center items-center w-10 h-10 m-2 text-lg border-white border border-dashed p-2 text-white "
