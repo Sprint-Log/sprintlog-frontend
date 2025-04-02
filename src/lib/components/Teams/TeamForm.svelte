@@ -1,24 +1,23 @@
 <script lang="ts">
   import type { Project, TeamCreate } from '$lib/types/sprintlog';
-  import type { ModalSettings } from '@skeletonlabs/skeleton';
-
-  import { Icon } from '@steeze-ui/svelte-icon';
-  import { Close } from '@steeze-ui/carbon-icons';
+ 
   import { createMutation } from '@tanstack/svelte-query';
   import { createQuery } from '@tanstack/svelte-query';
   import { useQueryClient } from '@tanstack/svelte-query';
   import { modalStore } from '@skeletonlabs/skeleton';
-  import { PROJECTS_QUERY_KEY, TEAM_DETAIL_QUERY_KEY } from '$lib/constants';
+  import { PROJECTS_QUERY_KEY, TEAM_DETAIL_QUERY_KEY, TEAM_QUERY_KEY } from '$lib/constants';
   import { Toast, toastStore } from '@skeletonlabs/skeleton';
   import { getProjects } from '$lib/api/sprintlog';
   import { createTeam } from '$lib/api/team';
+
+  const client = useQueryClient();
 
   let limit = 20;
   let page = 1;
   let order = 'desc';
   let newTeam = {} as TeamCreate;
+  let errorMessage = "";
 
-  const client = useQueryClient();
 
   $: projects = createQuery<Project[], Error>({
     queryKey: [PROJECTS_QUERY_KEY, page, limit, order],
@@ -32,6 +31,7 @@
     onSuccess: function (data) {
       client.setQueriesData([TEAM_DETAIL_QUERY_KEY, data.id], data);
       modalStore.close();
+      client.invalidateQueries([TEAM_QUERY_KEY]);
     },
     onError: function (err: Error) {
       let errorMessage = err.message;
@@ -41,8 +41,11 @@
 
   async function handleSubmit(event: Event) {
     event.preventDefault();
-
-    if (newTeam.name && newTeam.description) {
+    if(!newTeam.name) {
+      errorMessage = "Team name cannot be empty";
+    }
+    
+    if (newTeam.name) {
       $createTeamMutation.mutate(newTeam);
     }
   }
@@ -74,10 +77,8 @@
       class="input variant-form-material col-span-2 h-24"
     />
   </label>
-  <label for="#id" />
-
+  <p class="text-error-400">{errorMessage}</p>
   <div class="flex justify-between py-2">
-    <button class="text-sm" on:click={() => modalStore.close()}>Cancel</button>
     <button class="btn btn-sm variant-filled-primary" type="submit"> Create </button>
   </div>
 </form>
