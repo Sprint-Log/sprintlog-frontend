@@ -271,6 +271,10 @@ export interface Team {
   updatedAt: string; 
 }
 
+export interface UserName{
+  userName: string;
+}
+
 export interface TeamUpdate {
   name?: null | string;
   description?: null | string;

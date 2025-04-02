@@ -2,10 +2,11 @@ import type {
   TeamCreate,
   Team,
   PaginatedResponse,
-  TeamMember,
+  TeamMember, UserName,
   TeamStatistics
 } from '$lib/types/sprintlog';
 import { authFetch } from './sprintlog';
+
 
 export const getTeams = async (
   currentPage = 1,
@@ -57,3 +58,16 @@ export const modifyMembers = async (teamId: string, members: TeamMember[]): Prom
   const data = (await response.json()) as Team;
   return data;
 };
+
+export const removeMember = async (teamId: string, username: string): Promise<Team> => {
+  let member: UserName = {
+    userName: username
+  };
+  let response = await authFetch(`api/teams/${teamId}/members/remove`, {
+    method: 'POST',
+    body: JSON.stringify(member)
+  });
+  if(!response.ok) throw response;
+  const data = (await response.json()) as Team;
+  return data;
+}

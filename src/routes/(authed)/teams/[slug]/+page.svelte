@@ -96,9 +96,11 @@
               <div class="mb-1 font-bold">{member.name}</div>
               <div class="text-xs underline">{member.role}</div>
             </div>
-            <button class="btn-icon hover:variant-soft w-6">
-              <Icon src={SubtractAlt} />
-            </button>
+                        {#if isTeamAdmin()}
+                <button class="btn-icon hover:variant-soft w-6" on:click={()=> handleDelMember(member.email ?? "")}>
+                  <Icon src={SubtractAlt} />
+                </button>
+                        {/if}
           </div>
         {/each}
         <button
@@ -107,11 +109,11 @@
           style="text-decoration: none !important;"
         >
           <div>
-            <div
+            <button
               class="flex-none rounded-full flex justify-center items-center w-10 h-10 m-2 text-lg border-white border border-dashed p-2 text-white"
             >
-              <Icon src={UserFollow} />
-            </div>
+              <Icon  src={UserFollow} />
+            </button>
           </div>
           <div class="text-white">Add Member</div>
         </button>
