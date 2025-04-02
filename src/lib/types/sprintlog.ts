@@ -261,6 +261,7 @@ export interface TeamMember {
   role: 'ADMIN' | 'MEMBER';
   isOwner?: boolean;
   userId: string;
+  avatarUrl?:string | null;
 }
 
 export interface Team {

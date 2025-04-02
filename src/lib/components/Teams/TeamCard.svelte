@@ -5,12 +5,29 @@
   import { Add } from '@steeze-ui/carbon-icons';
   import { OverflowMenuHorizontal } from '@steeze-ui/carbon-icons';
   import { formatDate } from '$lib/utils';
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
+  import { getProfileFile } from '$lib/api/sprintlog';
 
   export let team: Team;
   export let openModal: CallableFunction;
 
   const dispatch = createEventDispatcher();
+
+  let memberImages: Record<string, string | null> = {};
+
+  onMount(async () => {
+    for (const member of team.members) {
+      if (member.avatarUrl) {
+        try {
+          const blob = await getProfileFile();
+          memberImages[member.userId] = URL.createObjectURL(blob);
+        } catch (err) {
+          console.error('Failed to load profile for', member.userId, err);
+          memberImages[member.userId] = null;
+        }
+      }
+    }
+  });
 </script>
 
 <a
@@ -24,6 +41,7 @@
     >
       {team.name?.charAt(0).toUpperCase()}
     </div>
+
     <span>{team.name}</span>
     <div class="ml-auto px-2">
       <button
@@ -53,7 +71,15 @@
                  hover:z-10 hover:scale-105 transition-transform cursor-pointer"
           title={member.name}
         >
-          {member.name?.charAt(0).toUpperCase()}
+          {#if memberImages[member.userId]}
+            <img
+              src={memberImages[member.userId]}
+              alt="User Profile"
+              class="w-full h-full rounded-full object-cover"
+            />
+          {:else}
+            {member.name?.charAt(0).toUpperCase()}
+          {/if}
         </button>
       {/each}
     </div>

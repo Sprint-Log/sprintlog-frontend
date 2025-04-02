@@ -21,8 +21,6 @@
   let profileImageUrl: string | null = null;
 
   onMount(async () => {
-    console.log("User onmount")
-    console.log(user)
     if (user.avatarUrl) {
       try {
         const fileBlob = await getProfileFile();

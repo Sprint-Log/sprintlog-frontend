@@ -4,11 +4,23 @@
   import { Edit } from '@steeze-ui/carbon-icons';
   import { TrashCan } from '@steeze-ui/carbon-icons';
   import { View } from '@steeze-ui/carbon-icons';
-  import { createEventDispatcher } from 'svelte';
-
-  const dispatch = createEventDispatcher();
+  import { createEventDispatcher, onMount } from 'svelte';
+  import { getProfileFile } from '$lib/api/sprintlog';
   export let user: User;
   export let openModel: CallableFunction;
+  const dispatch = createEventDispatcher();
+  let profileImageUrl: string | null = null;
+
+  onMount(async () => {
+    if (user.avatarUrl) {
+      try {
+        const fileBlob = await getProfileFile();
+        profileImageUrl = URL.createObjectURL(fileBlob);
+      } catch (err) {
+        console.error('Failed to load profile image:', err);
+      }
+    }
+  });
 </script>
 
 <a
@@ -17,12 +29,19 @@
   on:click={() => dispatch('selected', { user: user })}
 >
   <div class="flex">
-    <div
-      class="flex-none rounded-full bg-surface-200 flex justify-center items-center w-10 h-10 m-2 text-black"
-    >
-      {user.name?.charAt(0).toUpperCase()}
-    </div>
-
+    {#if profileImageUrl}
+      <img
+        src={profileImageUrl}
+        alt="User Profile"
+        class="w-10 h-10 m-2 rounded-full object-cover"
+      />
+    {:else}
+      <div
+        class="flex-none rounded-full bg-surface-200 flex justify-center items-center w-10 h-10 m-2 text-black"
+      >
+        {user.name?.charAt(0).toUpperCase()}
+      </div>
+    {/if}
     <div class="flex-1 flex-col justify-center px-2 py-1">
       <div class="flex">
         <span class="me-1">{user.name}</span>
