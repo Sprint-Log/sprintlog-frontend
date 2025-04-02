@@ -54,14 +54,14 @@ export const getProjectsBySLug = async (
   ]);
 
   const response = await authFetch(`api/projects?${params.toString()}`);
-  if (response.ok){
+  if (response.ok) {
     const data = (await response.json()) as Project;
     return data;
   }
   let error = await response.json();
-    if (error.message || error.detail) {
-      throw new Error(error.detail || error.message);
-    } 
+  if (error.message || error.detail) {
+    throw new Error(error.detail || error.message);
+  }
   throw new Error('Error getting project details.');
 };
 export const getUsers = async (
@@ -78,25 +78,25 @@ export const getUsers = async (
     return data;
   }
   let error = await response.json();
-    if (error.message || error.detail) {
-      throw new Error(error.detail || error.message);
-    } 
+  if (error.message || error.detail) {
+    throw new Error(error.detail || error.message);
+  }
   throw new Error('Error listing users.');
 };
 export const createProject = async (project: ProjectCreate): Promise<Project> => {
-    const response = await authFetch(`api/projects/create`, {
-      method: 'POST',
-      body: JSON.stringify(project)
-    });
-    if (response.ok) {
-      const data = (await response.json()) as Project;
-      return data;
-    }
-    let error = await response.json();
-    if (error.message || error.detail) {
-      throw new Error(error.detail || error.message);
-    } 
-    throw new Error('Error creating project.');
+  const response = await authFetch(`api/projects/create`, {
+    method: 'POST',
+    body: JSON.stringify(project)
+  });
+  if (response.ok) {
+    const data = (await response.json()) as Project;
+    return data;
+  }
+  let error = await response.json();
+  if (error.message || error.detail) {
+    throw new Error(error.detail || error.message);
+  }
+  throw new Error('Error creating project.');
 };
 
 export const deleteProject = async (id: string): Promise<{ status: number }> => {
@@ -111,12 +111,12 @@ export const deleteProject = async (id: string): Promise<{ status: number }> => 
 
 export const updateProject = async (project: ProjectUpdate, id: string): Promise<Project> => {
   const response = await authFetch(`api/projects/${id}`, {
-    method: 'PUT', 
-    body: JSON.stringify(project),
-  })
-  const data = (await response.json()) as Project
-  return data
-}
+    method: 'PUT',
+    body: JSON.stringify(project)
+  });
+  const data = (await response.json()) as Project;
+  return data;
+};
 
 export const getBacklogByPrjSlug = async (
   prjSlug: string,
@@ -274,7 +274,7 @@ export const updateUserPassword = async (
     return true;
   }
   let error = await response.json();
- 
+
   if (error.detail) {
     throw new Error(error.detail);
   }
@@ -304,12 +304,11 @@ export const updateUser = async (id: string, user: UserUpdate): Promise<User> =>
     return (await response.json()) as User;
   }
   let error = await response.json();
- 
+
   if (error.detail) {
     throw new Error(error.detail);
   }
   throw new Error('Error updating user password');
-
 };
 
 export const getProjectByUser = async (
@@ -346,7 +345,6 @@ export const getUserById = async (user_id: string): Promise<User> => {
   return data;
 };
 
-
 export const updateProjectStatus = async (project_id: string, status: string): Promise<Project> => {
   const response = await authFetch(`api/projects/status/${project_id}`, {
     method: 'PATCH',
@@ -358,5 +356,24 @@ export const updateProjectStatus = async (project_id: string, status: string): P
   });
   const data = (await response.json()) as Project;
   return data;
+};
+
+export const uploadProfile = async (userId: string, profileImg: File): Promise<User> => {
+  const formData = new FormData();
+  formData.append('file', profileImg);
+  let response = await authFetch(`/api/users/profile`, {
+    method: 'POST',
+    body: formData
+  });
+  if (!response.ok) throw response;
+  const data = (await response.json()) as User;
+  return data;
+};
+
+
+export const getProfileFile = async (): Promise<Blob> => {
+  const response = await authFetch(`/api/users/profile`);
+  if (!response.ok) throw response;
+  const data = await response.blob();
+  return data;
 }
- 

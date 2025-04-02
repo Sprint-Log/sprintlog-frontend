@@ -208,6 +208,7 @@ export interface User {
   teams?: UserTeam[];
   address?: string;
   position?:string;
+  avatarUrl?:string;
   bankAccounts?:BankAccount[];
 }
 
@@ -304,4 +305,10 @@ export interface TeamStatistics{
   inProgressTaskCount: number;
   idleTaskCount: number;
   completedTaskCount: number;
+}
+
+
+export interface UserProfileUpdate{
+  userId: string;
+  file: File;
 }
