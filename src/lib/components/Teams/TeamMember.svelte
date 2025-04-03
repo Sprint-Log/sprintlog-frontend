@@ -38,7 +38,7 @@
         timeout: 1000
       });
       client.invalidateQueries([TEAM_QUERY_KEY]);
-      client.invalidateQueries([TEAM_DETAIL_QUERY_KEY, team.slug], {exact: true});
+      client.invalidateQueries([TEAM_DETAIL_QUERY_KEY, team.slug], { exact: true });
       modalStore.close();
     },
     onError: (error: any) => {
@@ -68,20 +68,16 @@
     await updateTeamMembers(memberSelections);
   }
 
- 
-
-async function updateTeamMembers(
-  selections: Record<string, { checked: boolean; role: string }> = {}
-) {
-  teamMembers = Object.entries(selections)
-    .filter(([_, data]) => data.checked)
-    .map(([userId, data]) => ({
-      userId,
-      role: (data.role || "MEMBER") as "MEMBER" | "ADMIN"
-    }));
-
-}
-
+  async function updateTeamMembers(
+    selections: Record<string, { checked: boolean; role: string }> = {}
+  ) {
+    teamMembers = Object.entries(selections)
+      .filter(([_, data]) => data.checked)
+      .map(([userId, data]) => ({
+        userId,
+        role: (data.role || 'MEMBER') as 'MEMBER' | 'ADMIN'
+      }));
+  }
 
   function getMemberData(userId: string) {
     return team.members.find((member) => member.userId === userId);
@@ -97,25 +93,30 @@ async function updateTeamMembers(
     await updateTeamMembers(memberSelections);
   }
 
-  let searchTerm = "";
-  $: users = $usersQuery.data?.filter(user => user.name?.toLowerCase().includes(searchTerm.toLowerCase())) || [];
+  let searchTerm = '';
+  $: users =
+    $usersQuery.data?.filter((user) =>
+      user.name?.toLowerCase().includes(searchTerm.toLowerCase())
+    ) || [];
 
   initSelections();
 
   let userImages: Record<string, string | null> = {};
-  onMount(async () => {
+
+  $: if (users) {
     for (const user of users) {
       if (user.avatarUrl) {
         try {
-          const blob = await getProfileFile();
-          userImages[user.id] = URL.createObjectURL(blob);
+          getProfileFile().then((blob) => {
+            userImages[user.id] = URL.createObjectURL(blob);
+          });
         } catch (err) {
           console.error('Failed to load profile for', user.id, err);
           userImages[user.id] = null;
         }
       }
     }
-  });
+  }
 </script>
 
 <form
@@ -129,7 +130,8 @@ async function updateTeamMembers(
     <form action="" class="w-56">
       <div class="flex items-center gap-2 border border-surface-300 rounded-xl px-2">
         <Icon src={Search} size="32" />
-        <input bind:value={searchTerm}
+        <input
+          bind:value={searchTerm}
           type="text"
           placeholder="Search"
           class="bg-transparent text-surface-400 text-sm outline-none w-full border-0 focus:ring-0"
@@ -146,15 +148,15 @@ async function updateTeamMembers(
           <span
             class="rounded-full w-8 h-8 bg-surface-200 flex items-center justify-center text-black font-semibold shrink-0"
           >
-          {#if userImages[user.id]}
-            <img
-              src={userImages[user.id]}
-              alt={user.name+" profile"}
-              class="w-full h-full rounded-full object-cover"
-            />
-          {:else}
-            {user.name?.charAt(0).toUpperCase()}
-          {/if}
+            {#if userImages[user.id]}
+              <img
+                src={userImages[user.id]}
+                alt={user.name + ' profile'}
+                class="w-full h-full rounded-full object-cover"
+              />
+            {:else}
+              {user.name?.charAt(0).toUpperCase()}
+            {/if}
           </span>
           <p class="truncate w-full">{user.name}</p>
         </div>
