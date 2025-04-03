@@ -6,7 +6,7 @@
   import { getProjectAssigneeBySlug } from '$lib/api/sprintlog';
   import { createEventDispatcher } from 'svelte';
   import { ASSIGNEE_QUERY_KEY } from '$lib/constants';
-  
+
   export let assignee: User | undefined;
   export let project_slug;
 
@@ -38,10 +38,11 @@
       class="bg-surface-100-800-token px-1 bg-transparent text-xs font-mono top-0"
       bind:value={assignee}
       on:change={handleAssigneeChange}
-    />
-    {#each $assignees.data as assigne}
-      <option value={assigne}>{assigne.name}</option>
-    {/each}
+    >
+      {#each $assignees.data as assigne}
+        <option value={assigne}>{assigne.name}</option>
+      {/each}
+    </select>
   {:else}
     You haven't assigned any team!
   {/if}

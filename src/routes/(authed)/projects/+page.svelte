@@ -6,7 +6,7 @@
   import { Icon } from '@steeze-ui/svelte-icon';
   import { createQuery } from '@tanstack/svelte-query';
   import { useQueryClient } from '@tanstack/svelte-query';
-  import { Modal, modalStore, ProgressRadial } from '@skeletonlabs/skeleton';
+  import { Modal, modalStore, ProgressRadial, Toast } from '@skeletonlabs/skeleton';
   import { PROJECTS_QUERY_KEY } from '$lib/constants';
   import { deleteProject, getProjects } from '$lib/api/sprintlog';
   import { goto } from '$app/navigation';
@@ -77,7 +77,7 @@
     });
   }
 </script>
-
+<Toast/>
 <Modal components={{ form: { ref: ProjectForm } }} />
 <section class="p-8 flex-grow overflow-y-auto max-h-screen">
   <div class="flex items-center mb-8 space-x-4">
