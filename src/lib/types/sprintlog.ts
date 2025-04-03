@@ -213,8 +213,8 @@ export interface User {
   isSuperuser: boolean;
   isActive: boolean;
   isVerified: boolean;
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
   teams?: UserTeam[];
   address?: string;
   position?:string;

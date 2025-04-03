@@ -184,8 +184,6 @@
               on:click|preventDefault|stopPropagation={() => {
                 memberId = member.id
                 memberRole = member.role
-                console.log(member.role)
-                console.log(member.id)
               }}
               class="text-xs underline">
                 {member.role}

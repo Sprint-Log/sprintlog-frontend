@@ -223,6 +223,6 @@
   <div class="arrow variant-filled-secondary" />
 </div>
 <div class="card p-4" data-popup="memberPopup">
-  <Members bind:assignee={user} />
+  <Members bind:project_slug bind:assignee={user} />
   <div class="arrow variant-filled-secondary" />
 </div>

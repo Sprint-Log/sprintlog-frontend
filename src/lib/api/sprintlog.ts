@@ -12,7 +12,7 @@ import type {
   ActiveProjectPagination,
   PaginatedResponse
 } from '$lib/types/sprintlog';
-import { error } from '@sveltejs/kit';
+
 import { PUBLIC_API_URL } from '$env/static/public';
 export async function authFetch(path: string, settings?: RequestInit): Promise<Response> {
   settings = settings || {};
@@ -30,7 +30,7 @@ export const getProjects = async (
     `api/projects?currentPage=${currentPage}&pageSize=${pageSize}&sortOrder=${sortOrder}`
   );
   if (!response.ok) throw response;
-  return (await response.json()) as  PaginatedResponse<Project>;
+  return (await response.json()) as PaginatedResponse<Project>;
 };
 export const getLiveToken = async (roomId: string): Promise<Token> => {
   const response = await authFetch(`api/live/rooms/${roomId}`);
@@ -369,10 +369,17 @@ export const uploadProfile = async (userId: string, profileImg: File): Promise<U
   return data;
 };
 
-
 export const getProfileFile = async (): Promise<Blob> => {
   const response = await authFetch(`/api/users/profile`);
   if (!response.ok) throw response;
   const data = await response.blob();
   return data;
-}
+};
+
+export const getProjectAssigneeBySlug = async (slug: string): Promise<PaginatedResponse<User>> => {
+  const response = await authFetch(`api/projects/assignees/${slug}`);
+  if (!response.ok) throw response;
+  const data = (await response.json()) as PaginatedResponse<User>;
+
+  return data;
+};
