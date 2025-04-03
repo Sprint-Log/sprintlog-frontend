@@ -18,11 +18,17 @@
   let page = 1;
   let order = 'desc';
   let client = useQueryClient();
+  $: totalProjects = 0;
 
   let intervalMs = 15000;
   $: projects = createQuery<Project[], Error>({
     queryKey: [PROJECTS_QUERY_KEY, page, limit, order],
-    queryFn: () => getProjects(page, limit, order),
+    queryFn: async() => {
+      let paginatedProject = await getProjects(page, limit, order);
+      let projects = paginatedProject.items;
+      totalProjects = paginatedProject.total;
+      return projects;
+    },
     refetchOnMount: 'always',
     refetchOnWindowFocus: true,
     refetchInterval: intervalMs,

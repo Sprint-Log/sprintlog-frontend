@@ -9,7 +9,8 @@ import type {
   Token,
   ProjectCreate,
   ProjectUpdate,
-  ActiveProjectPagination
+  ActiveProjectPagination,
+  PaginatedResponse
 } from '$lib/types/sprintlog';
 import { error } from '@sveltejs/kit';
 import { PUBLIC_API_URL } from '$env/static/public';
@@ -24,14 +25,12 @@ export const getProjects = async (
   currentPage = 1,
   pageSize = 200,
   sortOrder = 'asc'
-): Promise<Project[]> => {
+): Promise<PaginatedResponse<Project>> => {
   const response = await authFetch(
     `api/projects?currentPage=${currentPage}&pageSize=${pageSize}&sortOrder=${sortOrder}`
   );
   if (!response.ok) throw response;
-  const data = (await response.json()) as [] | Project[];
-
-  return data;
+  return (await response.json()) as  PaginatedResponse<Project>;
 };
 export const getLiveToken = async (roomId: string): Promise<Token> => {
   const response = await authFetch(`api/live/rooms/${roomId}`);

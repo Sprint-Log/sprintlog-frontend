@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Project, TeamCreate } from '$lib/types/sprintlog';
- 
+
   import { createMutation } from '@tanstack/svelte-query';
   import { createQuery } from '@tanstack/svelte-query';
   import { useQueryClient } from '@tanstack/svelte-query';
@@ -16,12 +16,16 @@
   let page = 1;
   let order = 'desc';
   let newTeam = {} as TeamCreate;
-  let errorMessage = "";
-
-
+  let errorMessage = '';
+  $: totalProjects = 0;
   $: projects = createQuery<Project[], Error>({
     queryKey: [PROJECTS_QUERY_KEY, page, limit, order],
-    queryFn: () => getProjects(page, limit, order),
+    queryFn: async () => {
+      let paginatedProject = await getProjects(page, limit, order);
+      let projects = paginatedProject.items;
+      totalProjects = paginatedProject.total;
+      return projects;
+    },
     refetchOnWindowFocus: true,
     cacheTime: 15000
   });
@@ -41,10 +45,10 @@
 
   async function handleSubmit(event: Event) {
     event.preventDefault();
-    if(!newTeam.name) {
-      errorMessage = "Team name cannot be empty";
+    if (!newTeam.name) {
+      errorMessage = 'Team name cannot be empty';
     }
-    
+
     if (newTeam.name) {
       $createTeamMutation.mutate(newTeam);
     }
