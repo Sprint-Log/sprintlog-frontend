@@ -10,7 +10,6 @@
 	import { ProjectStatus } from '$lib/types/sprintlog';
 
 	let is_update = false;
-	
 	let projectId = "";
 
 	let project: ProjectCreate = {
@@ -20,12 +19,12 @@
 		description: '',
 		documents: [],
 		labels: [],
-		start_date: new Date().toISOString().split('T')[0],
-		end_date: new Date().toISOString().split('T')[0],
-		sprint_weeks: 2,
-		sprint_amount: 2,
-		sprint_checkup_day: 3,
-		repo_urls: ['']
+		startDate: new Date().toISOString().split('T')[0],
+		endDate: new Date().toISOString().split('T')[0],
+		sprintWeeks: 2,
+		sprintAmount: 2,
+		sprintCheckupDay: 3,
+		repoUrls: ['']
 	};
 
 	if ($modalStore[0].meta) {
@@ -93,11 +92,11 @@
 	<div class="grid grid-cols-2 gap-4">
 		<label class="label">
 			<span>Start Date</span>
-			<input class="input variant-form-material" type="date" bind:value={project.start_date} />
+			<input class="input variant-form-material" type="date" bind:value={project.startDate} />
 		</label>
 		<label class="label">
 			<span>End Date</span>
-			<input class="input variant-form-material" type="date" bind:value={project.end_date} />
+			<input class="input variant-form-material" type="date" bind:value={project.endDate} />
 		</label>
 	</div>
 
@@ -108,7 +107,7 @@
 				class="input variant-form-material"
 				type="number"
 				placeholder="Enter Sprint Weeks"
-				bind:value={project.sprint_weeks}
+				bind:value={project.sprintWeeks}
 			/>
 		</label>
 		<label class="label">
@@ -117,7 +116,7 @@
 				class="input variant-form-material"
 				type="number"
 				placeholder="Enter Sprint Amount"
-				bind:value={project.sprint_amount}
+				bind:value={project.sprintAmount}
 			/>
 		</label>
 	</div>
@@ -128,7 +127,7 @@
 				class="input variant-form-material"
 				type="number"
 				placeholder="Enter Sprint Checkup day"
-				bind:value={project.sprint_checkup_day}
+				bind:value={project.sprintCheckupDay}
 			/>
 		</label>
 		<label class="label">
@@ -146,15 +145,15 @@
 	<label class="label">
 		<span>Repository URLs</span>
 		<div class="grid grid-cols-2 gap-4">
-			{#each project.repo_urls as url, i}
+			{#each project.repoUrls as url, i}
 				<div class="input-group input-group-divider grid-cols-[1fr_auto] variant-form-material">
 					<input type="text" placeholder="Enter URL" bind:value={url} />
 					<button
 						class="variant-filled-error btn-icon rounded-none"
 						type="button"
 						on:click={() => {
-							const urls = project.repo_urls;
-							project.repo_urls = [...urls.slice(0, i), ...urls.slice(i + 1)];
+							const urls = project.repoUrls;
+							project.repoUrls = [...urls.slice(0, i), ...urls.slice(i + 1)];
 						}}
 					>
 						<Icon src={XMark} />
@@ -162,7 +161,7 @@
 				</div>
 			{/each}
 			<button
-				on:click={() => (project.repo_urls = [...project.repo_urls, ''])}
+				on:click={() => (project.repoUrls = [...project.repoUrls, ''])}
 				type="button"
 				class="btn variant-outline-surface"><Icon src={Add} size="20" /></button
 			>

@@ -18,6 +18,7 @@
   let newTeam = {} as TeamCreate;
   let errorMessage = '';
   $: totalProjects = 0;
+  
   $: projects = createQuery<Project[], Error>({
     queryKey: [PROJECTS_QUERY_KEY, page, limit, order],
     queryFn: async () => {

@@ -123,7 +123,7 @@
   </div>
 
   <footer class="p-4 flex justify-between items-center text-sm text-gray-500">
-    <span>Started On {project.start_date}</span>
-    <span>Due On {project.end_date}</span>
+    <span>Started On {project.startDate}</span>
+    <span>Due On {project.endDate}</span>
   </footer>
 </a>
