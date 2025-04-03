@@ -7,7 +7,7 @@
 
   import { Icon } from '@steeze-ui/svelte-icon';
   import { XMark } from '@steeze-ui/heroicons';
-  import { Add, Close } from '@steeze-ui/carbon-icons';
+  import { Add, Close, Search } from '@steeze-ui/carbon-icons';
 
   import { createQuery, useQueryClient, createMutation } from '@tanstack/svelte-query';
   import { modalStore, toastStore } from '@skeletonlabs/skeleton';
@@ -18,7 +18,7 @@
   let order = 'desc';
   let total = 0;
   let offset = 0;
-  $: teams = createQuery<Team[], Error>({
+  $: teamsQuery = createQuery<Team[], Error>({
     queryKey: [TEAM_QUERY_KEY, page, limit, order],
     queryFn: async () => {
       let response = await getTeams(page, limit, order);
@@ -89,13 +89,14 @@
       $projectMutation.mutate();
     }
   }
-  function handleTeamChange(event: Event) {
-    const selectedId = (event.target as HTMLSelectElement).value;
-    if (project.teams?.some((team) => team.id == selectedId)) {
+  function handleTeamChange(id: string) {
+    if (project.teams?.some((team) => team.id == id)) {
       // project.teams = project.teams.filter(o => o != option);
     } else {
-      project.teams = [...(project.teams || []), { id: selectedId }];
-      project.teamIds = [...(project.teamIds || []), selectedId];
+      project.teams = [...(project.teams || []), { id: id }];
+      project.teamIds = [...(project.teamIds || []), id];
+	//   teams = teams.filter((team)=> team.id != id);
+	//   console.log(teams)
     }
   }
 
@@ -103,6 +104,15 @@
     project.teams = project.teams?.filter((team) => team.id !== id);
   }
   $: project.teamIds = project.teams?.map((team) => team.id);
+
+  let searchTerm: string = "";
+  let teams: Team[]
+
+  $: if(searchTerm == "") {
+	teams = [];
+  } else{
+	teams = $teamsQuery.data?.filter((team) => team.name?.toLowerCase().includes(searchTerm.toLowerCase()) && !project.teams?.some((t) => t.id === team.id)) || [];
+  }
 </script>
 
  
@@ -225,12 +235,38 @@
 
   <label class="label">
     <span>Teams</span>
-    <select
+		<div class="border border-surface-300 rounded-md px-2 flex flex-col">
+			<div class="flex items-center gap-2 p-2">
+				<input bind:value={searchTerm}
+				type="text"
+				placeholder="Search"
+				class="bg-transparent text-surface-400 text-sm outline-none w-full border-0 focus:ring-0"
+				/>
+				<Icon src={Search} size="24" />
+			</div>
+			{#if $teamsQuery.isLoading}
+				<div class="p-3 text-left">
+					Loading
+				</div>
+			{:else if $teamsQuery.isError}
+				<div class="p-3 text-left">
+					Error has occurred
+				</div>
+			{:else if $teamsQuery.isSuccess}
+				{#each teams as team, i}
+					<!-- <option value={team.id}>{team.name}</option> -->
+					<button class="p-3 text-left {i !== teams.length - 1 ? 'border-b' : ''} border-gray-500" on:click|preventDefault|stopPropagation={() => handleTeamChange(team.id)}>
+						{team.name}
+					</button>
+				{/each}
+			{/if}
+		</div>
+    <!-- <select
       on:change={(event) => {
         handleTeamChange(event);
         console.log(project);
       }}
-      class="input variant-form-material h-10 w-full text-xs"
+      class="h-10 w-full"
     >
       {#if $teams.isLoading}
         <option value="">Loading</option>
@@ -241,13 +277,13 @@
           <option value={team.id}>{team.name}</option>
         {/each}
       {/if}
-    </select>
+    </select> -->
   </label>
   <div class="flex flex-wrap gap-2">
     {#each project.teams ?? [] as team}
       <div class=" border rounded-md flex justify-between p-2 gap-2">
-        <div>{$teams.data?.find((t) => t.id == team.id)?.name}</div>
-        <button on:click={() => handleTeamRemove(team.id)} class="w-5">
+        <div>{$teamsQuery.data?.find((t) => t.id == team.id)?.name}</div>
+        <button on:click|preventDefault={() => handleTeamRemove(team.id)} class="w-5">
           <Icon src={Close} />
         </button>
       </div>
