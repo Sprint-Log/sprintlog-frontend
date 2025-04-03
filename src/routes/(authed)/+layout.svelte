@@ -12,15 +12,15 @@
   import { writable } from 'svelte/store';
   import { page } from '$app/stores';
   import { browser } from '$app/environment';
-  import { LightSwitch } from '@skeletonlabs/skeleton';
+  import { modalStore, LightSwitch, storePopup } from '@skeletonlabs/skeleton';
   import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
-  import { storePopup } from '@skeletonlabs/skeleton';
   import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
-  import { invalidateAll } from '$app/navigation';
-  import { modalStore } from '@skeletonlabs/skeleton';
+  import { goto, invalidateAll } from '$app/navigation';
+  import { logout } from '$lib/api/auth';
 
-  storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
+  export let data;
   const regionLead = 'flex justify-center items-center';
+  storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
   let delForm: HTMLFormElement | null = null;
   const queryClient = new QueryClient({
@@ -39,7 +39,21 @@
   });
   let activeRail = writable<string>();
 
-  export let data;
+  async function handleLogout(e: Event) {
+    e.preventDefault();
+
+    modalStore.trigger({
+      type: 'confirm',
+      title: 'Please Confirm',
+      body: 'Are you sure you want to logout?',
+      response: async (confirmed: boolean) => {
+        if (confirmed) {
+          await logout();
+          goto('/login');
+        }
+      }
+    });
+  }
 </script>
 
 <QueryClientProvider client={queryClient}>
@@ -103,26 +117,7 @@
         <svelte:fragment slot="trail">
           <div class="flex flex-col items-center space-y-6 mb-6">
             <LightSwitch />
-            <form
-              bind:this={delForm}
-              method="POST"
-              action="/?/logout"
-              on:submit={(e) => {
-                e.preventDefault();
-                modalStore.trigger({
-                  type: 'confirm',
-
-                  title: 'Please Confirm',
-                  body: 'Are you sure to logout?',
-
-                  response: (confirmed) => {
-                    if (confirmed && delForm) {
-                      delForm.submit();
-                    } 
-                  }
-                });
-              }}
-            >
+            <form bind:this={delForm} method="POST" action="" on:submit={handleLogout}>
               <button class="btn-icon" type="submit">
                 <Icon src={Logout} size="28" />
               </button>

@@ -75,4 +75,23 @@ const createUser = async (email: string, password: string): Promise<any> => {
     });
 };
 
-export { loginUser, getCurrentUser, createUser };
+
+const logout = async(): Promise<any> => {
+ 
+  fetch(`${PUBLIC_API_URL}/api/access/logout`, {
+    method: 'POST',
+    credentials: 'include',
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      throw error;
+    });
+};
+
+export { loginUser, getCurrentUser, createUser, logout };

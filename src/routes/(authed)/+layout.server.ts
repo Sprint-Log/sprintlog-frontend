@@ -16,7 +16,7 @@ export const load = (async ({ cookies, depends }) => {
   } catch (err: any) {
     const status = err.status;
     if (status === 401) {
-      cookies.delete('token');
+      cookies.delete('token', {path: '/'});
       throw redirect(303, '/login');
     }
     throw error(status, 'Something went wrong');
