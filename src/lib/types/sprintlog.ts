@@ -154,7 +154,15 @@ export type Project = {
   updatedAt: Date;
   status: ProjectStatus;
   pluginMeta?: Record<string, any>;
+  teams?: ProjectTeam[];
 };
+
+export type ProjectTeam = {
+  id: string;
+  name?: string;
+  description?: string;
+}
+
 export type ProjectCreate = {
   slug: string;
   name: string;
@@ -170,7 +178,10 @@ export type ProjectCreate = {
   repoUrls: string[];
   ownerId?: string | null;
   status?: ProjectStatus;
+  teams?: ProjectTeam[];
+  teamIds?: string[];
 };
+
 
 export type ProjectUpdate = Partial<ProjectCreate>;
 

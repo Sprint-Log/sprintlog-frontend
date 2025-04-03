@@ -9,6 +9,8 @@
   import { Search } from '@steeze-ui/carbon-icons';
   import { createQuery, useQueryClient, createMutation } from '@tanstack/svelte-query';
   import { modalStore, toastStore } from '@skeletonlabs/skeleton';
+  import { onMount } from 'svelte';
+  import { getProfileFile } from '$lib/api/sprintlog';
 
   const client = useQueryClient();
   const team: Team = $modalStore[0].meta.team;
@@ -99,6 +101,21 @@ async function updateTeamMembers(
   $: users = $usersQuery.data?.filter(user => user.name?.toLowerCase().includes(searchTerm.toLowerCase())) || [];
 
   initSelections();
+
+  let userImages: Record<string, string | null> = {};
+  onMount(async () => {
+    for (const user of users) {
+      if (user.avatarUrl) {
+        try {
+          const blob = await getProfileFile();
+          userImages[user.id] = URL.createObjectURL(blob);
+        } catch (err) {
+          console.error('Failed to load profile for', user.id, err);
+          userImages[user.id] = null;
+        }
+      }
+    }
+  });
 </script>
 
 <form
@@ -129,7 +146,15 @@ async function updateTeamMembers(
           <span
             class="rounded-full w-8 h-8 bg-surface-200 flex items-center justify-center text-black font-semibold shrink-0"
           >
+          {#if userImages[user.id]}
+            <img
+              src={userImages[user.id]}
+              alt={user.name+" profile"}
+              class="w-full h-full rounded-full object-cover"
+            />
+          {:else}
             {user.name?.charAt(0).toUpperCase()}
+          {/if}
           </span>
           <p class="truncate w-full">{user.name}</p>
         </div>

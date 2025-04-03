@@ -65,7 +65,7 @@
     let modal: ModalSettings = {
       type: 'component',
       component: 'form',
-      meta: { project, project_id: project.id }
+      meta: { project }
     };
     modalStore.trigger(modal);
   }

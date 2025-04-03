@@ -1,13 +1,36 @@
 <script lang="ts">
 	import { createProject, updateProject } from '$lib/api/sprintlog';
-	import type { ProjectCreate } from '$lib/types/sprintlog';
+	import type { ProjectCreate, ProjectTeam } from '$lib/types/sprintlog';
 	import { Icon } from '@steeze-ui/svelte-icon';
 	import { XMark } from '@steeze-ui/heroicons';
-	import { useQueryClient, createMutation } from '@tanstack/svelte-query';
+	import { useQueryClient, createMutation, isError } from '@tanstack/svelte-query';
 	import { Add } from '@steeze-ui/carbon-icons';
-	import { Toast, modalStore, toastStore } from '@skeletonlabs/skeleton';
+	import { Toast, filter, modalStore, toastStore } from '@skeletonlabs/skeleton';
 	import { PROJECTS_QUERY_KEY } from '$lib/constants';
 	import { ProjectStatus } from '$lib/types/sprintlog';
+	import { createQuery } from '@tanstack/svelte-query';
+	import type { Team } from '$lib/types/sprintlog';
+	import { TEAM_QUERY_KEY } from '$lib/constants';
+	import { getTeams } from '$lib/api/team';
+	import { Close } from '@steeze-ui/carbon-icons';
+
+	let limit = 20;
+	let page = 1;
+	let order = 'desc';
+	let total = 0;
+	let offset = 0;
+	$: teams = createQuery<Team[], Error>({
+		queryKey: [TEAM_QUERY_KEY, page, limit, order],
+		queryFn: async () => {
+		let response = await getTeams(page, limit, order);
+		total = response.total;
+		offset = response.offset;
+		return response.items;
+		},
+		refetchOnMount: true,
+		refetchOnWindowFocus: true,
+		cacheTime: 15000
+	});
 
 	let is_update = false;
 	let projectId = "";
@@ -24,19 +47,21 @@
 		sprintWeeks: 2,
 		sprintAmount: 2,
 		sprintCheckupDay: 3,
-		repoUrls: ['']
+		repoUrls: [''],
+		teams: [],
+		teamIds: [],
 	};
 
 	if ($modalStore[0].meta) {
 		project = $modalStore[0].meta.project;
 		is_update = true;
-		projectId = $modalStore[0].meta.project_id;
+		projectId = $modalStore[0].meta.project.id;
 	}
 
 	$: project.slug = project.name.trim().toLowerCase().replace(/\s+/g, '_');
 	const client = useQueryClient();
 
-	const projectMutation = createMutation(
+	$: projectMutation = createMutation(
 		{
 			mutationFn: async() => (is_update ? updateProject(project, projectId) : createProject(project)),
 			onSuccess: function (data) {
@@ -59,6 +84,20 @@
 			$projectMutation.mutate();
 		}
 	}
+	function handleTeamChange(event: Event) {
+		const selectedId = (event.target as HTMLSelectElement).value;
+		if (project.teams?.some(team => team.id == selectedId)){
+			// project.teams = project.teams.filter(o => o != option);
+		} else {
+			project.teams = [...(project.teams || []), {id: selectedId}];
+			project.teamIds = [...(project.teamIds || []), selectedId];
+		}
+	}
+
+	function handleTeamRemove(id: string) {
+		project.teams = project.teams?.filter(team => team.id !== id);
+	}
+	$: project.teamIds = project.teams?.map(team => team.id);
 </script>
 
 <Toast />
@@ -181,6 +220,43 @@
 			bind:value={project.description}
 		/>
 	</label>
+
+	<label class="label">
+		<span>Teams</span>
+		<select
+			
+			on:change={(event) => {
+				handleTeamChange(event);
+				console.log(project);
+			}}
+			class="input variant-form-material h-10 w-full text-xs"
+		>
+			{#if $teams.isLoading}
+				<option value="">Loading</option>
+			{:else if $teams.isError}
+				<option value="">Error has occurred</option>
+
+			{:else if $teams.isSuccess}
+				{#each $teams.data as team}
+					<option value={team.id}>{team.name}</option>
+				{/each}
+			{/if}
+		</select>
+	</label>
+	<div class="flex flex-wrap gap-2">
+		{#each project.teams ?? [] as team}
+			<div class=" border rounded-md flex justify-between p-2 gap-2">
+				<div>{$teams.data?.find(t => t.id == team.id)?.name}</div>
+				<button
+					on:click={() => handleTeamRemove(team.id) }
+					class=w-5
+				>
+					<Icon src={Close}/>
+				</button>
+			</div>
+		{/each}
+	</div>
+
 	<div class="text-right pt-4">
 		<button class="btn variant-filled-primary" type="submit"> {is_update ? "Update" : "Create"}</button>
 	</div>

@@ -201,13 +201,13 @@
             <div class="flex justify-end">
                 <button
                   type="button"
-                  class="btn-sm w-16 rounded {toggleAdminBtn ? active_btn : unactive_btn}"
+                  class="btn-sm w-18 rounded {toggleAdminBtn ? active_btn : unactive_btn}"
                   value="ADMIN"
                   on:click={handleUserType}>Admin</button
                 >
                 <button
                   type="button"
-                  class="btn-sm w-16 rounded {toggleAdminBtn ? unactive_btn : active_btn}"
+                  class="btn-sm w-18 rounded {toggleAdminBtn ? unactive_btn : active_btn}"
                   value="MEMBER"
                   on:click={handleUserType}>Member</button
                 >
