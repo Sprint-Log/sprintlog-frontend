@@ -73,15 +73,13 @@
     </div>
 
     <div class="flex flex-col items-end gap-2 ml-5">
-      {#if !fromTeam}
       <button
-        class="btn-icon hover:variant-soft"
+        class="btn-icon hover:variant-soft {fromTeam ? "hidden" : ""}"
         use:popup={popupClick}
         on:click|preventDefault|stopPropagation
       >
         <Icon src={EllipsisHorizontal} />
       </button>  
-      {/if}
       <button
         class="text-xl font-mono tracking-wider cursor-pointer select-none transition duration-300 hover:scale-110 active:scale-95"
         on:click|stopPropagation|preventDefault={() => handleStatusChange('increase')}

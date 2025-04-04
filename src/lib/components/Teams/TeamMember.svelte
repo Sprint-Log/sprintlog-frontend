@@ -11,6 +11,7 @@
   import { modalStore, toastStore } from '@skeletonlabs/skeleton';
   import { onMount } from 'svelte';
   import { getProfileFile } from '$lib/api/sprintlog';
+  import type { QueryFunctionContext } from '@tanstack/svelte-query';
 
   const client = useQueryClient();
   const team: Team = $modalStore[0].meta.team;
@@ -20,10 +21,25 @@
   let limit = 20;
   let order = 'desc';
   let teamMembers = [] as TeamMember[];
+  let searchTerm = "";
+  let searchValue = "";
+  let timer: number | null = null;
+
+  $: {
+		if (searchTerm !== searchValue) {
+			if (timer !== null) {
+				clearTimeout(timer);
+			}
+			timer = window.setTimeout(() => {
+				searchTerm = searchValue;
+			}, 600);
+		}
+	}
+
 
   $: usersQuery = createQuery<User[], Error>({
-    queryKey: [USERS_QUERY_KEY, page, limit, order],
-    queryFn: async () => getUsers(page, limit, order),
+    queryKey: [USERS_QUERY_KEY, page, limit, order, searchTerm],
+    queryFn:  getUsers,
     refetchOnMount: 'always',
     refetchOnWindowFocus: true
   });
@@ -93,11 +109,7 @@
     await updateTeamMembers(memberSelections);
   }
 
-  let searchTerm = '';
-  $: users =
-    $usersQuery.data?.filter((user) =>
-      user.name?.toLowerCase().includes(searchTerm.toLowerCase())
-    ) || [];
+  $: users = $usersQuery.data;
 
   initSelections();
 
@@ -131,7 +143,7 @@
       <div class="flex items-center gap-2 border border-surface-300 rounded-xl px-2">
         <Icon src={Search} size="32" />
         <input
-          bind:value={searchTerm}
+          bind:value={searchValue}
           type="text"
           placeholder="Search"
           class="bg-transparent text-surface-400 text-sm outline-none w-full border-0 focus:ring-0"

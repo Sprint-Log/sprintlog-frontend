@@ -35,7 +35,7 @@
   $: breadCrumb = [{ text: 'Home', href: '/' }];
   $: users = createQuery<User[], Error>({
     queryKey: [USERS_QUERY_KEY, page, limit, order],
-    queryFn: () => getUsers(page, limit, order),
+    queryFn: getUsers,
     refetchOnMount: 'always',
     refetchOnWindowFocus: true,
     refetchInterval: intervalMs

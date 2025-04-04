@@ -14,6 +14,7 @@ import type {
 } from '$lib/types/sprintlog';
 
 import { PUBLIC_API_URL } from '$env/static/public';
+import type { QueryFunctionContext } from '@tanstack/svelte-query';
 export async function authFetch(path: string, settings?: RequestInit): Promise<Response> {
   settings = settings || {};
 
@@ -64,13 +65,18 @@ export const getProjectsBySLug = async (
   throw new Error('Error getting project details.');
 };
 export const getUsers = async (
+  context: QueryFunctionContext,
   currentPage = 1,
   pageSize = 20,
-  sortOrder = 'asc'
+  sortOrder = 'asc',
+  searchTerm = ''
 ): Promise<User[]> => {
-  currentPage = 1;
+  currentPage = (context.queryKey[1] || 1) as number;
+  pageSize = (context.queryKey[2] || 20) as number;
+  sortOrder = (context.queryKey[3] || 'asc') as string;
+  searchTerm = (context.queryKey[4] || '') as string;
   const response = await authFetch(
-    `api/users?currentPage=${currentPage}&pageSize=${pageSize}&sortOrder=${sortOrder}`
+    `api/users?currentPage=${currentPage}&pageSize=${pageSize}&sortOrder=${sortOrder}${searchTerm ? `&searchString=${searchTerm}` : ""}`
   );
   if (response.ok) {
     const data = (await response.json()).items as User[];
