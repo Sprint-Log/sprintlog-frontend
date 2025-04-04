@@ -88,10 +88,10 @@
 <div class="w-full">
   <div class="flex">
     <div
-      class="basis-1/3 px-1 bg-surface-800 border-r h-screen border-surface-200 border-opacity-25"
+      class="basis-1/3 p-4 bg-surface-800 border-r h-screen border-surface-200 border-opacity-25"
     >
       <div class="flex items-center">
-        <h3 class="font-semibold">Users</h3>
+        <h2 class="font-semibold">Users</h2>
         <button
           class="btn-icon hover:variant-soft"
           on:click={() => openModel('createFormComponent')}><Icon src={Add} /></button
