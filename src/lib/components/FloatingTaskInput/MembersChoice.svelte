@@ -1,14 +1,18 @@
 <script lang="ts">
-  import type { User } from '$lib/types/sprintlog';
+  import type { QueryFunctionContext } from '@tanstack/svelte-query';
+  import type { User, Project } from '$lib/types/sprintlog';
 
   import { createQuery } from '@tanstack/svelte-query';
+  import { modalStore } from '@skeletonlabs/skeleton';
 
   import { getProjectAssigneeBySlug } from '$lib/api/sprintlog';
-  import { createEventDispatcher } from 'svelte';
   import { ASSIGNEE_QUERY_KEY } from '$lib/constants';
 
+  import { createEventDispatcher } from 'svelte';
+
   export let assignee: User | undefined;
-  export let project_slug;
+  export let project: Project | undefined;
+  export let project_slug: string | undefined;
 
   $: totalAssignee = 0;
 
@@ -16,9 +20,10 @@
 
   $: assignees = createQuery<User[], Error>({
     enabled: project_slug !== undefined,
-    queryKey: [ASSIGNEE_QUERY_KEY],
-    queryFn: async () => {
-      let paginatedAssignee = await getProjectAssigneeBySlug(project_slug);
+    queryKey: [ASSIGNEE_QUERY_KEY, project_slug],
+    queryFn: async (context: QueryFunctionContext) => {
+      const slug = context.queryKey[1] as string;
+      let paginatedAssignee = await getProjectAssigneeBySlug(slug);
       totalAssignee = paginatedAssignee.total;
       return paginatedAssignee.items;
     },
@@ -29,6 +34,14 @@
   function handleAssigneeChange(event: Event) {
     const selectedAssignee = assignee;
     dispatch('assigneeSelected', selectedAssignee);
+  }
+
+  function openModal() {
+    modalStore.trigger({
+      component: 'AddTeamModal',
+      type: 'component',
+      meta: { project }
+    });
   }
 </script>
 
@@ -44,6 +57,6 @@
       {/each}
     </select>
   {:else}
-    You haven't assigned any team!
+    You haven't assigned any team! <button on:click={openModal}>Add Team</button>
   {/if}
 {/if}

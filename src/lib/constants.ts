@@ -6,6 +6,7 @@ export const ASSIGNEE_QUERY_KEY = "assignee"
 
 export const PROJECTS_QUERY_KEY = "projects"
 export const PROJECT_BY_USER_QUERY_KEY = "projects-by-user"
+export const PROJECT_DETAIL_QUERY_KEY = "project-detail"
 
 export const SPRINTLOGS_QUERY_KEY = "sprintlogs"
 export const SPRINTLOGS_BACKLOG_QUERY_KEY = "sprintlogs-backlog"

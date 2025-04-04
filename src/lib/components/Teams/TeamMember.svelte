@@ -18,7 +18,7 @@
   let memberSelections: Record<string, { checked: boolean; role: string }> = {};
 
   let page = 1;
-  let limit = 20;
+  let limit = 500;
   let order = 'desc';
   let teamMembers = [] as TeamMember[];
   let searchTerm = "";

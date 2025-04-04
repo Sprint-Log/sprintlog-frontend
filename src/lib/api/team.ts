@@ -11,12 +11,12 @@ import { authFetch } from './sprintlog';
 
 export const getTeams = async (
   currentPage = 1,
-  pageSize = 200,
-  sortOrder = 'asc'
+  pageSize = 20,
+  sortOrder = 'asc',
+  searchTerm= '',
 ): Promise<PaginatedResponse<Team>> => {
   const response = await authFetch(
-    `api/teams?currentPage=${currentPage}&pageSize=${pageSize}&sortOrder=${sortOrder}`
-  );
+    `api/teams?currentPage=${currentPage}&pageSize=${pageSize}&sortOrder=${sortOrder}&searchString=${searchTerm}&searchIgnoreCase=true`   );
   if (!response.ok) throw response;
   const data = (await response.json()) as PaginatedResponse<Team>;
   return data;

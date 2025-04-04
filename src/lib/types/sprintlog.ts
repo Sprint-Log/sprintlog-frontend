@@ -143,8 +143,8 @@ export type Project = {
   pin: boolean;
   labels?: string[];
   documents?: string[];
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
   sprintWeeks: number | null;
   sprintAmount: number | null;
   sprintCheckupDay: number | null;
@@ -182,8 +182,7 @@ export type ProjectCreate = {
   teamIds?: string[];
 };
 
-
-export type ProjectUpdate = Partial<ProjectCreate>;
+ 
 
 export type ActiveProject ={
   project_slug:string;

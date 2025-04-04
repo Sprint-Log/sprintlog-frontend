@@ -21,7 +21,7 @@
     target: 'prgPopup',
     placement: 'top'
   };
-  import type { Sprintlog, User } from '$lib/types/sprintlog';
+  import type { Project, Sprintlog, User } from '$lib/types/sprintlog';
   import StatusChoices from './StatusChoices.svelte';
   import SprintChoices from './SprintChoices.svelte';
   import TagsChoices from './TagsChoices.svelte';
@@ -42,6 +42,7 @@
   const dispatch = createEventDispatcher();
 
   export let item: Sprintlog | undefined;
+  export let project: Project | undefined;
   export let project_slug = '';
   export let user: User | undefined;
 
@@ -223,6 +224,6 @@
   <div class="arrow variant-filled-secondary" />
 </div>
 <div class="card p-4" data-popup="memberPopup">
-  <Members bind:project_slug bind:assignee={user} />
+  <Members bind:project bind:project_slug bind:assignee={user} />
   <div class="arrow variant-filled-secondary" />
 </div>

@@ -13,7 +13,7 @@
   import { modalStore, toastStore } from '@skeletonlabs/skeleton';
   import { PROJECTS_QUERY_KEY, TEAM_QUERY_KEY } from '$lib/constants';
 
-  let limit = 20;
+  let limit = 100;
   let page = 1;
   let order = 'desc';
   let total = 0;
@@ -66,11 +66,11 @@
     onSuccess: function (data) {
       client.setQueriesData([PROJECTS_QUERY_KEY, data.id], data);
       client.invalidateQueries({ queryKey: [PROJECTS_QUERY_KEY] });
-	  toastStore.trigger({
-		message: is_update ? 'Successfully update!' : 'Successfully create!',
-		background: 'variant-filled-success',
-		timeout: 1500
-	  })
+      toastStore.trigger({
+        message: is_update ? 'Successfully update!' : 'Successfully create!',
+        background: 'variant-filled-success',
+        timeout: 1500
+      });
       modalStore.close();
     },
     onError: function (err: Error) {
@@ -95,8 +95,8 @@
     } else {
       project.teams = [...(project.teams || []), { id: id }];
       project.teamIds = [...(project.teamIds || []), id];
-	//   teams = teams.filter((team)=> team.id != id);
-	//   console.log(teams)
+      //   teams = teams.filter((team)=> team.id != id);
+      //   console.log(teams)
     }
   }
 
@@ -105,17 +105,21 @@
   }
   $: project.teamIds = project.teams?.map((team) => team.id);
 
-  let searchTerm: string = "";
-  let teams: Team[]
+  let searchTerm: string = '';
+  let teams: Team[];
 
-  $: if(searchTerm == "") {
-	teams = [];
-  } else{
-	teams = $teamsQuery.data?.filter((team) => team.name?.toLowerCase().includes(searchTerm.toLowerCase()) && !project.teams?.some((t) => t.id === team.id)) || [];
+  $: if (searchTerm == '') {
+    teams = [];
+  } else {
+    teams =
+      $teamsQuery.data?.filter(
+        (team) =>
+          team.name?.toLowerCase().includes(searchTerm.toLowerCase()) &&
+          !project.teams?.some((t) => t.id === team.id)
+      ) || [];
   }
 </script>
 
- 
 <form
   on:submit|preventDefault={onProjectCreate}
   class="card bg-surface-100 p-6 rounded-md space-y-4 max-w-3xl overflow-y-scroll max-h-[46rem]"
@@ -235,32 +239,32 @@
 
   <label class="label">
     <span>Teams</span>
-		<div class="border border-surface-300 rounded-md px-2 flex flex-col">
-			<div class="flex items-center gap-2 p-2">
-				<input bind:value={searchTerm}
-				type="text"
-				placeholder="Search"
-				class="bg-transparent text-surface-400 text-sm outline-none w-full border-0 focus:ring-0"
-				/>
-				<Icon src={Search} size="24" />
-			</div>
-			{#if $teamsQuery.isLoading}
-				<div class="p-3 text-left">
-					Loading
-				</div>
-			{:else if $teamsQuery.isError}
-				<div class="p-3 text-left">
-					Error has occurred
-				</div>
-			{:else if $teamsQuery.isSuccess}
-				{#each teams as team, i}
-					<!-- <option value={team.id}>{team.name}</option> -->
-					<button class="p-3 text-left {i !== teams.length - 1 ? 'border-b' : ''} border-gray-500" on:click|preventDefault|stopPropagation={() => handleTeamChange(team.id)}>
-						{team.name}
-					</button>
-				{/each}
-			{/if}
-		</div>
+    <div class="border border-surface-300 rounded-md px-2 flex flex-col">
+      <div class="flex items-center gap-2 p-2">
+        <input
+          bind:value={searchTerm}
+          type="text"
+          placeholder="Search"
+          class="bg-transparent text-surface-400 text-sm outline-none w-full border-0 focus:ring-0"
+        />
+        <Icon src={Search} size="24" />
+      </div>
+      {#if $teamsQuery.isLoading}
+        <div class="p-3 text-left">Loading</div>
+      {:else if $teamsQuery.isError}
+        <div class="p-3 text-left">Error has occurred</div>
+      {:else if $teamsQuery.isSuccess}
+        {#each teams as team, i}
+          <!-- <option value={team.id}>{team.name}</option> -->
+          <button
+            class="p-3 text-left {i !== teams.length - 1 ? 'border-b' : ''} border-gray-500"
+            on:click|preventDefault|stopPropagation={() => handleTeamChange(team.id)}
+          >
+            {team.name}
+          </button>
+        {/each}
+      {/if}
+    </div>
     <!-- <select
       on:change={(event) => {
         handleTeamChange(event);

@@ -1,6 +1,7 @@
 <script lang="ts">
-  import type { Sprintlog, ProjectItems, SprintlogPagination } from '$lib/types/sprintlog';
+  import type { Sprintlog, ProjectItems, SprintlogPagination, Project } from '$lib/types/sprintlog';
   import type { PageData } from '../../../sprintlogs/project/[slug]/$types';
+  import type { QueryFunctionContext} from '@tanstack/svelte-query';
 
   import FloatingTask from '$lib/components/FloatingTaskInput/FloatingTaskInput.svelte';
   import TaskBox from '$lib/components/Sprintlog/TaskListBox.svelte';
@@ -10,9 +11,9 @@
   import Breadcrumb from '$lib/components/Breadcrumb.svelte';
 
   import { createQuery } from '@tanstack/svelte-query';
-  import { getBacklogByPrjSlug, getTaskByPrjSlug } from '$lib/api/sprintlog';
+  import { getBacklogByPrjSlug, getTaskByPrjSlug, getProjectBySlug } from '$lib/api/sprintlog';
   import { ProgressRadial } from '@skeletonlabs/skeleton';
-  import {TASKS_QUERY_KEY, SPRINTLOGS_BACKLOG_QUERY_KEY} from '$lib/constants';
+  import {TASKS_QUERY_KEY, SPRINTLOGS_BACKLOG_QUERY_KEY, PROJECT_DETAIL_QUERY_KEY} from '$lib/constants';
   export const load = ({ params }: { params: any }) => {
     return {
       slug: params.slug
@@ -43,7 +44,15 @@
   let order = 'desc';
  
   let intervalMs = 1500000;
- 
+  $: currentProject = createQuery<Project, Error>({
+    queryKey: [PROJECT_DETAIL_QUERY_KEY, project_slug],
+    queryFn: async (context: QueryFunctionContext) => {
+      const project_slug = context.queryKey[1] as string;
+      return await getProjectBySlug(project_slug);
+    },
+    refetchOnWindowFocus: true,
+    cacheTime: 15000
+  });
 
   $: tasks = createQuery<SprintlogPagination, Error>({
     queryKey: [TASKS_QUERY_KEY, currentPageTask, amountTask, order],
@@ -92,7 +101,7 @@
   >
     <div class="px-4 pt-4 flex flex-col">
       <container class="sticky variant-ringed rounded p-2 bg-surface-100-800-token">
-        <FloatingTask {project_slug} {item} {user} />
+        <FloatingTask bind:project={$currentProject.data} {project_slug} {item} {user} />
       </container>
     </div>
     <div class="px-4"><h3>Backlogs</h3></div>

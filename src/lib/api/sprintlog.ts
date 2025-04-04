@@ -8,7 +8,6 @@ import type {
   SprintlogPagination,
   Token,
   ProjectCreate,
-  ProjectUpdate,
   ActiveProjectPagination,
   PaginatedResponse
 } from '$lib/types/sprintlog';
@@ -38,22 +37,12 @@ export const getLiveToken = async (roomId: string): Promise<Token> => {
   const data = (await response.json()) as Token;
   return data;
 };
-export const getProjectsBySLug = async (
+export const getProjectBySlug = async (
   slug: string,
-  currentPage = 1,
-  pageSize = 1,
-  sortOrder = 'asc'
 ): Promise<Project> => {
-  currentPage = currentPage + 1;
-  const params = new URLSearchParams([
-    ['searchField', 'slug'],
-    ['searchString', slug],
-    ['currentPage', currentPage.toString()],
-    ['pageSize', pageSize.toString()],
-    ['sortOrder', sortOrder]
-  ]);
+  
 
-  const response = await authFetch(`api/projects?${params.toString()}`);
+  const response = await authFetch(`api/projects/slug/${slug}`);
   if (response.ok) {
     const data = (await response.json()) as Project;
     return data;
@@ -114,7 +103,7 @@ export const deleteProject = async (id: string): Promise<{ status: number }> => 
   }
 };
 
-export const updateProject = async (project: ProjectUpdate, id: string): Promise<Project> => {
+export const updateProject = async (project: ProjectCreate, id: string): Promise<Project> => {
   const response = await authFetch(`api/projects/${id}`, {
     method: 'PUT',
     body: JSON.stringify(project)
