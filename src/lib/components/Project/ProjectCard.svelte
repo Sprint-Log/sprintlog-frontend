@@ -60,6 +60,7 @@
       debouncedUpdate();
     }
   }
+  export let fromTeam = false;
 </script>
 
 <a
@@ -71,15 +72,16 @@
       <h3 class="font-semibold text-lg">{project.name}</h3>
     </div>
 
-    <div class="flex flex-col items-end gap-2">
+    <div class="flex flex-col items-end gap-2 ml-5">
+      {#if !fromTeam}
       <button
         class="btn-icon hover:variant-soft"
         use:popup={popupClick}
         on:click|preventDefault|stopPropagation
       >
         <Icon src={EllipsisHorizontal} />
-      </button>
-
+      </button>  
+      {/if}
       <button
         class="text-xl font-mono tracking-wider cursor-pointer select-none transition duration-300 hover:scale-110 active:scale-95"
         on:click|stopPropagation|preventDefault={() => handleStatusChange('increase')}

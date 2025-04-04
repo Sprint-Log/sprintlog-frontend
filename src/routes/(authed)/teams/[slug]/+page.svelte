@@ -19,6 +19,7 @@
 
   export let data;
   import type { PopupSettings } from '@skeletonlabs/skeleton';
+  import ProjectCard from '$lib/components/Project/ProjectCard.svelte';
 
   const client = useQueryClient();
   let currentUser = data.user;
@@ -162,7 +163,6 @@
       </div>
       <div class="flex flex-wrap gap-4">
         {#each $currentTeam.data.members as member}
-
           <div class="flex items-center gap-3 p-1 border rounded-md border-gray-300">
             <div
               class="flex-none rounded-full bg-surface-200 flex justify-center items-center w-10 h-10 m-2 text-surface-800 text-lg"
@@ -228,6 +228,16 @@
           <div class="text-white">Add Member</div>
         </button>
       </div>
+      <div class="flex flex-col mt-5">
+        <h3 class="font-semibold text-2xl mb-5">Assigned Projects</h3>
+        <div class="flex gap-4">
+
+          {#each $currentTeam.data.projects || [] as project}
+            <ProjectCard {project} fromTeam={true}/>
+          {/each}
+        </div>
+      </div>
+      
     </section>
   {/if}
 </div>

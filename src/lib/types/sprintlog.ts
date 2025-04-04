@@ -283,6 +283,27 @@ export interface TeamMember {
   avatarUrl?:string | null;
 }
 
+export interface TeamProject {
+  id: string;
+  slug: string;
+  name: string;
+  description: string;
+  pin: boolean;
+  labels?: string[];
+  documents?: string[];
+  startDate: Date;
+  endDate: Date;
+  sprintWeeks: number | null;
+  sprintAmount: number | null;
+  sprintCheckupDay: number | null;
+  repoUrls: string[];
+  ownerId: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  status: ProjectStatus;
+  pluginMeta?: Record<string, any>;
+}
+
 export interface Team {
   id: string;
   slug: string;
@@ -290,7 +311,8 @@ export interface Team {
   description?: null | string;
   members: TeamMemberRead[];
   createdAt:string;
-  updatedAt: string; 
+  updatedAt: string;
+  projects?: TeamProject[] | [];
 }
 
 export interface UserId{
