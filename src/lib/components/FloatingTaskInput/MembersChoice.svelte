@@ -57,6 +57,6 @@
       {/each}
     </select>
   {:else}
-    You haven't assigned any team! <button on:click={openModal}>Add Team</button>
+    You haven't assigned any team! <button class="underline text-primary-400" on:click={openModal}>Add Team</button>
   {/if}
 {/if}

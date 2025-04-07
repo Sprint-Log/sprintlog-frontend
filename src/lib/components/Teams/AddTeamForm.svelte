@@ -37,9 +37,22 @@
   let limit = 20;
   let page = 1;
   let order = 'desc';
-  $: searchTerm = '';
+  let searchTerm = '';
+  let searchValue = "";
   $: totalTeams = 0;
   let searchedResultTeamIds = [];
+  let timer : number | null = null;
+
+  $: {
+		if (searchTerm !== searchValue) {
+			if (timer !== null) {
+				clearTimeout(timer);
+			}
+			timer = window.setTimeout(() => {
+				searchTerm = searchValue;
+			}, 600);
+		}
+	}
 
   $: teams = createQuery<Team[], Error>({
     enabled: searchTerm !== '',
@@ -71,10 +84,10 @@
     }
   });
 
-  function handleTeamChange(id: string) {
+  function handleTeamChange(id: string, name: string) {
     if (updateProjectObj.teams?.some((team) => team.id == id)) {
     } else {
-      updateProjectObj.teams = [...(updateProjectObj.teams || []), { id: id }];
+      updateProjectObj.teams = [...(updateProjectObj.teams || []), { id: id , name: name}];
       updateProjectObj.teamIds = [...(updateProjectObj.teamIds || []), id];
     }
   }
@@ -123,7 +136,7 @@
       <div class="border border-surface-300 rounded-md px-2 flex flex-col">
         <div class="flex items-center gap-2 p-2">
           <input
-            bind:value={searchTerm}
+            bind:value={searchValue}
             type="text"
             placeholder="Search"
             class="bg-transparent text-surface-400 text-sm outline-none w-full border-0 focus:ring-0"
@@ -140,7 +153,7 @@
               class="p-3 text-left {i !== $teams.data?.length - 1
                 ? 'border-b'
                 : ''} border-gray-500"
-              on:click|preventDefault|stopPropagation={() => handleTeamChange(team.id)}
+              on:click|preventDefault|stopPropagation={() => handleTeamChange(team.id, team.name)}
             >
               {team.name}
             </button>
@@ -149,10 +162,10 @@
       </div>
     </label>
     <div class="flex flex-wrap gap-2">
-      {#each updateProjectObj.teamIds ?? [] as teamId}
+      {#each updateProjectObj.teams ?? [] as team}
         <div class=" border rounded-md flex justify-between p-2 gap-2">
-          <div>{$teams.data?.find((t) => t.id == teamId)?.name}</div>
-          <button on:click|preventDefault={() => handleTeamRemove(teamId)} class="w-5">
+          <div>{team.name}</div>
+          <button on:click|preventDefault={() => handleTeamRemove(team.id)} class="w-5">
             <Icon src={Close} />
           </button>
         </div>
