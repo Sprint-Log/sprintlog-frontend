@@ -72,7 +72,7 @@
           </div>
         </div>
 
-        <div class="flex  justify-between">
+        <div class="flex justify-between">
           <button
             class="btn-icon hover:variant-soft"
             on:click|stopPropagation|preventDefault={() => openModel('userPreviewCard', { user })}

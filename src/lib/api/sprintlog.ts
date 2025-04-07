@@ -376,30 +376,4 @@ export const getProjectAssigneeBySlug = async (slug: string): Promise<PaginatedR
 
   return data;
 };
-
-export const resetPassword = async (
-  userId: string,
-  newPassword: string,
-  adminPassword: string
-): Promise<Boolean> => {
-  const response = await authFetch(`api/users/update/${userId}`, {
-    method: 'PATCH',
-    body: JSON.stringify({
-      newPassword,
-      currentPassword: adminPassword
-    }),
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    }
-  });
-  if (response.ok) {
-    return true;
-  }
-  let error = await response.json();
-
-  if (error.detail) {
-    throw new Error(error.detail);
-  }
-  throw new Error('Error reseting user password');
-};
+ 

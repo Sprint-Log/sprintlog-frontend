@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { resetPassword } from '$lib/api/sprintlog';
+  import { updateUserPassword } from '$lib/api/sprintlog';
   import { createMutation } from '@tanstack/svelte-query';
   import { modalStore, toastStore } from '@skeletonlabs/skeleton';
 
   import { Icon } from '@steeze-ui/svelte-icon';
-  import { Clipboard } from '@steeze-ui/heroicons';
+  import { Clipboard, Check } from '@steeze-ui/heroicons';
 
   const userId: string = $modalStore[0].meta.userId;
-
+  let copied = false;
   let newPassword = '';
   let adminPassword = '';
   let passwordMesg = '';
@@ -22,7 +22,7 @@
   }
 
   $: resetPasswordMutation = createMutation({
-    mutationFn: () => resetPassword(userId, newPassword, adminPassword),
+    mutationFn: () => updateUserPassword(userId, newPassword, adminPassword),
     onSuccess: () => {
       toastStore.trigger({
         message: 'Successfully reset password!',
@@ -36,8 +36,11 @@
       toastStore.trigger({ message: errorMessage, background: 'variant-filled-error' });
     }
   });
+
   function copyToClipboard(text: string) {
     navigator.clipboard.writeText(text);
+    copied = true;
+  
   }
 </script>
 
@@ -56,11 +59,15 @@
         <input class="input w-full" type="text" value={newPassword} readonly />
         <button
           type="button"
-          class="btn-icon"
+          class="btn-icon text-gray-500 hover:text-primary-600 transition"
           on:click={() => copyToClipboard(newPassword)}
-          title="Copy to clipboard"
+          title={copied ? 'Copied!' : 'Copy to clipboard'}
         >
-          <Icon src={Clipboard} size="18" />
+          <Icon
+            src={copied ? Check : Clipboard}
+            size="18"
+            class={copied ? 'text-primary-600' : ''}
+          />
         </button>
       </div>
     </div>
@@ -82,16 +89,16 @@
         required
       />
     </div>
-
-    {#if passwordMesg.length > 0}
-      <p
-        class="text-error-400 w-full text-sm px-2 min-h-[1rem] transition-opacity duration-300"
-        class:opacity-0={passwordMesg.length === 0}
-      >
-        {passwordMesg}
-      </p>
-    {/if}
-
+  {/if}
+  {#if passwordMesg.length > 0}
+    <p
+      class="text-error-400 w-full text-sm px-2 min-h-[1rem] transition-opacity duration-300"
+      class:opacity-0={passwordMesg.length === 0}
+    >
+      {passwordMesg}
+    </p>
+  {/if}
+  {#if !$resetPasswordMutation.isSuccess}
     <div class="p-4 text-center">
       <button class="btn btn-sm variant-filled-primary" type="submit">Change Password</button>
     </div>
