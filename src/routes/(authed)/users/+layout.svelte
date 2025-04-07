@@ -1,10 +1,9 @@
 <script lang="ts">
   import { Icon } from '@steeze-ui/svelte-icon';
-  import { Add, Search } from '@steeze-ui/carbon-icons';
+  import { Add, Search, Locked, View, Edit, TrashCan } from '@steeze-ui/carbon-icons';
   import { ProgressRadial } from '@skeletonlabs/skeleton';
   import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
   import type { User } from '$lib/types/sprintlog';
-  import type { ProjectItems } from '$lib/types/sprintlog';
 
   import { USERS_QUERY_KEY } from '$lib/constants';
   import UserForm from '$lib/components/Users/UserForm.svelte';
@@ -12,6 +11,7 @@
   import UserUpdateForm from '$lib/components/Users/UserUpdateForm.svelte';
   import BreadcrumbUser from '$lib/components/Users/BreadcrumbUser.svelte';
   import UserPreviewCard from '$lib/components/Users/UserPreviewCard.svelte';
+  import ResetPasswordForm from '$lib/components/Users/ResetPasswordForm.svelte';
 
   import { Toast, Modal, modalStore } from '@skeletonlabs/skeleton';
 
@@ -23,7 +23,8 @@
   const userModalRegistry: Record<string, ModalComponent> = {
     updateFormComponent: { ref: UserUpdateForm },
     createFormComponent: { ref: UserForm },
-    userPreviewCard: { ref: UserPreviewCard }
+    userPreviewCard: { ref: UserPreviewCard },
+    resetPasswordForm: { ref: ResetPasswordForm },
   };
   const intervalMs = 15000;
   const client = useQueryClient();
@@ -53,9 +54,7 @@
     modalStore.trigger(modelSetting);
   }
 
-  async function handleDelUser(event: CustomEvent<{ id: string }>) {
-    const id = event.detail.id.toString();
-
+  async function handleDelUser(userId: string) {
     modalStore.trigger({
       type: 'confirm',
       title: 'Delete User',
@@ -63,8 +62,8 @@
 
       response: async (confirmed) => {
         if (confirmed) {
-          await deleteUser(id);
-          client.setQueriesData([USERS_QUERY_KEY, id], (oldData) => {
+          await deleteUser(userId);
+          client.setQueriesData([USERS_QUERY_KEY, userId], (oldData) => {
             if (oldData) {
               return { ...oldData, isActive: false };
             }
@@ -120,12 +119,34 @@
           <div class=" h-screen overflow-y-scroll scroll-smooth hide-scrollbar">
             {#each $users.data as user}
               <div class="grid px-2">
-                <UserCard
-                  on:selected={handleBreadCrumb}
-                  on:delete={handleDelUser}
-                  {openModel}
-                  {user}
-                />
+                <div
+                  class="card bg-surface-100 border shadow w-64 p-3 text-sm z-50"
+                  data-popup={`popup-manage-${user.id}`}
+                >
+                  <button
+                    class="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-surface-700 rounded"
+                    on:click|stopPropagation|preventDefault={() =>
+                      openModel('updateFormComponent', { user })}
+                  >
+                    <Icon src={Edit} size="20" class="inline mr-2" /> Edit User
+                  </button>
+                  <button
+                    class="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-surface-700 rounded"
+                    on:click|stopPropagation|preventDefault={() => handleDelUser(user.id)}
+                  >
+                    <Icon src={TrashCan} size="20" class="inline mr-2" /> Deactivate User
+                  </button>
+
+                  <button
+                    class="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-surface-700 rounded"
+                    on:click|stopPropagation|preventDefault={() =>
+                      openModel('resetPasswordForm', { userId: user.id })}
+                  >
+                    <Icon src={Locked} size="20" class="inline mr-2" /> Reset Password
+                  </button>
+                  <div class="arrow variant-filled-primary" />
+                </div>
+                <UserCard on:selected={handleBreadCrumb} {user} {openModel} />
               </div>
             {/each}
           </div>

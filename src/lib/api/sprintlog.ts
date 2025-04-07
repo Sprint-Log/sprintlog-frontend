@@ -37,11 +37,7 @@ export const getLiveToken = async (roomId: string): Promise<Token> => {
   const data = (await response.json()) as Token;
   return data;
 };
-export const getProjectBySlug = async (
-  slug: string,
-): Promise<Project> => {
-  
-
+export const getProjectBySlug = async (slug: string): Promise<Project> => {
   const response = await authFetch(`api/projects/slug/${slug}`);
   if (response.ok) {
     const data = (await response.json()) as Project;
@@ -65,7 +61,9 @@ export const getUsers = async (
   sortOrder = (context.queryKey[3] || 'asc') as string;
   searchTerm = (context.queryKey[4] || '') as string;
   const response = await authFetch(
-    `api/users?currentPage=${currentPage}&pageSize=${pageSize}&sortOrder=${sortOrder}${searchTerm ? `&searchString=${searchTerm}` : ""}`
+    `api/users?currentPage=${currentPage}&pageSize=${pageSize}&sortOrder=${sortOrder}${
+      searchTerm ? `&searchString=${searchTerm}` : ''
+    }`
   );
   if (response.ok) {
     const data = (await response.json()).items as User[];
@@ -377,4 +375,31 @@ export const getProjectAssigneeBySlug = async (slug: string): Promise<PaginatedR
   const data = (await response.json()) as PaginatedResponse<User>;
 
   return data;
+};
+
+export const resetPassword = async (
+  userId: string,
+  newPassword: string,
+  adminPassword: string
+): Promise<Boolean> => {
+  const response = await authFetch(`api/users/update/${userId}`, {
+    method: 'PATCH',
+    body: JSON.stringify({
+      newPassword,
+      currentPassword: adminPassword
+    }),
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    }
+  });
+  if (response.ok) {
+    return true;
+  }
+  let error = await response.json();
+
+  if (error.detail) {
+    throw new Error(error.detail);
+  }
+  throw new Error('Error reseting user password');
 };

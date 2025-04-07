@@ -42,7 +42,7 @@
   let searchedResultTeamIds = [];
 
   $: teams = createQuery<Team[], Error>({
-    enabled: searchTerm !== "",
+    enabled: searchTerm !== '',
     queryKey: [TEAM_QUERY_KEY, searchTerm, page, limit, order],
     queryFn: async () => {
       let paginatedTeams = await getTeams(page, limit, order, searchTerm);
@@ -83,8 +83,6 @@
     updateProjectObj.teamIds = updateProjectObj.teamIds?.filter((teamId) => teamId !== id);
   }
 
-
-
   $: if (searchTerm == '') {
     searchedResultTeamIds = [];
   } else {
@@ -102,7 +100,6 @@
 
     $updateProjectMutation.mutate(updateProjectObj);
   }
-
 </script>
 
 <form
@@ -133,7 +130,7 @@
           />
           <Icon src={Search} size="24" />
         </div>
- 
+
         {#if $teams.isError}
           <div class="p-3 text-left">Error has occurred</div>
         {:else if $teams.isSuccess}

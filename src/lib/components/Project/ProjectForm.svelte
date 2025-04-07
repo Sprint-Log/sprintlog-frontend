@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { ProjectCreate, Team } from '$lib/types/sprintlog';
+
   import { ProjectStatus } from '$lib/types/sprintlog';
 
   import { createProject, updateProject } from '$lib/api/sprintlog';

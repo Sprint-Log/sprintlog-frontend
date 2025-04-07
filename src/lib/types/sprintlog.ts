@@ -290,8 +290,8 @@ export interface TeamProject {
   pin: boolean;
   labels?: string[];
   documents?: string[];
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
   sprintWeeks: number | null;
   sprintAmount: number | null;
   sprintCheckupDay: number | null;

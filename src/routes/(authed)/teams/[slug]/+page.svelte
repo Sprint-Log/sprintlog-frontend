@@ -22,6 +22,9 @@
   import ProjectCard from '$lib/components/Project/ProjectCard.svelte';
 
   const client = useQueryClient();
+  const active_btn = 'bg-success-500 text-black';
+  const unactive_btn = 'bg-surface-500 text-white';
+
   let currentUser = data.user;
   let memberImages: Record<string, string | null> = {};
 
@@ -39,6 +42,7 @@
     refetchOnWindowFocus: true,
     cacheTime: 15000
   });
+
   $: teamID = $currentTeam.data?.id ?? '';
   $: currentTeamStatistics = createQuery<TeamStatistics, Error>({
     queryKey: [TEAM_STATISTICS_QUERY_KEY, $page.params.slug],
@@ -51,6 +55,16 @@
   });
 
   $: memberCount = $currentTeam.data?.members.length;
+
+  $: memberId = '';
+  $: memberRole = '';
+  $: toggleAdminBtn = memberRole == 'ADMIN';
+
+  let popupClick: PopupSettings = {
+    event: 'click',
+    target: `popup`,
+    placement: 'bottom-end'
+  };
 
   async function loadMemberImages(members: TeamMember[]) {
     for (const member of members) {
@@ -93,41 +107,27 @@
       title: 'Remove Member',
       body: 'Are you sure you want to remove this member?',
 
-            response: async(confirmed) => {
-                if(confirmed){
-                    await removeMember(teamID, userId);
-                    client.setQueriesData([TEAM_DETAIL_QUERY_KEY, teamID], (oldData) => {
-                        if (oldData) {
-                            return {...oldData, isActive: false};
-                        }
-                        return oldData;
-                    });
-                    client.invalidateQueries({queryKey: [TEAM_DETAIL_QUERY_KEY, $page.params.slug]});
-                }
+      response: async (confirmed) => {
+        if (confirmed) {
+          await removeMember(teamID, userId);
+          client.setQueriesData([TEAM_DETAIL_QUERY_KEY, teamID], (oldData) => {
+            if (oldData) {
+              return { ...oldData, isActive: false };
             }
-        });
-    }
+            return oldData;
+          });
+          client.invalidateQueries({ queryKey: [TEAM_DETAIL_QUERY_KEY, $page.params.slug] });
+        }
+      }
+    });
+  }
 
-    $: memberId = "";
-    $: memberRole = "";
-
-    let popupClick: PopupSettings = {
-        event:'click',
-        target: `popup`,
-        placement: 'bottom-end'
-    };
-
-    const active_btn = 'bg-success-500 text-black';
-    const unactive_btn = 'bg-surface-500 text-white';
-    $: toggleAdminBtn = memberRole == "ADMIN";
-
-    async function handleUserType(event: MouseEvent) {
-        let value = (event.target as HTMLButtonElement).value;
-        toggleAdminBtn = value === 'ADMIN';
-        await updateMemberRole(memberId, value)
-        client.invalidateQueries({queryKey: [TEAM_DETAIL_QUERY_KEY, $page.params.slug]})
-    }
-
+  async function handleUserType(event: MouseEvent) {
+    let value = (event.target as HTMLButtonElement).value;
+    toggleAdminBtn = value === 'ADMIN';
+    await updateMemberRole(memberId, value);
+    client.invalidateQueries({ queryKey: [TEAM_DETAIL_QUERY_KEY, $page.params.slug] });
+  }
 </script>
 
 <div class="flex flex-col mt-2 px-4">
@@ -179,37 +179,48 @@
             </div>
             <div class="text-sm">
               <div class="mb-1 font-bold">{member.name}</div>
-              <button 
-              use:popup={popupClick}
-              on:click|preventDefault|stopPropagation={() => {
-                memberId = member.id
-                memberRole = member.role
-              }}
-              class="text-xs underline">
-                {member.role}
-            </button>
-            </div>
-                        {#if isTeamAdmin()}
-                <button class="btn-icon hover:variant-soft w-6" on:click={()=> handleDelMember(member.userId ?? "")}>
-                  <Icon src={SubtractAlt} />
+              {#if currentUser.isSuperuser}
+                <button
+                  use:popup={popupClick}
+                  on:click|preventDefault|stopPropagation={() => {
+                    memberId = member.id;
+                    memberRole = member.role;
+                  }}
+                  class="text-xs underline"
+                >
+                  {member.role}
                 </button>
-                        {/if}
+              {:else}
+                <div class="text-xs">{member.role}</div>
+              {/if}
+            </div>
+            {#if isTeamAdmin()}
+              <button
+                class="btn-icon hover:variant-soft w-6"
+                on:click={() => handleDelMember(member.userId ?? '')}
+              >
+                <Icon src={SubtractAlt} />
+              </button>
+            {/if}
           </div>
-          <div data-popup={`popup`} class="p-3 border border-white shadow z-10 bg-surface-900 rounded-lg card">
+          <div
+            data-popup={`popup`}
+            class="p-3 border border-white shadow z-10 bg-surface-900 rounded-lg card"
+          >
             <div class="flex justify-end">
-                <button
-                  type="button"
-                  class="btn-sm w-18 rounded {toggleAdminBtn ? active_btn : unactive_btn}"
-                  value="ADMIN"
-                  on:click={handleUserType}>Admin</button
-                >
-                <button
-                  type="button"
-                  class="btn-sm w-18 rounded {toggleAdminBtn ? unactive_btn : active_btn}"
-                  value="MEMBER"
-                  on:click={handleUserType}>Member</button
-                >
-              </div>
+              <button
+                type="button"
+                class="btn-sm w-18 rounded {toggleAdminBtn ? active_btn : unactive_btn}"
+                value="ADMIN"
+                on:click={handleUserType}>Admin</button
+              >
+              <button
+                type="button"
+                class="btn-sm w-18 rounded {toggleAdminBtn ? unactive_btn : active_btn}"
+                value="MEMBER"
+                on:click={handleUserType}>Member</button
+              >
+            </div>
             <div class="arrow variant-filled-primary" />
           </div>
         {/each}
@@ -231,13 +242,11 @@
       <div class="flex flex-col mt-5">
         <h3 class="font-semibold text-2xl mb-5">Assigned Projects</h3>
         <div class="flex gap-4">
-
           {#each $currentTeam.data.projects || [] as project}
-            <ProjectCard {project} fromTeam={true}/>
+            <ProjectCard {project} fromTeam={true} />
           {/each}
         </div>
       </div>
-      
     </section>
   {/if}
 </div>

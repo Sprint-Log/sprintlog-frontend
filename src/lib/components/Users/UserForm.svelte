@@ -168,7 +168,6 @@
             placeholder="Account number"
             bind:value={account.accountNumber}
             class="h-full"
-            required
           />
           <button
             type="button"

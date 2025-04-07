@@ -15,6 +15,7 @@
 
   const active_btn = 'bg-success-500 text-black';
   const unactive_btn = 'bg-surface-500 text-white';
+
   const userUpdateMutation = createMutation({
     mutationFn: async () => updateUser(user.id, user),
 
@@ -28,7 +29,7 @@
       });
       modalStore.close();
     },
-    onError: (error:any) => {
+    onError: (error: any) => {
       let errorMessage = error.message || 'Something went wrong';
       modalStore.close();
 
@@ -176,7 +177,8 @@
     />
   </div>
 
-  <div class="flex justify-end pt-4">
+  <div class="flex justify-between pt-4">
     <button class="btn btn-sm variant-filled-primary" type="submit">Update</button>
+    <div class="arrow variant-filled-primary" />
   </div>
 </form>
