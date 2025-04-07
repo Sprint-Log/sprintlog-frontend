@@ -18,10 +18,25 @@
   let order = 'desc';
   let total = 0;
   let offset = 0;
+  let searchTerm = '';
+  let searchValue = '';
+  let timer : number | null = null;
+
+  $: {
+		if (searchTerm !== searchValue) {
+			if (timer !== null) {
+				clearTimeout(timer);
+			}
+			timer = window.setTimeout(() => {
+				searchTerm = searchValue;
+			}, 600);
+		}
+	}
+
   $: teamsQuery = createQuery<Team[], Error>({
     queryKey: [TEAM_QUERY_KEY, page, limit, order],
     queryFn: async () => {
-      let response = await getTeams(page, limit, order);
+      let response = await getTeams(page, limit, order, searchTerm);
       total = response.total;
       offset = response.offset;
       return response.items;
@@ -89,11 +104,11 @@
       $projectMutation.mutate();
     }
   }
-  function handleTeamChange(id: string) {
+  function handleTeamChange(id: string, name: string) {
     if (project.teams?.some((team) => team.id == id)) {
       // project.teams = project.teams.filter(o => o != option);
     } else {
-      project.teams = [...(project.teams || []), { id: id }];
+      project.teams = [...(project.teams || []), { id: id , name: name}];
       project.teamIds = [...(project.teamIds || []), id];
       //   teams = teams.filter((team)=> team.id != id);
       //   console.log(teams)
@@ -105,7 +120,6 @@
   }
   $: project.teamIds = project.teams?.map((team) => team.id);
 
-  let searchTerm: string = '';
   let teams: Team[];
 
   $: if (searchTerm == '') {
@@ -242,7 +256,7 @@
     <div class="border border-surface-300 rounded-md px-2 flex flex-col">
       <div class="flex items-center gap-2 p-2">
         <input
-          bind:value={searchTerm}
+          bind:value={searchValue}
           type="text"
           placeholder="Search"
           class="bg-transparent text-surface-400 text-sm outline-none w-full border-0 focus:ring-0"
@@ -258,7 +272,7 @@
           <!-- <option value={team.id}>{team.name}</option> -->
           <button
             class="p-3 text-left {i !== teams.length - 1 ? 'border-b' : ''} border-gray-500"
-            on:click|preventDefault|stopPropagation={() => handleTeamChange(team.id)}
+            on:click|preventDefault|stopPropagation={() => handleTeamChange(team.id, team.name)}
           >
             {team.name}
           </button>
@@ -286,7 +300,7 @@
   <div class="flex flex-wrap gap-2">
     {#each project.teams ?? [] as team}
       <div class=" border rounded-md flex justify-between p-2 gap-2">
-        <div>{$teamsQuery.data?.find((t) => t.id == team.id)?.name}</div>
+        <div>{team.name}</div>
         <button on:click|preventDefault={() => handleTeamRemove(team.id)} class="w-5">
           <Icon src={Close} />
         </button>

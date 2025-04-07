@@ -13,6 +13,7 @@
 
   import ProjectCard from '$lib/components/Project/ProjectCard.svelte';
   import ProjectForm from '$lib/components/Project/ProjectForm.svelte';
+  export let data;
 
   let limit = 20;
   let page = 1;
@@ -96,7 +97,7 @@
     {/if}
     {#if $projects.isSuccess}
       {#each $projects.data as project}
-        <ProjectCard on:archive={handelDelProject} on:update={handleUpdateProject} {project} />
+        <ProjectCard on:archive={handelDelProject} on:update={handleUpdateProject} {project} fromTeam={!data.user.isSuperuser}/>
       {/each}
     {/if}
   </div>
