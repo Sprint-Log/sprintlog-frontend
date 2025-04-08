@@ -314,28 +314,30 @@
       </span>
     </div>
     <span class="inline-flex px-4 gap-x-2 items-top group-hover:opacity-100 opacity-0">
-      {#if isTask}
-        <TaskActions
-          {item}
-          on:completion={() => {
-            resetAllFlags();
-          }}
-          on:progress_complete={() => {
-            $toggleCompletionMutation.mutate();
-          }}
-          on:edit={addDescription}
-        />
-      {:else if isEditable}
-        <BacklogActions
-          {item}
-          on:completion={() => {
-            resetAllFlags();
-          }}
-          on:progress_complete={() => {
-            $toggleCompletionMutation.mutate();
-          }}
-          on:edit={addDescription}
-        />
+      {#if isEditable}
+        {#if isTask}
+          <TaskActions
+            {item}
+            on:completion={() => {
+              resetAllFlags();
+            }}
+            on:progress_complete={() => {
+              $toggleCompletionMutation.mutate();
+            }}
+            on:edit={addDescription}
+          />
+        {:else}
+          <BacklogActions
+            {item}
+            on:completion={() => {
+              resetAllFlags();
+            }}
+            on:progress_complete={() => {
+              $toggleCompletionMutation.mutate();
+            }}
+            on:edit={addDescription}
+          />
+        {/if}
       {/if}
     </span>
   </div>
@@ -360,7 +362,7 @@
         {:else}
           <CmEditor readonly={true} bind:description={item.description} />
         {/if}
-      {:else if flags.descriptionEdit}
+      {:else if flags.descriptionEdit && isEditable}
         <span>Description</span>
         <CmEditor
           readonly={false}

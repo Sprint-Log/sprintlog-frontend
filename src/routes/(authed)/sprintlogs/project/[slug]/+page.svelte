@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { Sprintlog, ProjectItems, SprintlogPagination, Project } from '$lib/types/sprintlog';
-  import type { PageData } from '../../../sprintlogs/project/[slug]/$types';
   import type { QueryFunctionContext } from '@tanstack/svelte-query';
 
   import FloatingTask from '$lib/components/FloatingTaskInput/FloatingTaskInput.svelte';
@@ -24,7 +23,7 @@
     };
   };
 
-  export let data: PageData;
+  export let data;
   const { user } = data;
   const project_slug = $page.params.slug;
   const prjItems: ProjectItems[] = [

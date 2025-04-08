@@ -1,5 +1,4 @@
 <script lang="ts">
- 
   import type { Project } from '$lib/types/sprintlog';
   import type { PopupSettings } from '@skeletonlabs/skeleton';
 
@@ -13,6 +12,7 @@
   import { popup } from '@skeletonlabs/skeleton';
 
   export let project: Project;
+  export let isEditable = false;
   const dispatch = createEventDispatcher();
 
   const popupClick: PopupSettings = {
@@ -38,9 +38,8 @@
   ];
 
   function increaseStatus(current: ProjectStatus): ProjectStatus {
-  
     const index = statusOrder.indexOf(current);
-    return statusOrder[(index + 1) % (statusOrder.indexOf(ProjectStatus.COMPLETED) +1) ];
+    return statusOrder[(index + 1) % (statusOrder.indexOf(ProjectStatus.COMPLETED) + 1)];
   }
 
   function decreaseStatus(current: ProjectStatus): ProjectStatus {
@@ -52,6 +51,9 @@
   });
 
   async function handleStatusChange(direction: 'increase' | 'decrease') {
+    if (!isEditable) {
+      return;
+    }
     const nextStatus =
       direction === 'increase' ? increaseStatus(project.status) : decreaseStatus(project.status);
 
@@ -60,7 +62,6 @@
       debouncedUpdate();
     }
   }
-  export let fromTeam = false;
 </script>
 
 <a
@@ -73,15 +74,19 @@
     </div>
 
     <div class="flex flex-col items-end gap-2 ml-5">
+      {#if isEditable}
+        <button
+          class="btn-icon hover:variant-soft"
+          use:popup={popupClick}
+          on:click|preventDefault|stopPropagation
+        >
+          <Icon src={EllipsisHorizontal} />
+        </button>
+      {/if}
       <button
-        class="btn-icon hover:variant-soft {fromTeam ? "hidden" : ""}"
-        use:popup={popupClick}
-        on:click|preventDefault|stopPropagation
-      >
-        <Icon src={EllipsisHorizontal} />
-      </button>  
-      <button
-        class="text-xl font-mono tracking-wider cursor-pointer select-none transition duration-300 hover:scale-110 active:scale-95"
+        class="text-xl font-mono tracking-wider {isEditable
+          ? 'cursor-pointer select-none transition duration-300 hover:scale-110 active:scale-95'
+          : 'cursor-default'}"
         on:click|stopPropagation|preventDefault={() => handleStatusChange('increase')}
         title="Click to update status"
       >

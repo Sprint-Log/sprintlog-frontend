@@ -17,7 +17,6 @@
   import { modalStore } from '@skeletonlabs/skeleton';
   import { useQueryClient } from '@tanstack/svelte-query';
 
-  export let data;
   import type { PopupSettings } from '@skeletonlabs/skeleton';
   import ProjectCard from '$lib/components/Project/ProjectCard.svelte';
 
@@ -25,6 +24,7 @@
   const active_btn = 'bg-success-500 text-black';
   const unactive_btn = 'bg-surface-500 text-white';
 
+  export let data;
   let currentUser = data.user;
   let memberImages: Record<string, string | null> = {};
 
@@ -63,8 +63,7 @@
   let popupClick: PopupSettings = {
     event: 'click',
     target: `popup`,
-    placement: 'bottom-end',
-
+    placement: 'bottom-end'
   };
 
   async function loadMemberImages(members: TeamMember[]) {
@@ -180,18 +179,17 @@
             </div>
             <div class="text-sm">
               <div class="mb-1 font-bold">{member.name}</div>
-              
-                <button
-                  use:popup={popupClick}
-                  on:click|preventDefault|stopPropagation={() => {
-                    memberId = member.id;
-                    memberRole = member.role;
-                  }}
-                  class="text-xs underline "
-                >
-                  {member.role}
-                </button>
-           
+
+              <button
+                use:popup={popupClick}
+                on:click|preventDefault|stopPropagation={() => {
+                  memberId = member.id;
+                  memberRole = member.role;
+                }}
+                class="text-xs underline"
+              >
+                {member.role}
+              </button>
             </div>
             {#if isTeamAdmin()}
               <button
@@ -203,26 +201,26 @@
             {/if}
           </div>
           {#if currentUser.isSuperuser}
-          <div
-            data-popup={`popup`}
-            class="p-3 border border-white shadow z-10 bg-surface-900 rounded-lg card"
-          >
-            <div class="flex justify-end">
-              <button
-                type="button"
-                class="btn-sm w-18 rounded {toggleAdminBtn ? active_btn : unactive_btn}"
-                value="ADMIN"
-                on:click={handleUserType}>Admin</button
-              >
-              <button
-                type="button"
-                class="btn-sm w-18 rounded {toggleAdminBtn ? unactive_btn : active_btn}"
-                value="MEMBER"
-                on:click={handleUserType}>Member</button
-              >
+            <div
+              data-popup={`popup`}
+              class="p-3 border border-white shadow z-10 bg-surface-900 rounded-lg card"
+            >
+              <div class="flex justify-end">
+                <button
+                  type="button"
+                  class="btn-sm w-18 rounded {toggleAdminBtn ? active_btn : unactive_btn}"
+                  value="ADMIN"
+                  on:click={handleUserType}>Admin</button
+                >
+                <button
+                  type="button"
+                  class="btn-sm w-18 rounded {toggleAdminBtn ? unactive_btn : active_btn}"
+                  value="MEMBER"
+                  on:click={handleUserType}>Member</button
+                >
+              </div>
+              <div class="arrow variant-filled-primary" />
             </div>
-            <div class="arrow variant-filled-primary" />
-          </div>
           {/if}
         {/each}
         <button
@@ -244,7 +242,11 @@
         <h3 class="font-semibold text-2xl mb-5">Assigned Projects</h3>
         <div class="flex gap-4">
           {#each $currentTeam.data.projects || [] as project}
-            <ProjectCard {project} fromTeam={true} />
+            <ProjectCard
+              {currentUser}
+              {project}
+              isEditable={currentUser.isSuperuser || project.ownerId === currentUser.id}
+            />
           {/each}
         </div>
       </div>

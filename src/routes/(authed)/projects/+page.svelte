@@ -15,6 +15,8 @@
   import ProjectForm from '$lib/components/Project/ProjectForm.svelte';
   export let data;
 
+  let user = data.user;
+
   let limit = 20;
   let page = 1;
   let order = 'desc';
@@ -22,9 +24,10 @@
   $: totalProjects = 0;
 
   let intervalMs = 15000;
+
   $: projects = createQuery<Project[], Error>({
     queryKey: [PROJECTS_QUERY_KEY, page, limit, order],
-    queryFn: async() => {
+    queryFn: async () => {
       let paginatedProject = await getProjects(page, limit, order);
       let projects = paginatedProject.items;
       totalProjects = paginatedProject.total;
@@ -78,7 +81,8 @@
     });
   }
 </script>
-<Toast/>
+
+<Toast />
 <Modal components={{ form: { ref: ProjectForm } }} />
 <section class="p-8 flex-grow overflow-y-auto max-h-screen">
   <div class="flex items-center mb-8 space-x-4">
@@ -97,7 +101,12 @@
     {/if}
     {#if $projects.isSuccess}
       {#each $projects.data as project}
-        <ProjectCard on:archive={handelDelProject} on:update={handleUpdateProject} {project} fromTeam={!data.user.isSuperuser}/>
+        <ProjectCard
+          on:archive={handelDelProject}
+          on:update={handleUpdateProject}
+          {project}
+          isEditable={user.isSuperuser || project.ownerId === user.id}
+        />
       {/each}
     {/if}
   </div>
