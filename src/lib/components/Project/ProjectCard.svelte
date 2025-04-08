@@ -15,9 +15,9 @@
   export let isEditable = false;
   const dispatch = createEventDispatcher();
 
-  const popupClick: PopupSettings = {
+  let popupClick: PopupSettings = {
     event: 'click',
-    target: `popup-${project.id}`,
+    target: isEditable ? `popup-${project.id}` : '',
     placement: 'bottom-end'
   };
 
@@ -74,15 +74,14 @@
     </div>
 
     <div class="flex flex-col items-end gap-2 ml-5">
-      {#if isEditable}
-        <button
-          class="btn-icon hover:variant-soft"
-          use:popup={popupClick}
-          on:click|preventDefault|stopPropagation
-        >
-          <Icon src={EllipsisHorizontal} />
-        </button>
-      {/if}
+      <button
+        class="btn-icon hover:variant-soft {isEditable ? '' : 'hidden'}"
+        use:popup={popupClick}
+        on:click|preventDefault|stopPropagation
+      >
+        <Icon src={EllipsisHorizontal} />
+      </button>
+
       <button
         class="text-xl font-mono tracking-wider {isEditable
           ? 'cursor-pointer select-none transition duration-300 hover:scale-110 active:scale-95'

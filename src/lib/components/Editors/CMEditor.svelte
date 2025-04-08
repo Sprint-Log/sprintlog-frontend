@@ -11,8 +11,7 @@
   import { markdown } from '@codemirror/lang-markdown';
   import { modeCurrent } from '@skeletonlabs/skeleton';
   import { keymap } from '@codemirror/view';
-  let editor: HTMLDivElement;
-  let view: EditorView;
+  
   export let description: string | undefined = '';
   export let readonly: boolean = false;
   const saveKeyMap = [
@@ -24,6 +23,8 @@
       }
     }
   ];
+  let editor: HTMLDivElement;
+  let view: EditorView;
 
   onMount(() => {
     view = new EditorView({
