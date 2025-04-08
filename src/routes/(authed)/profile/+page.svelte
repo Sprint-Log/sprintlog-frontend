@@ -8,7 +8,7 @@
   
   import { createMutation, useQueryClient } from '@tanstack/svelte-query';
   import { TEAM_DETAIL_QUERY_KEY, TEAM_QUERY_KEY, USER_DETAIL_QUERY_KEY } from '$lib/constants';
-  import { uploadProfile, getProfileFile } from '$lib/api/sprintlog';
+  import { uploadProfile, getUserProfileFile } from '$lib/api/sprintlog';
 
   import UserUpdateForm from '$lib/components/Users/UserUpdateForm.svelte';
   import ChangePasswordForm from '$lib/components/Users/ChangePasswordForm.svelte';
@@ -23,7 +23,7 @@
   onMount(async () => {
     if (user.avatarUrl) {
       try {
-        const fileBlob = await getProfileFile();
+        const fileBlob = await getUserProfileFile(user.id);
         profileImageUrl = URL.createObjectURL(fileBlob);
       } catch (err) {
         console.error('Failed to load profile image:', err);

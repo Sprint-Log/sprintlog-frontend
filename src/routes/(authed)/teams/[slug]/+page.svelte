@@ -2,20 +2,18 @@
   import type { QueryFunctionContext } from '@tanstack/svelte-query';
   import type { Team, TeamStatistics, TeamMember } from '$lib/types/sprintlog';
 
-  import { createQuery } from '@tanstack/svelte-query';
+  import { createQuery, useQueryClient } from '@tanstack/svelte-query';
   import { TEAM_DETAIL_QUERY_KEY, TEAM_QUERY_KEY, TEAM_STATISTICS_QUERY_KEY } from '$lib/constants';
 
-  import { getProfileFile } from '$lib/api/sprintlog.js';
+  import { getUserProfileFile } from '$lib/api/sprintlog.js';
   import { getTeamBySlug, getTeamStatistics, removeMember, updateMemberRole } from '$lib/api/team';
 
   import { popup, ProgressRadial } from '@skeletonlabs/skeleton';
-  import { SubtractAlt } from '@steeze-ui/carbon-icons';
   import { Icon } from '@steeze-ui/svelte-icon';
   import { page } from '$app/stores';
-  import { UserFollow } from '@steeze-ui/carbon-icons';
+  import { UserFollow, SubtractAlt } from '@steeze-ui/carbon-icons';
 
   import { modalStore } from '@skeletonlabs/skeleton';
-  import { useQueryClient } from '@tanstack/svelte-query';
 
   import type { PopupSettings } from '@skeletonlabs/skeleton';
   import ProjectCard from '$lib/components/Project/ProjectCard.svelte';
@@ -70,7 +68,7 @@
     for (const member of members) {
       if (member.avatarUrl) {
         try {
-          const blob = await getProfileFile();
+          const blob = await getUserProfileFile(member.userId);
           memberImages[member.userId] = URL.createObjectURL(blob);
         } catch (err) {
           console.error('Failed to load profile for', member.userId, err);

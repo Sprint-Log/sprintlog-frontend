@@ -2,17 +2,14 @@
   import type { User, Team, TeamMember } from '$lib/types/sprintlog';
 
   import { modifyMembers } from '$lib/api/team';
-  import { getUsers } from '$lib/api/sprintlog';
+  import { getUserProfileFile, getUsers } from '$lib/api/sprintlog';
   import { USERS_QUERY_KEY, TEAM_QUERY_KEY, TEAM_DETAIL_QUERY_KEY } from '$lib/constants';
 
   import { Icon } from '@steeze-ui/svelte-icon';
   import { Search } from '@steeze-ui/carbon-icons';
   import { createQuery, useQueryClient, createMutation } from '@tanstack/svelte-query';
   import { modalStore, toastStore } from '@skeletonlabs/skeleton';
-  import { onMount } from 'svelte';
-  import { getProfileFile } from '$lib/api/sprintlog';
-  import type { QueryFunctionContext } from '@tanstack/svelte-query';
-
+ 
   const client = useQueryClient();
   const team: Team = $modalStore[0].meta.team;
   let memberSelections: Record<string, { checked: boolean; role: string }> = {};
@@ -119,7 +116,7 @@
     for (const user of users) {
       if (user.avatarUrl) {
         try {
-          getProfileFile().then((blob) => {
+          getUserProfileFile(user.id).then((blob) => {
             userImages[user.id] = URL.createObjectURL(blob);
           });
         } catch (err) {

@@ -6,7 +6,7 @@
   import { OverflowMenuHorizontal } from '@steeze-ui/carbon-icons';
   import { formatDate } from '$lib/utils';
   import { createEventDispatcher, onMount } from 'svelte';
-  import { getProfileFile } from '$lib/api/sprintlog';
+  import { getUserProfileFile } from '$lib/api/sprintlog';
 
   export let team: Team;
   export let openModal: CallableFunction;
@@ -19,7 +19,7 @@
     for (const member of team.members) {
       if (member.avatarUrl) {
         try {
-          const blob = await getProfileFile();
+          const blob = await getUserProfileFile(member.userId);
           memberImages[member.userId] = URL.createObjectURL(blob);
         } catch (err) {
           console.error('Failed to load profile for', member.userId, err);

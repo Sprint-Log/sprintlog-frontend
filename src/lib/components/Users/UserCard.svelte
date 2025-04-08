@@ -8,7 +8,7 @@
   import { TrashCan } from '@steeze-ui/carbon-icons';
   import { View } from '@steeze-ui/carbon-icons';
   import { createEventDispatcher, onMount } from 'svelte';
-  import { getProfileFile } from '$lib/api/sprintlog';
+  import { getUserProfileFile } from '$lib/api/sprintlog';
   import { popup } from '@skeletonlabs/skeleton';
 
   export let user: User;
@@ -20,7 +20,7 @@
   onMount(async () => {
     if (user.avatarUrl) {
       try {
-        const fileBlob = await getProfileFile();
+        const fileBlob = await getUserProfileFile(user.id);
         profileImageUrl = URL.createObjectURL(fileBlob);
       } catch (err) {
         console.error('Failed to load profile image:', err);

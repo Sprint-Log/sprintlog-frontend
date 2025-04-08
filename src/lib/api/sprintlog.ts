@@ -353,7 +353,7 @@ export const updateProjectStatus = async (project_id: string, status: string): P
 export const uploadProfile = async (userId: string, profileImg: File): Promise<User> => {
   const formData = new FormData();
   formData.append('file', profileImg);
-  let response = await authFetch(`/api/users/profile`, {
+  let response = await authFetch(`/api/users/profile/${userId}`, {
     method: 'POST',
     body: formData
   });
@@ -362,8 +362,8 @@ export const uploadProfile = async (userId: string, profileImg: File): Promise<U
   return data;
 };
 
-export const getProfileFile = async (): Promise<Blob> => {
-  const response = await authFetch(`/api/users/profile`);
+export const getUserProfileFile = async (userId:string): Promise<Blob> => {
+  const response = await authFetch(`/api/users/profile/${userId}`);
   if (!response.ok) throw response;
   const data = await response.blob();
   return data;
