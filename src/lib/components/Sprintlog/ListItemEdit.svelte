@@ -22,14 +22,12 @@
   import TimeField from '$lib/components/Sprintlog/TimeField.svelte';
   import Members from '$lib/components/FloatingTaskInput/MembersChoice.svelte';
 
-  export let project: Project| undefined;
+  export let project: Project | undefined;
   export let item: Sprintlog;
   export let isTask = true;
   export let currentUser: User;
   export let isEditable = false;
-  let topic: string = item.title;
-  let client = useQueryClient();
-  let expand = false;
+
   type FlagName =
     | 'descriptionEdit'
     | 'assigneeEdit'
@@ -38,11 +36,10 @@
     | 'begDateEdit'
     | 'dueDateEdit';
 
-
   type Flags = {
     [key in FlagName]: boolean;
   };
-
+  const dispatch = createEventDispatcher();
   const flags: Flags = {
     descriptionEdit: false,
     assigneeEdit: false,
@@ -51,6 +48,11 @@
     begDateEdit: false,
     dueDateEdit: false
   };
+  let topic: string = item.title;
+  let client = useQueryClient();
+  let expand = false;
+  let isCurrentlyAssigned = currentUser?.id === item.assignee_id;
+
   function toggleFlag(flagName: FlagName) {
     flags[flagName] = !flags[flagName];
     resetOtherFlags(flagName);
@@ -95,8 +97,6 @@
   const dueDateClick = function (event: any, item: any) {
     toggleFlag('dueDateEdit');
   };
-  let isCurrentlyAssigned = currentUser?.id === item.assignee_id;
-  const dispatch = createEventDispatcher();
 
   const progressCircleMutation = createMutation(
     async function () {
@@ -168,12 +168,14 @@
     <div class="flex-1">
       <span>
         <Field
+          {isEditable}
           text={item.status}
           color="select-none hover:variant-soft-secondary"
           typography="text-sm font-bold"
           onItemClick={handleItemClick}
         />
         <Field
+          {isEditable}
           text={`[${item.slug}]`}
           color="uppercase  hover:variant-soft-secondary"
           typography="text-sm font-mono font-bold"
@@ -181,18 +183,21 @@
         />
 
         <Field
+          {isEditable}
           text={item.priority}
           color="select-none hover:variant-soft-secondary"
           typography="text-sm font-semibold"
           onItemClick={() => $priorityCircleMutation.mutate()}
         />
         <Field
+          {isEditable}
           text={item.progress}
           color="select-none hover:variant-soft-secondary"
           typography="text-sm font-normal"
           onItemClick={() => $progressCircleMutation.mutate()}
         />
         <Field
+          {isEditable}
           text={item.category}
           color="select-none hover:variant-soft-secondary"
           typography="text-sm font-medium"
@@ -213,6 +218,7 @@
           />
         {:else}
           <Field
+            {isEditable}
             text={item.title}
             color="hover:variant-soft-primary"
             typography="text-sm font-mono"
@@ -228,12 +234,16 @@
             bind:value={item.beg_date}
             on:mouseleave={() => debouncedResetAllFlags()}
             on:change={() => {
+              if (!isEditable) {
+                return;
+              }
               $postMutation.mutate();
               resetAllFlags();
             }}
           />
         {:else}
           <TimeField
+            {isEditable}
             prefix="⏱️"
             text={item.beg_date}
             color=""
@@ -254,9 +264,11 @@
               $postMutation.mutate();
               resetAllFlags();
             }}
+            disabled={!isEditable}
           />
         {:else}
           <TimeField
+            {isEditable}
             text={item.due_date}
             prefix="⏰"
             color=""
@@ -267,7 +279,7 @@
         {#if flags.assigneeEdit}
           <Members
             bind:assignee={item.assignee}
-            project={project}
+            {project}
             project_slug={item.project_slug}
             on:mouseleave={() => {
               debouncedResetAllFlags();
@@ -281,6 +293,7 @@
           />
         {:else}
           <Field
+            {isEditable}
             text={`@${item.assignee_name}`}
             color="select-none hover:variant-soft-secondary {isCurrentlyAssigned
               ? 'text-slate-100'
@@ -291,7 +304,7 @@
         {/if}
         {#if item.description}
           <span
-            class="px-2 select-none {isEditable ? 'cursor-pointer': ''} text-slate-500 text-xs"
+            class="px-2 select-none {isEditable ? 'cursor-pointer' : ''} text-slate-500 text-xs"
             on:click={toggleExpand}
             on:keydown={toggleExpand}
           >
@@ -312,7 +325,7 @@
           }}
           on:edit={addDescription}
         />
-      {:else}
+      {:else if isEditable}
         <BacklogActions
           {item}
           on:completion={() => {

@@ -63,7 +63,8 @@
   let popupClick: PopupSettings = {
     event: 'click',
     target: `popup`,
-    placement: 'bottom-end'
+    placement: 'bottom-end',
+
   };
 
   async function loadMemberImages(members: TeamMember[]) {
@@ -179,20 +180,18 @@
             </div>
             <div class="text-sm">
               <div class="mb-1 font-bold">{member.name}</div>
-              {#if currentUser.isSuperuser}
+              
                 <button
                   use:popup={popupClick}
                   on:click|preventDefault|stopPropagation={() => {
                     memberId = member.id;
                     memberRole = member.role;
                   }}
-                  class="text-xs underline"
+                  class="text-xs underline "
                 >
                   {member.role}
                 </button>
-              {:else}
-                <div class="text-xs">{member.role}</div>
-              {/if}
+           
             </div>
             {#if isTeamAdmin()}
               <button
@@ -203,6 +202,7 @@
               </button>
             {/if}
           </div>
+          {#if currentUser.isSuperuser}
           <div
             data-popup={`popup`}
             class="p-3 border border-white shadow z-10 bg-surface-900 rounded-lg card"
@@ -223,6 +223,7 @@
             </div>
             <div class="arrow variant-filled-primary" />
           </div>
+          {/if}
         {/each}
         <button
           class="flex items-center gap-2 p-1 no-underline"

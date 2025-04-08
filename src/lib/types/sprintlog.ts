@@ -149,7 +149,7 @@ export type Project = {
   sprintAmount: number | null;
   sprintCheckupDay: number | null;
   repoUrls: string[];
-  ownerId: string | null;
+  ownerId: string;
   createdAt: Date;
   updatedAt: Date;
   status: ProjectStatus;

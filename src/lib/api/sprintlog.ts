@@ -121,7 +121,7 @@ export const getBacklogByPrjSlug = async (
   const params = new URLSearchParams([
     ['currentPage', currentPage.toString()],
     ['pageSize', pageSize.toString()],
-    ['sortOrder', sortOrder]
+    ['sortOrder', sortOrder],
   ]);
 
   const response = await authFetch(
@@ -142,7 +142,7 @@ export const getTaskByPrjSlug = async (
   const params = new URLSearchParams([
     ['currentPage', currentPage.toString()],
     ['pageSize', pageSize.toString()],
-    ['sortOrder', sortOrder]
+    ['sortOrder', sortOrder],
   ]);
 
   const response = await authFetch(`api/sprintlogs/project/${prjSlug}_task?${params.toString()}`);

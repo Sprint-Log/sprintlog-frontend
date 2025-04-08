@@ -35,7 +35,7 @@
 
   let item: Sprintlog = {} as Sprintlog;
   let owner_id: string;
- 
+
   let taskTotal = 200;
   let currentPageTask = 0;
   let amountTask = 200;
@@ -45,7 +45,7 @@
   let order = 'desc';
   let intervalMs = 1500000;
 
-  $: isAuthorized = (user.isSuperuser || user.id == owner_id)
+  $: isAuthorized = user.isSuperuser || user.id == owner_id;
 
   $: currentProject = createQuery<Project, Error>({
     queryKey: [PROJECT_DETAIL_QUERY_KEY, project_slug],
@@ -105,7 +105,7 @@
     {#if user && isAuthorized}
       <div class="px-4 pt-4 flex flex-col">
         <container class="sticky variant-ringed rounded p-2 bg-surface-100-800-token">
-          <FloatingTask bind:project={$currentProject.data} {project_slug} {item} {user} />
+          <FloatingTask project={$currentProject.data} {project_slug} {item} {user} />
         </container>
       </div>
     {/if}
@@ -121,7 +121,13 @@
           <TaskBox>
             {#if $backlogs.isSuccess}
               {#each $backlogs.data.items as task}
-                <Listitem item={task} isTask={false} currentUser={user} isEditable={isAuthorized} />
+                <Listitem
+                  project={$currentProject.data}
+                  item={task}
+                  isTask={false}
+                  currentUser={user}
+                  isEditable={isAuthorized}
+                />
               {/each}
             {/if}
           </TaskBox>
@@ -139,7 +145,13 @@
           <TaskBox>
             {#if $tasks.isSuccess}
               {#each $tasks.data.items as task}
-                <Listitem bind:project={$currentProject.data} item={task} isTask={true} currentUser={user}  isEditable={isAuthorized} />
+                <Listitem
+                  project={$currentProject.data}
+                  item={task}
+                  isTask={true}
+                  currentUser={user}
+                  isEditable={isAuthorized}
+                />
               {/each}
             {/if}
           </TaskBox>
