@@ -7,7 +7,7 @@
 
 <form
   action=""
-  class="left-24 card bg-surface-100 p-3 rounded-md space-y-4 max-w-xl overflow-y-scroll max-h-[36rem]"
+  class="left-24 card bg-surface-100 p-3 rounded-md space-y-4 max-w-xl overflow-auto max-h-[36rem]"
 >
   <div class="text-center font-bold">
     User Profile 

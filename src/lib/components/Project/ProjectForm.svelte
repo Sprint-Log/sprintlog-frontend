@@ -160,9 +160,7 @@
         readonly
       />
     </label>
-  </div>
-
-  <div class="grid grid-cols-2 gap-4">
+ 
     <label class="label">
       <span>Start Date</span>
       <input class="input variant-form-material" type="date" bind:value={project.startDate} />
@@ -192,8 +190,7 @@
         bind:value={project.sprintAmount}
       />
     </label>
-  </div>
-  <div class="grid grid-cols-2 gap-4">
+
     <label class="label">
       <span>Sprint Checkup Day</span>
       <input

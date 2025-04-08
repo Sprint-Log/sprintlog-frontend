@@ -74,11 +74,12 @@
 
         <div class="flex justify-between">
           <button
-            class="btn-icon hover:variant-soft"
-            on:click|stopPropagation|preventDefault={() => openModel('userPreviewCard', { user })}
-          >
-            <Icon src={View} size="20" class="inline mr-2" />
-          </button>
+          class="btn-icon group"
+          on:click|stopPropagation|preventDefault={() => openModel('userPreviewCard', { user })}
+        >
+          <Icon src={View} size="20" class="inline mr-2 text-gray-500 group-hover:text-primary-600" />
+        </button>
+        
           <button
             class="btn-icon hover:variant-soft"
             use:popup={popupClick}

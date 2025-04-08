@@ -52,7 +52,7 @@
       bind:value={assignee}
       on:change={handleAssigneeChange}
     >
-      {#each $assignees.data as assigne}
+      {#each $assignees.data as assigne }
         <option value={assigne}>{assigne.name}</option>
       {/each}
     </select>

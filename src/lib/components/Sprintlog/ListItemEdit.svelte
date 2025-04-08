@@ -1,28 +1,32 @@
 <script lang="ts">
- 
+  import type { Project, Sprintlog, User } from '$lib/types/sprintlog';
+
   import {
     priorityCircle,
     progressCircle,
     toggleCompletion,
     updateSprintlog
   } from '$lib/api/sprintlog';
-  import Field from '$lib/components/Sprintlog/Fields.svelte';
-  import type { Sprintlog, User } from '$lib/types/sprintlog';
- 
+  import { debouncer } from '$lib/utils/debounce';
+  import { SPRINTLOGS_BACKLOG_QUERY_KEY, TASKS_QUERY_KEY } from '$lib/constants';
+
   import { createMutation, useQueryClient } from '@tanstack/svelte-query';
   import { createEventDispatcher } from 'svelte';
-  import CmEditor from '../Editors/CMEditor.svelte';
-  import InlineEditor from '../Editors/InlineEditor.svelte';
-  import BacklogActions from './BacklogActions.svelte';
-  import TaskActions from './TaskActions.svelte';
-  import TimeField from './TimeField.svelte';
-  import Members from '../FloatingTaskInput/MembersChoice.svelte';
-
-  import {SPRINTLOGS_BACKLOG_QUERY_KEY, TASKS_QUERY_KEY} from "$lib/constants";
   import { Toast, toastStore } from '@skeletonlabs/skeleton';
+
+  import Field from '$lib/components/Sprintlog/Fields.svelte';
+  import CmEditor from '$lib/components/Editors/CMEditor.svelte';
+  import InlineEditor from '$lib/components/Editors/InlineEditor.svelte';
+  import BacklogActions from '$lib/components/Sprintlog/BacklogActions.svelte';
+  import TaskActions from '$lib/components/Sprintlog/TaskActions.svelte';
+  import TimeField from '$lib/components/Sprintlog/TimeField.svelte';
+  import Members from '$lib/components/FloatingTaskInput/MembersChoice.svelte';
+
+  export let project: Project| undefined;
   export let item: Sprintlog;
   export let isTask = true;
   export let currentUser: User;
+  export let isEditable = false;
   let topic: string = item.title;
   let client = useQueryClient();
   let expand = false;
@@ -33,9 +37,8 @@
     | 'titleEdit'
     | 'begDateEdit'
     | 'dueDateEdit';
-  import { debouncer } from '$lib/utils/debounce';
-  import ClickableIcon from './ClickableIcon.svelte';
-  import { AddAlt, SubtractAlt } from '@steeze-ui/carbon-icons';
+
+
   type Flags = {
     [key in FlagName]: boolean;
   };
@@ -105,9 +108,9 @@
         client.invalidateQueries([TASKS_QUERY_KEY]);
         dispatch('completion');
       },
-      onError: function(e: any) {
-        let message = "Failed to update progress circle.";
-        toastStore.trigger({ message: message, background: "variant-filled-error"});
+      onError: function (e: any) {
+        let message = 'Failed to update progress circle.';
+        toastStore.trigger({ message: message, background: 'variant-filled-error' });
       }
     }
   );
@@ -121,9 +124,9 @@
         client.invalidateQueries([TASKS_QUERY_KEY]);
         dispatch('completion');
       },
-      onError: function(e: any) {
-        let message = "Failed to update priority circle.";
-        toastStore.trigger({ message: message, background: "variant-filled-error"});
+      onError: function (e: any) {
+        let message = 'Failed to update priority circle.';
+        toastStore.trigger({ message: message, background: 'variant-filled-error' });
       }
     }
   );
@@ -138,9 +141,9 @@
         topic = '';
         dispatch('completion');
       },
-      onError: function(e: any) {
-        let message = "Failed to update sprintlog.";
-        toastStore.trigger({ message: message, background: "variant-filled-error"});
+      onError: function (e: any) {
+        let message = 'Failed to update sprintlog.';
+        toastStore.trigger({ message: message, background: 'variant-filled-error' });
       }
     }
   );
@@ -157,9 +160,9 @@
     enableOnlyFlag('descriptionEdit');
   }
   const debouncedResetAllFlags = debouncer(3000, () => resetAllFlags());
-
 </script>
-<Toast/>
+
+<Toast />
 <div class="hover:variant-ringed-primary py-0.5 group">
   <div class="flex space-x-3 space-y-1">
     <div class="flex-1">
@@ -264,6 +267,8 @@
         {#if flags.assigneeEdit}
           <Members
             bind:assignee={item.assignee}
+            project={project}
+            project_slug={item.project_slug}
             on:mouseleave={() => {
               debouncedResetAllFlags();
               $postMutation.mutate();
@@ -286,7 +291,7 @@
         {/if}
         {#if item.description}
           <span
-            class="px-2 select-none cursor-pointer text-slate-500 text-xs"
+            class="px-2 select-none {isEditable ? 'cursor-pointer': ''} text-slate-500 text-xs"
             on:click={toggleExpand}
             on:keydown={toggleExpand}
           >

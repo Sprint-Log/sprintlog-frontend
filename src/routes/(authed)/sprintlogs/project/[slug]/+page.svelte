@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Sprintlog, ProjectItems, SprintlogPagination, Project } from '$lib/types/sprintlog';
   import type { PageData } from '../../../sprintlogs/project/[slug]/$types';
-  import type { QueryFunctionContext} from '@tanstack/svelte-query';
+  import type { QueryFunctionContext } from '@tanstack/svelte-query';
 
   import FloatingTask from '$lib/components/FloatingTaskInput/FloatingTaskInput.svelte';
   import TaskBox from '$lib/components/Sprintlog/TaskListBox.svelte';
@@ -13,7 +13,11 @@
   import { createQuery } from '@tanstack/svelte-query';
   import { getBacklogByPrjSlug, getTaskByPrjSlug, getProjectBySlug } from '$lib/api/sprintlog';
   import { ProgressRadial } from '@skeletonlabs/skeleton';
-  import {TASKS_QUERY_KEY, SPRINTLOGS_BACKLOG_QUERY_KEY, PROJECT_DETAIL_QUERY_KEY} from '$lib/constants';
+  import {
+    TASKS_QUERY_KEY,
+    SPRINTLOGS_BACKLOG_QUERY_KEY,
+    PROJECT_DETAIL_QUERY_KEY
+  } from '$lib/constants';
   export const load = ({ params }: { params: any }) => {
     return {
       slug: params.slug
@@ -22,19 +26,16 @@
 
   export let data: PageData;
   const { user } = data;
-  let item: Sprintlog = {} as Sprintlog;
-  let owner_id: string;
-  if (user != null) {
-    owner_id = user.id;
-  }
-  let project_slug = $page.params.slug;
-
+  const project_slug = $page.params.slug;
   const prjItems: ProjectItems[] = [
     { text: 'Home', href: '/' },
     { text: 'Projects', href: '/projects' },
     { text: project_slug }
   ];
 
+  let item: Sprintlog = {} as Sprintlog;
+  let owner_id: string;
+ 
   let taskTotal = 200;
   let currentPageTask = 0;
   let amountTask = 200;
@@ -42,13 +43,17 @@
   let currentPageBacklog = 0;
   let amountBacklog = 200;
   let order = 'desc';
- 
   let intervalMs = 1500000;
+
+  $: isAuthorized = (user.isSuperuser || user.id == owner_id)
+
   $: currentProject = createQuery<Project, Error>({
     queryKey: [PROJECT_DETAIL_QUERY_KEY, project_slug],
     queryFn: async (context: QueryFunctionContext) => {
       const project_slug = context.queryKey[1] as string;
-      return await getProjectBySlug(project_slug);
+      const project = await getProjectBySlug(project_slug);
+      owner_id = project.ownerId;
+      return project;
     },
     refetchOnWindowFocus: true,
     cacheTime: 15000
@@ -70,7 +75,6 @@
     // cacheTime: cacheTime
   });
 
- 
   $: backlogs = createQuery<SprintlogPagination, Error>({
     queryKey: [SPRINTLOGS_BACKLOG_QUERY_KEY, currentPageBacklog, amountBacklog, order],
     queryFn: async () => {
@@ -89,7 +93,6 @@
     refetchInterval: intervalMs
     // cacheTime: cacheTime
   });
-
 </script>
 
 <main id="page-content" class="w-full h-full max-h-screen">
@@ -99,11 +102,13 @@
   <section
     class="container flex-auto gap-y-2 min-h-[80vh] max-h-[90vh] grid grid-rows-[auto_auto_1fr_auto_2fr] max-w-[120rem] mx-auto"
   >
-    <div class="px-4 pt-4 flex flex-col">
-      <container class="sticky variant-ringed rounded p-2 bg-surface-100-800-token">
-        <FloatingTask bind:project={$currentProject.data} {project_slug} {item} {user} />
-      </container>
-    </div>
+    {#if user && isAuthorized}
+      <div class="px-4 pt-4 flex flex-col">
+        <container class="sticky variant-ringed rounded p-2 bg-surface-100-800-token">
+          <FloatingTask bind:project={$currentProject.data} {project_slug} {item} {user} />
+        </container>
+      </div>
+    {/if}
     <div class="px-4"><h3>Backlogs</h3></div>
 
     <section class="grid h-full max-h-screen overflow-y-scroll">
@@ -116,7 +121,7 @@
           <TaskBox>
             {#if $backlogs.isSuccess}
               {#each $backlogs.data.items as task}
-                <Listitem item={task} isTask={false} currentUser={user} />
+                <Listitem item={task} isTask={false} currentUser={user} isEditable={isAuthorized} />
               {/each}
             {/if}
           </TaskBox>
@@ -134,7 +139,7 @@
           <TaskBox>
             {#if $tasks.isSuccess}
               {#each $tasks.data.items as task}
-                <Listitem item={task} isTask={true} currentUser={user} />
+                <Listitem bind:project={$currentProject.data} item={task} isTask={true} currentUser={user}  isEditable={isAuthorized} />
               {/each}
             {/if}
           </TaskBox>

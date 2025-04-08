@@ -17,6 +17,7 @@
   import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
   import { goto, invalidateAll } from '$app/navigation';
   import { logout } from '$lib/api/auth';
+  import { redirect } from '@sveltejs/kit';
 
   export let data;
   const regionLead = 'flex justify-center items-center';
@@ -48,8 +49,8 @@
       body: 'Are you sure you want to logout?',
       response: async (confirmed: boolean) => {
         if (confirmed) {
+          redirect(302, '/login');
           await logout();
-          goto('/login');
         }
       }
     });
