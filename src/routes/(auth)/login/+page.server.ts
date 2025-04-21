@@ -22,7 +22,7 @@ export const actions: Actions = {
         event.cookies.set(env.PUBLIC_COOKIE_NAME, token, {
           httpOnly: true,
           path: '/',
-          secure: true,
+          secure: false,
           sameSite: 'strict',
           maxAge: 60 * 60 * 2400, // 100 day
           domain: env.PUBLIC_COOKIE_DOMAIN
@@ -31,7 +31,7 @@ export const actions: Actions = {
         event.cookies.set(env.PUBLIC_COOKIE_NAME, token, {
           httpOnly: true,
           path: '/',
-          secure: true,
+          secure: false,
           sameSite: 'strict',
           maxAge: 60 * 60 * 2400 // 100 day
         });
@@ -41,9 +41,7 @@ export const actions: Actions = {
         error: error.message
       });
     }
-
-    // Set the cookie
-    console.log("got the token and redirctting it to main route")
+ 
     throw redirect(302, '/');
   }
 };
