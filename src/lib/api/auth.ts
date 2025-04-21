@@ -1,6 +1,9 @@
 import { PUBLIC_API_URL } from '$env/static/public';
 import type { User } from '$lib/types/sprintlog';
 
+ 
+
+
 const loginUser = async (email: string, password: string): Promise<String> => {
   try {
     const response = await fetch(`${PUBLIC_API_URL}/api/access/login`, {
@@ -19,6 +22,8 @@ const loginUser = async (email: string, password: string): Promise<String> => {
     }
 
     const token = response.headers.get('Authorization');
+    console.log("token")
+    console.log(token)
 
     if (token === null) {
       throw new Error('User or Password Error');
