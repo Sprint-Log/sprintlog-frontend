@@ -8,6 +8,7 @@ export const load = (async ({ cookies, depends }) => {
 
   const token = cookies.get(PUBLIC_COOKIE_NAME);
   if (!token) {
+    console.log("No token found in layout");
     throw redirect(303, '/login');
   }
   let user;

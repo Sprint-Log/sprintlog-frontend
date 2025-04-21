@@ -22,8 +22,6 @@ const loginUser = async (email: string, password: string): Promise<String> => {
     }
 
     const token = response.headers.get('Authorization');
-    console.log("token")
-    console.log(token)
 
     if (token === null) {
       throw new Error('User or Password Error');
@@ -49,6 +47,7 @@ const getCurrentUser = async (token: string): Promise<User> => {
     const data = await response.json();
     return data;
   } catch (err) {
+    console.log("Failured in getCurrentUser")
     throw response;
   }
 };

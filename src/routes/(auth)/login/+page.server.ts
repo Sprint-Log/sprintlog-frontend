@@ -17,6 +17,7 @@ export const actions: Actions = {
     try {
       const token = (await loginUser(email, password)) as string;
       if (env.PUBLIC_COOKIE_DOMAIN) {
+        console.log("got the token and setting it")
  
         event.cookies.set(env.PUBLIC_COOKIE_NAME, token, {
           httpOnly: true,
@@ -42,7 +43,7 @@ export const actions: Actions = {
     }
 
     // Set the cookie
-
+    console.log("got the token and redirctting it to main route")
     throw redirect(302, '/');
   }
 };
