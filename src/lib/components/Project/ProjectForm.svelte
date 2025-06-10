@@ -16,23 +16,24 @@
 
   let limit = 100;
   let page = 1;
-  let order = 'desc';
   let total = 0;
   let offset = 0;
+  let order = 'desc';
+  let slugEdited = false;
   let searchTerm = '';
   let searchValue = '';
-  let timer : number | null = null;
+  let timer: number | null = null;
 
   $: {
-		if (searchTerm !== searchValue) {
-			if (timer !== null) {
-				clearTimeout(timer);
-			}
-			timer = window.setTimeout(() => {
-				searchTerm = searchValue;
-			}, 600);
-		}
-	}
+    if (searchTerm !== searchValue) {
+      if (timer !== null) {
+        clearTimeout(timer);
+      }
+      timer = window.setTimeout(() => {
+        searchTerm = searchValue;
+      }, 600);
+    }
+  }
 
   $: teamsQuery = createQuery<Team[], Error>({
     queryKey: [TEAM_QUERY_KEY, page, limit, order],
@@ -46,6 +47,7 @@
     refetchOnWindowFocus: true,
     cacheTime: 15000
   });
+  const makeSlug = (str: string) => str.trim().toLowerCase().replace(/\s+/g, '_');
 
   let is_update = false;
   let projectId = '';
@@ -67,13 +69,21 @@
     teamIds: []
   };
 
+  $: if (!slugEdited) {
+    project.slug = makeSlug(project.name);
+  }
+
+  function onSlugInput() {
+    slugEdited = true;
+  }
+
   if ($modalStore[0].meta) {
     project = $modalStore[0].meta.project;
     is_update = true;
     projectId = $modalStore[0].meta.project.id;
   }
 
-  $: project.slug = project.name.trim().toLowerCase().replace(/\s+/g, '_');
+  
   const client = useQueryClient();
 
   $: projectMutation = createMutation({
@@ -109,10 +119,9 @@
     if (project.teams?.some((team) => team.id == id)) {
       // project.teams = project.teams.filter(o => o != option);
     } else {
-      project.teams = [...(project.teams || []), { id: id , name: name}];
+      project.teams = [...(project.teams || []), { id: id, name: name }];
       project.teamIds = [...(project.teamIds || []), id];
-      //   teams = teams.filter((team)=> team.id != id);
-      //   console.log(teams)
+ 
     }
   }
 
@@ -157,10 +166,10 @@
         type="text"
         placeholder="Slug"
         bind:value={project.slug}
-        readonly
+         on:input={onSlugInput}
       />
     </label>
- 
+
     <label class="label">
       <span>Start Date</span>
       <input class="input variant-form-material" type="date" bind:value={project.startDate} />
