@@ -159,6 +159,17 @@ export const createSprintlog = async (sprintlog: SprintlogCreate): Promise<Sprin
   const data = (await response.json()) as Sprintlog;
   return data;
 };
+
+export const deleteSprintlog = async (sprintlogId: string): Promise<{sprintlogId:string}> => {
+  const response = await authFetch(`api/sprintlogs/${sprintlogId}`, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  const data = (await response.json()) as {sprintlogId:string};
+  return data;
+};
+
+
 export const updateSprintlog = async (sprintlog: Sprintlog): Promise<Sprintlog> => {
   const response = await authFetch(`api/sprintlogs/${sprintlog.id}`, {
     method: 'PUT',

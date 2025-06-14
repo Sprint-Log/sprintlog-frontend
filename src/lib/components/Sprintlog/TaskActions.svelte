@@ -3,7 +3,7 @@
   import { useQueryClient, createMutation } from '@tanstack/svelte-query';
   import { switchToBacklog } from '$lib/api/sprintlog';
   import ClickableIcon from '$lib/components/Sprintlog/ClickableIcon.svelte';
-  import { CheckmarkOutline, RowCollapse, Edit } from '@steeze-ui/carbon-icons';
+  import { CheckmarkOutline, RowCollapse, Edit, TrashCan } from '@steeze-ui/carbon-icons';
   import { createEventDispatcher } from 'svelte';
 
   import { SPRINTLOGS_BACKLOG_QUERY_KEY, TASKS_QUERY_KEY } from '$lib/constants';
@@ -45,5 +45,13 @@
   color="fill-green-500"
   onItemClick={() => {
     dispatch('progress_complete');
+  }}
+/>
+<ClickableIcon
+  id="delete_task"
+  iconSrc={TrashCan}
+  color="fill-red-500"
+  onItemClick={() => {
+    dispatch('delete', { id: item.id });
   }}
 />

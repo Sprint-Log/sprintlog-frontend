@@ -5,7 +5,8 @@
     priorityCircle,
     progressCircle,
     toggleCompletion,
-    updateSprintlog
+    updateSprintlog,
+    deleteSprintlog
   } from '$lib/api/sprintlog';
   import { debouncer } from '$lib/utils/debounce';
   import { SPRINTLOGS_BACKLOG_QUERY_KEY, TASKS_QUERY_KEY } from '$lib/constants';
@@ -159,6 +160,28 @@
     expand = true;
     enableOnlyFlag('descriptionEdit');
   }
+  const deleteTaskMutation = createMutation(
+    async function (id: string) {
+      await deleteSprintlog(id);
+      return id;
+    },
+    {
+      onSuccess: function (id: string) {
+        client.invalidateQueries([TASKS_QUERY_KEY]);
+        client.removeQueries([TASKS_QUERY_KEY, id]);
+      },
+      onError: function (e: any) {
+        let message = 'Failed to delete the task.';
+        toastStore.trigger({ message: message, background: 'variant-filled-error' });
+      }
+    }
+  );
+
+  function onDelete(event: CustomEvent<{ id: string }>) {
+    let id = event.detail.id;
+    $deleteTaskMutation.mutate(id);
+  }
+
   const debouncedResetAllFlags = debouncer(3000, () => resetAllFlags());
 </script>
 
@@ -325,6 +348,7 @@
               $toggleCompletionMutation.mutate();
             }}
             on:edit={addDescription}
+            on:delete={onDelete}
           />
         {:else}
           <BacklogActions

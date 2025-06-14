@@ -1,7 +1,12 @@
 <script lang="ts">
-	import { invalidateAll } from '$app/navigation';
+  import { invalidateAll } from '$app/navigation';
   import type { Sprintlog } from '$lib/types/sprintlog';
-  import { progressDown,  progressCircle, priorityCircle } from '$lib/api/sprintlog';
+  import {
+    progressDown,
+    progressCircle,
+    priorityCircle,
+    deleteSprintlog
+  } from '$lib/api/sprintlog';
   import { useQueryClient, createMutation } from '@tanstack/svelte-query';
   import Field from '$lib/components/Sprintlog/Fields.svelte';
   import TimeField from './TimeField.svelte';
@@ -9,8 +14,9 @@
   import BacklogActions from './BacklogActions.svelte';
   import { marked } from 'marked';
   import FloatingTaskInput from '../FloatingTaskInput/FloatingTaskInput.svelte';
-  import {SPRINTLOGS_BACKLOG_QUERY_KEY, TASKS_QUERY_KEY} from "$lib/constants";
+  import { SPRINTLOGS_BACKLOG_QUERY_KEY, TASKS_QUERY_KEY } from '$lib/constants';
   import { Toast, toastStore } from '@skeletonlabs/skeleton';
+  import ActiveProjectCard from '../Users/ActiveProjectCard.svelte';
   export let item: Sprintlog;
   export let isTask = true;
   let client = useQueryClient();
@@ -29,9 +35,9 @@
         client.invalidateQueries([SPRINTLOGS_BACKLOG_QUERY_KEY]);
         client.invalidateQueries([TASKS_QUERY_KEY]);
       },
-      onError: function(e: any) {
-        let message = "Failed to update progress down.";
-        toastStore.trigger({ message: message, background: "variant-filled-error"});
+      onError: function (e: any) {
+        let message = 'Failed to update progress down.';
+        toastStore.trigger({ message: message, background: 'variant-filled-error' });
       }
     }
   );
@@ -44,9 +50,9 @@
         client.invalidateQueries([SPRINTLOGS_BACKLOG_QUERY_KEY]);
         client.invalidateQueries([TASKS_QUERY_KEY]);
       },
-      onError: function(e: any) {
-        let message = "Failed to update progress circle.";
-        toastStore.trigger({ message: message, background: "variant-filled-error"});
+      onError: function (e: any) {
+        let message = 'Failed to update progress circle.';
+        toastStore.trigger({ message: message, background: 'variant-filled-error' });
       }
     }
   );
@@ -59,14 +65,34 @@
         client.invalidateQueries([SPRINTLOGS_BACKLOG_QUERY_KEY]);
         client.invalidateQueries([TASKS_QUERY_KEY]);
       },
-      onError: function(e: any) {
-        let message = "Failed to update priority circle.";
-        toastStore.trigger({ message: message, background: "variant-filled-error"});
-      }      
+      onError: function (e: any) {
+        let message = 'Failed to update priority circle.';
+        toastStore.trigger({ message: message, background: 'variant-filled-error' });
+      }
     }
   );
-  
- 
+  const deleteTaskMutation = createMutation(
+    async function (id: string) {
+      await deleteSprintlog(id);
+      return id;
+    },
+    {
+      onSuccess: function (id: string) {
+        client.invalidateQueries([TASKS_QUERY_KEY]);
+        client.removeQueries([TASKS_QUERY_KEY, id]);
+      },
+      onError: function (e: any) {
+        let message = 'Failed to delete the task.';
+        toastStore.trigger({ message: message, background: 'variant-filled-error' });
+      }
+    }
+  );
+
+  function onDelete(event: CustomEvent<{ id: string }>) {
+    let id = event.detail.id;
+    $deleteTaskMutation.mutate(id);
+  }
+
   function onExpand() {
     expand = !expand;
   }
@@ -74,7 +100,8 @@
     isEdit = !isEdit;
   }
 </script>
-<Toast/>
+
+<Toast />
 {#if isEdit}
   <div class="hover:variant-ringed-tertiary py-0.5 group">
     <div class="px-2 space-x-3 space-y-1">
@@ -160,6 +187,7 @@
             }}
             on:expand={onExpand}
             on:edit={onEdit}
+            on:delete={onDelete}
           />
         {:else}
           <BacklogActions
