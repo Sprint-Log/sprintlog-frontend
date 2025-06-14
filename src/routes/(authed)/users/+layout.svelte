@@ -1,8 +1,17 @@
 <script lang="ts">
   import { Icon } from '@steeze-ui/svelte-icon';
   import { Add, Search, Locked, View, Edit, TrashCan } from '@steeze-ui/carbon-icons';
-  import { ProgressRadial } from '@skeletonlabs/skeleton';
-  import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
+
+  import {
+    type ModalComponent,
+    type ModalSettings,
+    Toast,
+    Modal,
+    modalStore,
+    toastStore,
+    ProgressRadial
+  } from '@skeletonlabs/skeleton';
+
   import type { User } from '$lib/types/sprintlog';
 
   import { USERS_QUERY_KEY } from '$lib/constants';
@@ -12,10 +21,9 @@
   import BreadcrumbUser from '$lib/components/Users/BreadcrumbUser.svelte';
   import UserPreviewCard from '$lib/components/Users/UserPreviewCard.svelte';
   import ResetPasswordForm from '$lib/components/Users/ResetPasswordForm.svelte';
+  import ConfirmPasswordForm from '$lib/components/Users/ConfirmPasswordForm.svelte';
 
-  import { Toast, Modal, modalStore } from '@skeletonlabs/skeleton';
-
-  import { useQueryClient, createQuery } from '@tanstack/svelte-query';
+  import { useQueryClient, createQuery, createMutation } from '@tanstack/svelte-query';
   import { deleteUser, getUsers } from '$lib/api/sprintlog';
   import { goto } from '$app/navigation';
 
@@ -25,6 +33,7 @@
     createFormComponent: { ref: UserForm },
     userPreviewCard: { ref: UserPreviewCard },
     resetPasswordForm: { ref: ResetPasswordForm },
+    confirmPasswordForm: {ref: ConfirmPasswordForm}
   };
   const intervalMs = 15000;
   const client = useQueryClient();
@@ -74,6 +83,12 @@
         }
       }
     });
+  }
+
+
+  function handleActivateUser(user: User) {
+    user.isActive = true;
+    openModel('confirmPasswordForm', { user }); 
   }
 
   function handleBreadCrumb(event: CustomEvent<{ user: User }>) {
@@ -130,12 +145,21 @@
                   >
                     <Icon src={Edit} size="20" class="inline mr-2" /> Edit User
                   </button>
-                  <button
-                    class="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-surface-700 rounded"
-                    on:click|stopPropagation|preventDefault={() => handleDelUser(user.id)}
-                  >
-                    <Icon src={TrashCan} size="20" class="inline mr-2" /> Deactivate User
-                  </button>
+                  {#if user.isActive}
+                    <button
+                      class="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-surface-700 rounded"
+                      on:click|stopPropagation|preventDefault={() => handleDelUser(user.id)}
+                    >
+                      <Icon src={TrashCan} size="20" class="inline mr-2" /> Deactivate User
+                    </button>
+                  {:else}
+                    <button
+                      class="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-surface-700 rounded"
+                      on:click|stopPropagation|preventDefault={() => handleActivateUser(user)}
+                    >
+                      <Icon src={TrashCan} size="20" class="inline mr-2" /> Activate User
+                    </button>
+                  {/if}
 
                   <button
                     class="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-surface-700 rounded"
